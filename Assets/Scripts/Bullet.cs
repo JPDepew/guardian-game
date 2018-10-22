@@ -13,7 +13,7 @@ public class Bullet : MonoBehaviour {
     }
 
     void Update () {
-        transform.Translate(Vector3.up * speed);
+        transform.Translate(Vector3.right * speed * Mathf.Sign(transform.localScale.x));
         if(Time.time > targetTime)
         {
             Destroy(gameObject);

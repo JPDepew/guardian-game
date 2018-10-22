@@ -58,6 +58,7 @@ public class ShipController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
+            transform.localScale = new Vector2(-Mathf.Abs(transform.localScale.x), transform.localScale.y);
             direction += acceleration * Vector2.left;
             //direction = Vector2.Lerp(direction, Vector2.left * speed, linearInterpolationTime);
             if (!fuelParticleSystem.isPlaying)
@@ -72,6 +73,7 @@ public class ShipController : MonoBehaviour
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             //direction = Vector2.Lerp(direction, Vector2.right * speed, linearInterpolationTime);
+            transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x), transform.localScale.y);
             direction += acceleration * Vector2.right;
             if (!fuelParticleSystem.isPlaying)
             {
@@ -113,7 +115,8 @@ public class ShipController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && !shouldDestroyShip)
         {
             audioSources[0].Play();
-            Instantiate(bullet, gunPosition.transform.position, transform.rotation);
+            GameObject tempBullet = Instantiate(bullet, gunPosition.transform.position, transform.rotation);
+            tempBullet.transform.localScale = Mathf.Sign(transform.localScale.x) == -1 ? new Vector2(-tempBullet.transform.localScale.x, tempBullet.transform.localScale.y) : new Vector2(tempBullet.transform.localScale.x, tempBullet.transform.localScale.y);
         }
     }
 
