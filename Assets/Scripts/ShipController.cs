@@ -47,7 +47,7 @@ public class ShipController : MonoBehaviour
     void Update()
     {
         GetInput();
-        HandleWrapping();
+        //HandleWrapping();
         HandleDestroyingShip();
         HandleInvulnerability();
         transform.position = transform.position + (Vector3)direction * Time.deltaTime;
@@ -100,16 +100,42 @@ public class ShipController : MonoBehaviour
             }
             else
             {
-                direction = Vector2.zero;
+                direction = new Vector2(0, direction.y);
             }
         }
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            direction += acceleration * Vector2.up;
+
+            if (transform.position.y < verticalHalfSize - 1)
+            {
+                direction += acceleration * Vector2.up;
+            }
+            else
+            {
+                direction = new Vector2(direction.x, 0);
+            }
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            direction += acceleration * Vector2.down;
+            if (transform.position.y > -verticalHalfSize + 1)
+            {
+                direction += acceleration * Vector2.down;
+            }
+            else
+            {
+                direction = new Vector2(direction.x, 0);
+            }
+        }
+        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.DownArrow))
+        {
+            if (transform.position.y <= -verticalHalfSize + 1)
+            {
+                direction = new Vector2(direction.x, 0);
+            }
+            if(transform.position.y >= verticalHalfSize- 1)
+            {
+                direction = new Vector2(direction.x, 0);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && !shouldDestroyShip)
@@ -134,27 +160,20 @@ public class ShipController : MonoBehaviour
     /// <summary>
     /// If the ship goes off the screen, it is wrapped around to the other side
     /// </summary>
-    private void HandleWrapping()
-    {
-        verticalHalfSize = Camera.main.orthographicSize;
-        horizontalHalfSize = verticalHalfSize * Screen.width / Screen.height;
-        if (transform.position.y > verticalHalfSize)
-        {
-            transform.position = new Vector2(transform.position.x, -verticalHalfSize);
-        }
-        if (transform.position.y < -verticalHalfSize)
-        {
-            transform.position = new Vector2(transform.position.x, verticalHalfSize);
-        }
-        if (transform.position.x > horizontalHalfSize)
-        {
-            transform.position = new Vector2(-horizontalHalfSize, transform.position.y);
-        }
-        if (transform.position.x < -horizontalHalfSize)
-        {
-            transform.position = new Vector2(horizontalHalfSize, transform.position.y);
-        }
-    }
+    //private void HandleWrapping()
+    //{
+    //    verticalHalfSize = Camera.main.orthographicSize;
+    //    horizontalHalfSize = verticalHalfSize * Screen.width / Screen.height;
+
+    //    if (transform.position.x > horizontalHalfSize)
+    //    {
+    //        transform.position = new Vector2(-horizontalHalfSize, transform.position.y);
+    //    }
+    //    if (transform.position.x < -horizontalHalfSize)
+    //    {
+    //        transform.position = new Vector2(horizontalHalfSize, transform.position.y);
+    //    }
+    //}
 
     private void HandleInvulnerability()
     {
