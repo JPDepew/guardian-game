@@ -6,6 +6,7 @@ public class GameMaster : MonoBehaviour
 {
     public GameObject alien;
     public GameObject ship;
+    public GameObject human;
     public Text scoreText;
     public Text livesText;
     public float numberOfAliens;
@@ -41,11 +42,6 @@ public class GameMaster : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Space) && gameState == GameState.STOPPED)
-        {
-            StartGame();
-        }
-
         if (scoreTracker > 10000)
         {
             scoreTracker = 0;

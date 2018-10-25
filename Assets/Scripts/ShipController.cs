@@ -16,7 +16,6 @@ public class ShipController : MonoBehaviour
     private Vector2 direction;
     private SpriteRenderer spriteRenderer;
     private PlayerStats playerStats;
-    private float rotateAmount = 0;
     private bool shouldDestroyShip;
     private float targetTime;
 
@@ -51,16 +50,15 @@ public class ShipController : MonoBehaviour
         HandleDestroyingShip();
         HandleInvulnerability();
         transform.position = transform.position + (Vector3)direction * Time.deltaTime;
-        transform.Rotate(0, 0, rotateAmount);
     }
 
     private void GetInput()
     {
+        // Side to side movement
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             transform.localScale = new Vector2(-Mathf.Abs(transform.localScale.x), transform.localScale.y);
             direction += acceleration * Vector2.left;
-            //direction = Vector2.Lerp(direction, Vector2.left * speed, linearInterpolationTime);
             if (!fuelParticleSystem.isPlaying)
             {
                 fuelParticleSystem.Play();
@@ -72,7 +70,6 @@ public class ShipController : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            //direction = Vector2.Lerp(direction, Vector2.right * speed, linearInterpolationTime);
             transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x), transform.localScale.y);
             direction += acceleration * Vector2.right;
             if (!fuelParticleSystem.isPlaying)
@@ -103,42 +100,40 @@ public class ShipController : MonoBehaviour
                 direction = new Vector2(0, direction.y);
             }
         }
+
+        // Up and down movement
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-
-            if (transform.position.y < verticalHalfSize - 1)
-            {
-                direction += acceleration * Vector2.up;
-            }
-            else
-            {
-                direction = new Vector2(direction.x, 0);
-            }
+            direction += acceleration * Vector2.up;
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            if (transform.position.y > -verticalHalfSize + 1)
+            direction += acceleration * Vector2.down;
+        }
+        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.DownArrow))
+        {
+            if (Mathf.Abs(direction.y) > 0.01f)
             {
-                direction += acceleration * Vector2.down;
+                direction = Vector2.Lerp(direction, Vector2.zero, linearInterpolationTime);
             }
             else
             {
                 direction = new Vector2(direction.x, 0);
             }
         }
-        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.DownArrow))
+
+        // Checking to make sure it is not off the screen
+        if (transform.position.y <= -verticalHalfSize + 1 && direction.y < 0)
         {
-            if (transform.position.y <= -verticalHalfSize + 1)
-            {
-                direction = new Vector2(direction.x, 0);
-            }
-            if(transform.position.y >= verticalHalfSize- 1)
-            {
-                direction = new Vector2(direction.x, 0);
-            }
+            direction = new Vector2(direction.x, 0);
+        }
+        if (transform.position.y >= verticalHalfSize - 0.5f && direction.y > 0)
+        {
+            direction = new Vector2(direction.x, 0);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !shouldDestroyShip)
+        // Shooting
+        if (Input.GetKeyDown(KeyCode.Z) && !shouldDestroyShip)
         {
             audioSources[0].Play();
             GameObject tempBullet = Instantiate(bullet, gunPosition.transform.position, transform.rotation);
@@ -190,7 +185,7 @@ public class ShipController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Asteroid")
+        if (collision.tag == "Alien")
         {
             shouldDestroyShip = true;
             targetTime = Time.time + 1f;
