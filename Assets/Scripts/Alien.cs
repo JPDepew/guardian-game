@@ -11,7 +11,7 @@ public class Alien : Enemy
 
     AudioSource audioSource;
     SpriteRenderer spriteRenderer;
-    Vector2 direction;
+    //Vector2 direction;
     float verticalHalfSize;
     bool avoidingWall;
 
@@ -21,7 +21,7 @@ public class Alien : Enemy
     {
         audioSource = GetComponent<AudioSource>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        direction = Random.insideUnitCircle.normalized;
+        direction = Vector2.zero;// = Random.insideUnitCircle.normalized;
         verticalHalfSize = Camera.main.orthographicSize;
         StartCoroutine(ChangeDirection());
         StartCoroutine(AvoidWalls());
@@ -30,7 +30,7 @@ public class Alien : Enemy
     private void Update()
     {
         verticalHalfSize = Camera.main.orthographicSize;
-        transform.Translate(direction * speed * Time.deltaTime);
+        transform.Translate(direction * speed * Time.deltaTime, Space.World);
     }
 
     IEnumerator ChangeDirection()
@@ -63,31 +63,32 @@ public class Alien : Enemy
     {
         while (true)
         {
+            //Debug.Log("Too high: " + (transform.position.y > verticalHalfSize - 1));
+            //Debug.Log("Too low: " + (transform.position.y < -verticalHalfSize + 1));
             Vector2 newDirection = Random.insideUnitCircle.normalized;
-
             if (transform.position.y > verticalHalfSize - 1)
             {
                 avoidingWall = true;
                 newDirection = new Vector2(newDirection.x, -Mathf.Abs(newDirection.y));
-                while (!(direction.x <= newDirection.x + 0.01f && direction.x >= newDirection.x - 0.01f && direction.y >= newDirection.y - 0.01f && direction.y <= newDirection.y + 0.01f))
+                while (!(direction.x <= newDirection.x + 0.1f && direction.x >= newDirection.x - 0.1f && direction.y >= newDirection.y - 0.1f && direction.y <= newDirection.y + 0.1f))
                 {
                     direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
                     yield return null;
                 }
                 avoidingWall = false;
             }
-            if (transform.position.y < -verticalHalfSize + 1)
+            if (transform.position.y < -verticalHalfSize + 2)
             {
                 avoidingWall = true;
                 newDirection = new Vector2(newDirection.x, Mathf.Abs(newDirection.y));
-                while (!(direction.x <= newDirection.x + 0.01f && direction.x >= newDirection.x - 0.01f && direction.y >= newDirection.y - 0.01f && direction.y <= newDirection.y + 0.01f))
+                while (!(direction.x <= newDirection.x + 0.1f && direction.x >= newDirection.x - 0.1f && direction.y >= newDirection.y - 0.1f && direction.y <= newDirection.y + 0.1f))
                 {
                     direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
                     yield return null;
                 }
                 avoidingWall = false;
             }
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }
