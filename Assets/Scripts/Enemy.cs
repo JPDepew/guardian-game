@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour {
     public float rotateTime = 0.2f;
     protected float health;
     protected Vector2 direction;
+    protected Vector2 newDirection;
 
     float timeToBounceBack = 0.1f;
 
