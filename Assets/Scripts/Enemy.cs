@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : MonoBehaviour
+{
 
+    public ParticleSystem hit;
     public float maxHealth;
     public float bounceBackAmount = 0.4f;
     public float rotateAmount = 2f;
@@ -19,11 +21,14 @@ public class Enemy : MonoBehaviour {
         health = maxHealth;
     }
 
-    public void DamageEnemy(float damage, Vector2 directionToHit)
+    public void DamageEnemy(float damage, Vector2 hitPosition)
     {
+        Vector2 directionToEnemy = ((Vector2)transform.position - hitPosition).normalized;
         health -= damage;
-        direction += Vector2.right * directionToHit.x * bounceBackAmount;
-        float directionToHitY = directionToHit.x > 0 ? Mathf.Sign(directionToHit.y) : -Mathf.Sign(directionToHit.y);
+        direction += Vector2.right * directionToEnemy.x * bounceBackAmount;
+        Instantiate(hit, hitPosition, transform.rotation);
+
+        float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
 
         StartCoroutine(Rotate(directionToHitY));
     }
@@ -31,7 +36,7 @@ public class Enemy : MonoBehaviour {
     IEnumerator Rotate(float directionToHitY)
     {
         float timer = Time.time + rotateTime;
-        while(Time.time < timer)
+        while (Time.time < timer)
         {
             transform.Rotate(new Vector3(0, 0, directionToHitY * rotateAmount));
             yield return null;

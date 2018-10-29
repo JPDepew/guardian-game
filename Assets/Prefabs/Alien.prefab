@@ -144,11 +144,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96228b21bc143514e9341c5968f153e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hit: {fileID: 198261273651178544, guid: 25636ce3cd791d74c86c90a6862f58a1, type: 2}
   maxHealth: 2
   bounceBackAmount: 1
   rotateAmount: 5
   rotateTime: 0.1
-  detector: {fileID: 0}
   speed: 4
   timeToChangeDirection: 1.5
   easeToNewDirection: 0.05

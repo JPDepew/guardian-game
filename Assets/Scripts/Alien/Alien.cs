@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Alien : Enemy
 {
-    public CircleCollider2D detector;
     public float speed;
     public float timeToChangeDirection = 3;
     public float easeToNewDirection = 0.3f;
@@ -14,7 +13,6 @@ public class Alien : Enemy
     private bool hasHuman;
     float verticalHalfSize;
     bool avoidingWall;
-
 
     // Use this for initialization
     void Start()

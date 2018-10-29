@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour
     public float invisibleTime = 0.5f;
     public LayerMask layerMask;
 
+    SpriteRenderer spriteRenderer;
     private float targetTime = 0;
     private float direction;
     private bool shouldRaycast = true;
@@ -17,6 +18,7 @@ public class Bullet : MonoBehaviour
     {
         direction = Mathf.Sign(transform.localScale.x);
         targetTime = Time.time + timeTillDeath;
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -39,8 +41,8 @@ public class Bullet : MonoBehaviour
         if (hit)
         {
             Transform enemy = hit.transform;
-            Vector2 directionToEnemy = ((Vector2)enemy.position - hit.point).normalized;
-            enemy.GetComponent<Enemy>().DamageEnemy(1, directionToEnemy);
+            
+            enemy.GetComponent<Enemy>().DamageEnemy(1, hit.point);
             StartCoroutine(DestroyObject());
         }
     }
@@ -48,9 +50,13 @@ public class Bullet : MonoBehaviour
     IEnumerator DestroyObject()
     {
         shouldRaycast = false;
-        GetComponent<SpriteRenderer>().enabled = false;// = new Color(0,0,0,0);
+        
+        while (spriteRenderer.color.a >= 0)
+        {
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, spriteRenderer.color.a - 0.01f);
+            yield return null;
+        }
         speed = 0;
-        yield return new WaitForSeconds(invisibleTime);
         Destroy(gameObject);
     }
 }
