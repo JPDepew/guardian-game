@@ -54,7 +54,6 @@ public class Bullet : MonoBehaviour
         speed = 0;
         while (spriteRenderer.color.a >= 0)
         {
-            Debug.Log("popo");
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, spriteRenderer.color.a - 0.1f);
             yield return null;
         }

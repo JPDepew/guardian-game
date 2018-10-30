@@ -15,8 +15,9 @@ public class Alien : Enemy
     bool avoidingWall;
 
     // Use this for initialization
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         audioSource = GetComponent<AudioSource>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         direction = Vector2.zero;// = Random.insideUnitCircle.normalized;
