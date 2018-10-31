@@ -7,8 +7,8 @@ public class Alien : Enemy
     public float speed;
     public float timeToChangeDirection = 3;
     public float easeToNewDirection = 0.3f;
+    public float humanOffset = 0.8f;
 
-    AudioSource audioSource;
     SpriteRenderer spriteRenderer;
     private bool hasHuman;
     float verticalHalfSize;
@@ -18,7 +18,6 @@ public class Alien : Enemy
     protected override void Start()
     {
         base.Start();
-        audioSource = GetComponent<AudioSource>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         direction = Vector2.zero;// = Random.insideUnitCircle.normalized;
         verticalHalfSize = Camera.main.orthographicSize;
@@ -115,7 +114,9 @@ public class Alien : Enemy
     {
         if(collision.tag == "Human" && !hasHuman)
         {
+            collision.transform.position = new Vector2(transform.position.x, transform.position.y - humanOffset);
             collision.transform.parent = transform;
+            
             newDirection = Vector2.up;
             StopCoroutine("ChasingHuman");
             hasHuman = true;
