@@ -89,23 +89,17 @@ public class Alien : Enemy
     {
         if (collision.tag == "Human" && !hasHuman)
         {
-
             Human human = collision.GetComponent<Human>();
+
             if (!human.abducted)
             {
+                collision.transform.position = new Vector2(transform.position.x, transform.position.y - humanOffset);
                 collision.transform.parent = transform;
                 newDirection = Vector2.up;
                 StopCoroutine("ChasingHuman");
                 human.abducted = true;
                 hasHuman = true;
             }
-
-            collision.transform.position = new Vector2(transform.position.x, transform.position.y - humanOffset);
-            collision.transform.parent = transform;
-
-            newDirection = Vector2.up;
-            StopCoroutine("ChasingHuman");
-            hasHuman = true;
         }
     }
 }
