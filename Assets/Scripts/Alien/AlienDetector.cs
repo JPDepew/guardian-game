@@ -1,27 +1,30 @@
 ﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AlienDetector : MonoBehaviour {
-
+public class AlienDetector : MonoBehaviour
+{
     Alien alien;
 
     bool hasFoundHuman = false;
 
-	void Start () {
+    void Start()
+    {
         alien = GetComponentInParent<Alien>();
-	}
-	
-	void Update () {
-		
-	}
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Human" && !hasFoundHuman)
+        if (collision.tag == "Human" && !hasFoundHuman)
         {
-            alien.ChaseHuman(collision.transform);
-            hasFoundHuman = true;
+            Human human = collision.GetComponent<Human>();
+
+            if (!human.abducted)
+            {
+                alien.ChaseHuman(human);
+                hasFoundHuman = true;
+            }
         }
     }
 }

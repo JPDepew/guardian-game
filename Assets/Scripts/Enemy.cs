@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
 
     float timeToBounceBack = 0.1f;
 
-    private void Start()
+    protected virtual void Start()
     {
         health = maxHealth;
     }
