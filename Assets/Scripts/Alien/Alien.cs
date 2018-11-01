@@ -89,6 +89,7 @@ public class Alien : Enemy
     {
         if (collision.tag == "Human" && !hasHuman)
         {
+<<<<<<< HEAD
             Human human = collision.GetComponent<Human>();
             if (!human.abducted)
             {
@@ -98,6 +99,8 @@ public class Alien : Enemy
                 human.abducted = true;
                 hasHuman = true;
             }
+=======
+>>>>>>> 85f36bac350c7077500a09489133cc1abd5d7ca8
         }
     }
 }
