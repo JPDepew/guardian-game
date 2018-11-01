@@ -33,7 +33,7 @@ public class Alien : Enemy
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
     }
 
-    public void ChaseHuman(Transform human)
+    public void ChaseHuman(Human human)
     {
         StopCoroutine("ChangeDirection");
         StopCoroutine("AvoidWalls");
@@ -45,24 +45,6 @@ public class Alien : Enemy
         while (true)
         {
             newDirection = Random.insideUnitCircle.normalized;
-
-            //Vector2 newDirection = Random.insideUnitCircle.normalized;
-
-            //if (timer > timeToChangeDirection)
-            //{
-            //    while (!(direction.x <= newDirection.x + 0.01f && direction.x >= newDirection.x - 0.01f && direction.y >= newDirection.y - 0.01f && direction.y <= newDirection.y + 0.01f))
-            //    {
-            //        direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
-            //        if (avoidingWall)
-            //        {
-            //            timer = 0;
-            //            break;
-            //        }
-            //        yield return null;
-            //    }
-            //    timer = 0;
-            //}
-            //timer += Time.deltaTime;
             yield return new WaitForSeconds(timeToChangeDirection);
         }
     }
@@ -76,48 +58,46 @@ public class Alien : Enemy
             if (transform.position.y > verticalHalfSize - 1)
             {
                 newDirection = new Vector2(newDirection.x, -Mathf.Abs(newDirection.y));
-                //avoidingWall = true;
-                //newDirection = new Vector2(newDirection.x, -Mathf.Abs(newDirection.y));
-                //while (!(direction.x <= newDirection.x + 0.1f && direction.x >= newDirection.x - 0.1f && direction.y >= newDirection.y - 0.1f && direction.y <= newDirection.y + 0.1f))
-                //{
-                //    direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
-                //    yield return null;
-                //}
-                //avoidingWall = false;
             }
             if (transform.position.y < -verticalHalfSize + 2)
             {
                 newDirection = new Vector2(newDirection.x, Mathf.Abs(newDirection.y));
-                //avoidingWall = true;
-                //newDirection = new Vector2(newDirection.x, Mathf.Abs(newDirection.y));
-                //while (!(direction.x <= newDirection.x + 0.1f && direction.x >= newDirection.x - 0.1f && direction.y >= newDirection.y - 0.1f && direction.y <= newDirection.y + 0.1f))
-                //{
-                //    direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
-                //    yield return null;
-                //}
-                //avoidingWall = false;
             }
             yield return new WaitForSeconds(0.1f);
         }
     }
 
-    IEnumerator ChasingHuman(Transform human)
+    IEnumerator ChasingHuman(Human human)
     {
         while (true)
         {
-            newDirection = -(transform.position - human.position).normalized;
-            yield return null;
+            if (!human.abducted)
+            {
+                newDirection = -(transform.position - human.transform.position).normalized;
+                yield return null;
+            }
+            else
+            {
+                StartCoroutine("ChangeDirection");
+                StartCoroutine("AvoidWalls");
+                break;
+            }
         }
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Human" && !hasHuman)
+        if (collision.tag == "Human" && !hasHuman)
         {
-            collision.transform.parent = transform;
-            newDirection = Vector2.up;
-            StopCoroutine("ChasingHuman");
-            hasHuman = true;
+            Human human = collision.GetComponent<Human>();
+            if (!human.abducted)
+            {
+                collision.transform.parent = transform;
+                newDirection = Vector2.up;
+                StopCoroutine("ChasingHuman");
+                human.abducted = true;
+                hasHuman = true;
+            }
         }
     }
 }
