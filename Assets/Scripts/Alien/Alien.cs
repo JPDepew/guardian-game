@@ -8,13 +8,16 @@ public class Alien : Enemy
     public float timeToChangeDirection = 3;
     public float easeToNewDirection = 0.3f;
 
+    AudioSource audioSource;
     SpriteRenderer spriteRenderer;
     private bool hasHuman;
     float verticalHalfSize;
     bool avoidingWall;
 
     // Use this for initialization
+    void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         direction = Vector2.zero;// = Random.insideUnitCircle.normalized;
         verticalHalfSize = Camera.main.orthographicSize;
