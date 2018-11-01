@@ -14,25 +14,19 @@ public class Enemy : MonoBehaviour
     protected Vector2 direction;
     protected Vector2 newDirection;
 
-    AudioSource[] audioSource;
     float timeToBounceBack = 0.1f;
 
-    protected virtual void Start()
+    private void Start()
     {
         health = maxHealth;
-        audioSource = GetComponents<AudioSource>();
     }
 
     public void DamageEnemy(float damage, Vector2 hitPosition)
     {
-        // effects;
-        Instantiate(hit, hitPosition, transform.rotation);
-        int hitIndex = Random.Range(0, 5);
-        audioSource[hitIndex].Play();
-
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPosition).normalized;
         health -= damage;
         direction += Vector2.right * directionToEnemy.x * bounceBackAmount;
+        Instantiate(hit, hitPosition, transform.rotation);
 
         float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
 
