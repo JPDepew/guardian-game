@@ -9,7 +9,10 @@ public class Alien : Enemy
     public float easeToNewDirection = 0.3f;
     public float humanOffset = 0.8f;
 
-    SpriteRenderer spriteRenderer;
+
+    public GameObject windows;
+
+    private Human human;
     private bool hasHuman;
     float verticalHalfSize;
     bool avoidingWall;
@@ -18,7 +21,7 @@ public class Alien : Enemy
     protected override void Start()
     {
         base.Start();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+
         direction = Vector2.zero;// = Random.insideUnitCircle.normalized;
         verticalHalfSize = Camera.main.orthographicSize;
         StartCoroutine("ChangeDirection");
@@ -87,9 +90,9 @@ public class Alien : Enemy
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Human" && !hasHuman)
+        if (collision.tag == "Human" && !human)
         {
-            Human human = collision.GetComponent<Human>();
+            human = collision.GetComponent<Human>();
 
             if (!human.abducted)
             {
@@ -101,5 +104,17 @@ public class Alien : Enemy
                 hasHuman = true;
             }
         }
+    }
+
+    protected override IEnumerator DestroySelf()
+    {
+        Destroy(windows);
+        audioSource[6].Play();
+        if (human)
+        {
+            Debug.Log("poo");
+            human.transform.SetParent(null);
+        }
+        return base.DestroySelf();
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-
+    public GameObject explosion;
     public ParticleSystem hit;
     public float maxHealth;
     public float bounceBackAmount = 0.4f;
@@ -14,11 +14,15 @@ public class Enemy : MonoBehaviour
     protected Vector2 direction;
     protected Vector2 newDirection;
     protected AudioSource[] audioSource;
+    protected SpriteRenderer spriteRenderer;
+    protected CircleCollider2D circleCollider;
 
     float timeToBounceBack = 0.1f;
 
     protected virtual void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        circleCollider = GetComponent<CircleCollider2D>();
         audioSource = GetComponents<AudioSource>();
         health = maxHealth;
     }
@@ -27,14 +31,32 @@ public class Enemy : MonoBehaviour
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPosition).normalized;
         health -= damage;
-        direction += Vector2.right * directionToEnemy.x * bounceBackAmount;
-        Instantiate(hit, hitPosition, transform.rotation);
-        int index = Random.Range(0, 5);
-        audioSource[index].Play();
 
-        float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
+        if (health <= 0)
+        {
+            StartCoroutine(DestroySelf());
+        }
+        else
+        {
+            direction += Vector2.right * directionToEnemy.x * bounceBackAmount;
+            Instantiate(hit, hitPosition, transform.rotation);
+            int index = Random.Range(0, 5);
+            audioSource[index].Play();
 
-        StartCoroutine(Rotate(directionToHitY));
+            float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
+
+            StartCoroutine(Rotate(directionToHitY));
+        }
+    }
+
+    protected virtual IEnumerator DestroySelf()
+    {
+        spriteRenderer.color = new Color(0, 0, 0, 0);
+        circleCollider.enabled = false;
+        Instantiate(explosion, transform.position, transform.rotation);
+
+        yield return new WaitForSeconds(3f);
+        Destroy(gameObject);
     }
 
     IEnumerator Rotate(float directionToHitY)
