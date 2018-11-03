@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Alien : Enemy
 {
+    public enum State { PATROLLING, CHASING, ABDUCTING, INFECTED }
+
+    public State curState;
+
     public float speed;
     public float timeToChangeDirection = 3;
     public float easeToNewDirection = 0.3f;
@@ -14,6 +18,7 @@ public class Alien : Enemy
 
     private Human human;
     private bool hasHuman;
+    private bool isChasingHuman = false;
     float verticalHalfSize;
     bool avoidingWall;
 
@@ -22,6 +27,7 @@ public class Alien : Enemy
     {
         base.Start();
 
+        curState = State.PATROLLING;
         direction = Vector2.zero;// = Random.insideUnitCircle.normalized;
         verticalHalfSize = Camera.main.orthographicSize;
         StartCoroutine("ChangeDirection");
@@ -38,6 +44,7 @@ public class Alien : Enemy
 
     public void ChaseHuman(Human human)
     {
+        curState = State.CHASING;
         StopCoroutine("ChangeDirection");
         StopCoroutine("AvoidWalls");
         StartCoroutine("ChasingHuman", human);
@@ -56,8 +63,6 @@ public class Alien : Enemy
     {
         while (true)
         {
-
-            //Vector2 newDirection = Random.insideUnitCircle.normalized;
             if (transform.position.y > verticalHalfSize - 1)
             {
                 newDirection = new Vector2(newDirection.x, -Mathf.Abs(newDirection.y));
@@ -70,19 +75,20 @@ public class Alien : Enemy
         }
     }
 
-    IEnumerator ChasingHuman(Human human)
+    IEnumerator ChasingHuman(Human _human)
     {
         while (true)
         {
-            if (!human.abducted)
+            if (!_human.abducted)
             {
-                newDirection = -(transform.position - human.transform.position).normalized;
+                newDirection = -(transform.position - _human.transform.position).normalized;
                 yield return null;
             }
             else
             {
                 StartCoroutine("ChangeDirection");
                 StartCoroutine("AvoidWalls");
+                curState = State.PATROLLING;
                 break;
             }
         }
@@ -99,9 +105,15 @@ public class Alien : Enemy
                 collision.transform.position = new Vector2(transform.position.x, transform.position.y - humanOffset);
                 collision.transform.parent = transform;
                 newDirection = Vector2.up;
-                StopCoroutine("ChasingHuman");
+                StopAllCoroutines();
+                curState = State.ABDUCTING;
                 human.abducted = true;
                 hasHuman = true;
+            }
+            else
+            {
+                curState = State.PATROLLING;
+                human = null;
             }
         }
     }
@@ -109,10 +121,11 @@ public class Alien : Enemy
     protected override IEnumerator DestroySelf()
     {
         Destroy(windows);
-        audioSource[6].Play();
+        int index = Random.Range(6, 9);
+        audioSource[index].Play();
         if (human)
         {
-            Debug.Log("poo");
+            human.abducted = false;
             human.transform.SetParent(null);
         }
         return base.DestroySelf();
