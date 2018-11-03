@@ -50,13 +50,13 @@ public class Bullet : MonoBehaviour
     IEnumerator DestroyObject()
     {
         shouldRaycast = false;
+        speed = 0;
         
         while (spriteRenderer.color.a >= 0)
         {
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, spriteRenderer.color.a - 0.01f);
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, spriteRenderer.color.a - 0.1f);
             yield return null;
         }
-        speed = 0;
         Destroy(gameObject);
     }
 }
