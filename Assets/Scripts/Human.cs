@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveRight : MonoBehaviour {
+public class Human : MonoBehaviour {
+
+    public bool abducted;
 
     private GameObject player;
     private GameObject rightSide;
