@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Human
+  - leftMapSide
+  - rightMapSide
+  - leftMapPoint
+  - rightMapPoint
   layers:
   - Default
   - TransparentFX
