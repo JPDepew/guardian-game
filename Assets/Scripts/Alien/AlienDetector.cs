@@ -6,8 +6,6 @@ public class AlienDetector : MonoBehaviour
 {
     Alien alien;
 
-    bool hasFoundHuman = false;
-
     void Start()
     {
         alien = GetComponentInParent<Alien>();

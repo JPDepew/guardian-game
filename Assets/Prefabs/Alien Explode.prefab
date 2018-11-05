@@ -53,6 +53,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4087223902376936}
+  - component: {fileID: 114665507035147922}
   m_Layer: 0
   m_Name: Alien Explode
   m_TagString: Untagged
@@ -132,6 +133,18 @@ Transform:
   m_Father: {fileID: 4087223902376936}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114665507035147922
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1224325130770760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87253a33741fb03409b423e898539b61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyAfter: 3
 --- !u!198 &198256902670417124
 ParticleSystem:
   m_ObjectHideFlags: 1

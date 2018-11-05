@@ -9,16 +9,15 @@ public class Alien : Enemy
     public State curState;
 
     public float speed;
+    public float infectedSpeed;
     public float timeToChangeDirection = 3;
     public float easeToNewDirection = 0.3f;
     public float humanOffset = 0.8f;
+    public Vector2 horizontalBounds;
 
-
-    public GameObject windows;
+    public SpriteRenderer windows;
 
     private Human human;
-    private bool hasHuman;
-    private bool isChasingHuman = false;
     float verticalHalfSize;
     bool avoidingWall;
 
@@ -36,10 +35,12 @@ public class Alien : Enemy
 
     private void Update()
     {
+        float speedToUse = curState == State.INFECTED ? infectedSpeed : speed;
+
         verticalHalfSize = Camera.main.orthographicSize;
 
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
-        transform.Translate(direction * speed * Time.deltaTime, Space.World);
+        transform.Translate(direction * speedToUse * Time.deltaTime, Space.World);
     }
 
     public void ChaseHuman(Human human)
@@ -70,6 +71,14 @@ public class Alien : Enemy
             if (transform.position.y < -verticalHalfSize + 2)
             {
                 newDirection = new Vector2(newDirection.x, Mathf.Abs(newDirection.y));
+            }
+            if (transform.localPosition.x > horizontalBounds.y)
+            {
+                newDirection = new Vector2(-Mathf.Abs(newDirection.x), newDirection.y);
+            }
+            if (transform.localPosition.x < horizontalBounds.x)
+            {
+                newDirection = new Vector2(Mathf.Abs(newDirection.x), newDirection.y);
             }
             yield return new WaitForSeconds(0.1f);
         }
@@ -104,11 +113,10 @@ public class Alien : Enemy
             {
                 collision.transform.position = new Vector2(transform.position.x, transform.position.y - humanOffset);
                 collision.transform.parent = transform;
-                newDirection = Vector2.up;
-                StopAllCoroutines();
-                curState = State.ABDUCTING;
                 human.abducted = true;
-                hasHuman = true;
+
+                StopAllCoroutines();
+                StartCoroutine("Abducting");
             }
             else
             {
@@ -118,15 +126,61 @@ public class Alien : Enemy
         }
     }
 
+    IEnumerator Abducting()
+    {
+        newDirection = Vector2.up;
+        curState = State.ABDUCTING;
+        while (true)
+        {
+            if (transform.position.y > verticalHalfSize - 1)
+            {
+                StartCoroutine("ChasePlayer");
+                break;
+            }
+
+            yield return null;
+        }
+    }
+
+    IEnumerator ChasePlayer()
+    {
+        ShipController player = FindObjectOfType<ShipController>();
+        curState = State.INFECTED;
+        StartCoroutine("FadeToRed", windows);
+        StartCoroutine("FadeToRed", human.GetComponent<SpriteRenderer>());
+        transform.parent = null;
+        while (true)
+        {
+            newDirection = (player.transform.position - transform.position).normalized;
+
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    IEnumerator FadeToRed(SpriteRenderer objectToFade)
+    {
+        Color color = objectToFade.color;
+        while (objectToFade.color.g > 0)
+        {
+            objectToFade.color = new Color(objectToFade.color.r, objectToFade.color.g - 0.01f, objectToFade.color.b - 0.01f);
+            yield return null;
+        }
+    }
+
     protected override IEnumerator DestroySelf()
     {
         Destroy(windows);
         int index = Random.Range(6, 9);
         audioSource[index].Play();
-        if (human)
+        if (human && curState != State.INFECTED)
         {
             human.abducted = false;
             human.transform.SetParent(null);
+        }
+        else
+        {
+            human.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
+            human.GetComponent<BoxCollider2D>().enabled = false;
         }
         return base.DestroySelf();
     }
