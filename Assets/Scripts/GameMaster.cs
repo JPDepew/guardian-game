@@ -7,14 +7,16 @@ public class GameMaster : MonoBehaviour
     public GameObject alien;
     public GameObject ship;
     public GameObject human;
-    public Text scoreText;
-    public Text livesText;
+
     public float numberOfAliens;
     public float playerRespawnDelay = 1f;
     public float instantiateNewWaveDelay = 2f;
 
     public enum GameState { RUNNING, STOPPED }
     public GameState gameState;
+
+    public Text scoreText;
+    public Text livesText;
 
     private PlayerStats playerStats;
     private ShipController shipController;
@@ -71,8 +73,8 @@ public class GameMaster : MonoBehaviour
 
     private void HandleUI()
     {
-        scoreText.text = score.ToString();
-        //livesText.text = playerStats.GetLives().ToString() + "x";
+        livesText.text = playerStats.GetLives().ToString() + "x";
+        scoreText.text = playerStats.GetScore().ToString();
     }
 
     private void HandleRespawnTimer()
@@ -144,15 +146,15 @@ public class GameMaster : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        if (playerStats.GetLives() > 0)
-        {
-            respawningCharacter = true;
-            playerRespawnTimer = Time.time + playerRespawnDelay;
-        }
-        else
-        {
-            StartCoroutine(RestartSceneTimer());
-        }
+    //    if (playerStats.GetLives() > 0)
+    //    {
+    //        respawningCharacter = true;
+    //        playerRespawnTimer = Time.time + playerRespawnDelay;
+    //    }
+    //    else
+    //    {
+    //        StartCoroutine(RestartSceneTimer());
+    //    }
     }
 
     IEnumerator RestartSceneTimer()

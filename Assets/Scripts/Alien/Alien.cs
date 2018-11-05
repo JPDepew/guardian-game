@@ -124,6 +124,10 @@ public class Alien : Enemy
                 human = null;
             }
         }
+        if (collision.tag == "leftMapSide" || collision.tag == "rightMapSide")
+        {
+            transform.parent = collision.transform;
+        }
     }
 
     IEnumerator Abducting()
@@ -148,7 +152,7 @@ public class Alien : Enemy
         curState = State.INFECTED;
         StartCoroutine("FadeToRed", windows);
         StartCoroutine("FadeToRed", human.GetComponent<SpriteRenderer>());
-        transform.parent = null;
+
         while (true)
         {
             newDirection = (player.transform.position - transform.position).normalized;
@@ -160,7 +164,7 @@ public class Alien : Enemy
     IEnumerator FadeToRed(SpriteRenderer objectToFade)
     {
         Color color = objectToFade.color;
-        while (objectToFade.color.g > 0)
+        while (objectToFade.color.g > 0 && objectToFade != null)
         {
             objectToFade.color = new Color(objectToFade.color.r, objectToFade.color.g - 0.01f, objectToFade.color.b - 0.01f);
             yield return null;
@@ -169,18 +173,27 @@ public class Alien : Enemy
 
     protected override IEnumerator DestroySelf()
     {
+        speed = 0;
         Destroy(windows);
         int index = Random.Range(6, 9);
         audioSource[index].Play();
-        if (human && curState != State.INFECTED)
+        if (curState != State.INFECTED)
         {
-            human.abducted = false;
-            human.transform.SetParent(null);
+            PlayerStats.instance.IncreaseScoreBy(150);
+            if (human)
+            {
+                human.abducted = false;
+                human.transform.SetParent(null);
+            }
         }
-        else
+        else // not infected
         {
-            human.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
-            human.GetComponent<BoxCollider2D>().enabled = false;
+            PlayerStats.instance.IncreaseScoreBy(50);
+            if (human)
+            {
+                human.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
+                human.GetComponent<BoxCollider2D>().enabled = false;
+            }
         }
         return base.DestroySelf();
     }

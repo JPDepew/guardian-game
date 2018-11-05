@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerStats : MonoBehaviour {
 
     public static PlayerStats instance;
 
     private int lives;
+    private int score;
 
     private void Awake()
     {
@@ -18,6 +21,16 @@ public class PlayerStats : MonoBehaviour {
         return lives;
     }
 
+    public void IncreaseScoreBy(int amount)
+    {
+        score += amount;
+    }
+
+
+    public int GetScore()
+    {
+        return score;
+    }
     public void DecrementLives()
     {
         lives--;
