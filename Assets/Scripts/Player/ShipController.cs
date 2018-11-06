@@ -165,6 +165,15 @@ public class ShipController : MonoBehaviour
 
     IEnumerator DestroySelf()
     {
+        Instantiate(explosion, transform.position, transform.rotation);
+        int index = Random.Range(2, 6);
+        audioSources[index].Play();
+
+        shouldDestroyShip = true;
+        GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
+        GetComponent<Collider2D>().enabled = false;
+        playerStats.DecrementLives();
+
         yield return new WaitForSeconds(10);
         Destroy(gameObject);
     }
@@ -173,19 +182,14 @@ public class ShipController : MonoBehaviour
     {
         if (collision.tag == "Alien")
         {
-            shouldDestroyShip = true;
-
-            int index = Random.Range(2, 6);
-            audioSources[index].Play();
-
-            GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
-            GetComponent<Collider2D>().enabled = false;
-            playerStats.DecrementLives();
-
             collision.GetComponent<Enemy>().DamageEnemy(100, transform.position);
-
-            Instantiate(explosion, transform.position, transform.rotation);
+            StartCoroutine(DestroySelf());
             FindObjectOfType<GameMaster>().RespawnPlayer();
+        }
+        if(collision.tag == "AlienBullet")
+        {
+            StartCoroutine(DestroySelf());
+            Instantiate(explosion, transform.position, transform.rotation);
         }
     }
 }

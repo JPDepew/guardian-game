@@ -155,7 +155,10 @@ public class Alien : Enemy
 
         while (true)
         {
-            newDirection = (player.transform.position - transform.position).normalized;
+            if (player != null)
+            {
+                newDirection = (player.transform.position - transform.position).normalized;
+            }
 
             yield return new WaitForSeconds(0.5f);
         }

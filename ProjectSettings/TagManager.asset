@@ -8,6 +8,7 @@ TagManager:
   - leftMapSide
   - rightMapSide
   - Alien
+  - AlienBullet
   layers:
   - Default
   - TransparentFX
