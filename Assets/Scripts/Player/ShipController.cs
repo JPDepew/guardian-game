@@ -7,6 +7,7 @@ public class ShipController : MonoBehaviour
     public GameObject bullet;
     public GameObject explosion;
     public ParticleSystem fuelParticleSystem;
+    public GameObject leftShip;
 
     public float acceleration = 0.1f;
     public float speed = 1;
@@ -66,7 +67,10 @@ public class ShipController : MonoBehaviour
         // Side to side movement
         if (!shouldDestroyShip && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
         {
-            transform.localScale = new Vector2(-Mathf.Abs(transform.localScale.x), transform.localScale.y);
+            leftShip.SetActive(true);
+            spriteRenderer.enabled = false;
+            //spriteRenderer.flipX = true;
+            //transform.localScale = new Vector2(-Mathf.Abs(transform.localScale.x), transform.localScale.y);
             direction += acceleration * Vector2.left;
             if (!fuelParticleSystem.isPlaying)
             {
@@ -79,7 +83,10 @@ public class ShipController : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x), transform.localScale.y);
+            leftShip.SetActive(false);
+            spriteRenderer.enabled = true;
+            //spriteRenderer.flipX = false;
+            //transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x), transform.localScale.y);
             direction += acceleration * Vector2.right;
             if (!fuelParticleSystem.isPlaying)
             {
@@ -146,7 +153,8 @@ public class ShipController : MonoBehaviour
         {
             audioSources[0].Play();
             GameObject tempBullet = Instantiate(bullet, gunPosition.transform.position, transform.rotation);
-            tempBullet.transform.localScale = Mathf.Sign(transform.localScale.x) == -1 ? new Vector2(-tempBullet.transform.localScale.x, tempBullet.transform.localScale.y) : new Vector2(tempBullet.transform.localScale.x, tempBullet.transform.localScale.y);
+
+            tempBullet.transform.localScale = leftShip.activeSelf == true ? new Vector2(-tempBullet.transform.localScale.x, tempBullet.transform.localScale.y) : new Vector2(tempBullet.transform.localScale.x, tempBullet.transform.localScale.y);
         }
     }
 
@@ -170,7 +178,8 @@ public class ShipController : MonoBehaviour
         audioSources[index].Play();
 
         shouldDestroyShip = true;
-        GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
+        leftShip.SetActive(false);
+        spriteRenderer.enabled = false;
         GetComponent<Collider2D>().enabled = false;
         playerStats.DecrementLives();
 

@@ -166,11 +166,14 @@ public class Alien : Enemy
 
     IEnumerator FadeToRed(SpriteRenderer objectToFade)
     {
-        Color color = objectToFade.color;
-        while (objectToFade.color.g > 0 && objectToFade != null)
+        if (objectToFade != null)
         {
-            objectToFade.color = new Color(objectToFade.color.r, objectToFade.color.g - 0.01f, objectToFade.color.b - 0.01f);
-            yield return null;
+            Color color = objectToFade.color;
+            while (objectToFade.color.g > 0 && objectToFade != null)
+            {
+                objectToFade.color = new Color(objectToFade.color.r, objectToFade.color.g - 0.01f, objectToFade.color.b - 0.01f);
+                yield return null;
+            }
         }
     }
 
