@@ -175,7 +175,7 @@ public class ShipController : MonoBehaviour
     {
         Instantiate(explosion, transform.position, transform.rotation);
         int index = Random.Range(2, 6);
-        audioSources[index].Play();
+        audioSources[2].Play();
 
         shouldDestroyShip = true;
         leftShip.SetActive(false);
