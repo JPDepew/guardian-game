@@ -5,10 +5,12 @@ using UnityEngine;
 public class AlienDetector : MonoBehaviour
 {
     Alien alien;
+    AlienShoot alienShoot;
 
     void Start()
     {
         alien = GetComponentInParent<Alien>();
+        alienShoot = GetComponentInParent<AlienShoot>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -22,6 +24,18 @@ public class AlienDetector : MonoBehaviour
                 alien.ChaseHuman(human);
                 alien.curState = Alien.State.CHASING;
             }
+        }
+        if(collision.tag == "Player" && alien.curState == Alien.State.PATROLLING)
+        {
+            alienShoot.StartAlienShooting(collision.transform);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        {
+            alienShoot.StopAlienShooting();
         }
     }
 }

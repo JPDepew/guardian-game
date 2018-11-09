@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Alien : Enemy
 {
-    public enum State { PATROLLING, CHASING, ABDUCTING, INFECTED }
+    public enum State { PATROLLING, CHASING, ABDUCTING, INFECTED, DEAD }
 
     public State curState;
 
@@ -201,6 +201,7 @@ public class Alien : Enemy
                 human.GetComponent<BoxCollider2D>().enabled = false;
             }
         }
+        curState = State.DEAD;
         return base.DestroySelf();
     }
 }

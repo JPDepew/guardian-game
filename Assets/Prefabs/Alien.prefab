@@ -32,7 +32,7 @@ GameObject:
   - component: {fileID: 82285949053078532}
   - component: {fileID: 82359045735772228}
   - component: {fileID: 82144517876001246}
-  - component: {fileID: 50423773241632684}
+  - component: {fileID: 114854832162466864}
   m_Layer: 8
   m_Name: Alien
   m_TagString: Alien
@@ -93,7 +93,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1300934526662340}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 53.5, y: -10.34, z: 0.65625}
+  m_LocalPosition: {x: -1.44, y: -7.64, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_Children:
   - {fileID: 4762118303715580}
@@ -114,26 +114,6 @@ Transform:
   m_Father: {fileID: 4315663854894376}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &50423773241632684
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1300934526662340}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!58 &58119630571039144
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -158,12 +138,12 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 3.5
+  m_Radius: 7
 --- !u!82 &82144517876001246
 AudioSource:
   m_ObjectHideFlags: 1
@@ -1181,7 +1161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosion: {fileID: 1224325130770760, guid: 893a497e8ea072e43ba4afbaa540ce13, type: 2}
   hit: {fileID: 198261273651178544, guid: 25636ce3cd791d74c86c90a6862f58a1, type: 2}
-  maxHealth: 3
+  maxHealth: 2
   bounceBackAmount: 1.5
   rotateAmount: 5
   rotateTime: 0.1
@@ -1204,6 +1184,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ca7ac5ca9a3ce143af1b8090dd14fc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114854832162466864
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1300934526662340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49f91b981146cf94db509c3551e8df24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullet: {fileID: 1200172600666214, guid: dc8901e4ec44a00468d95eab44283462, type: 2}
 --- !u!212 &212322861071006600
 SpriteRenderer:
   m_ObjectHideFlags: 1
