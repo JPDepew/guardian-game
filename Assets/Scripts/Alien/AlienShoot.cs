@@ -11,7 +11,7 @@ public class AlienShoot : MonoBehaviour
     public GameObject bullet;
     private Alien alien;
 
-    void Start()
+    void Awake()
     {
         alien = GetComponent<Alien>();
     }
@@ -39,7 +39,7 @@ public class AlienShoot : MonoBehaviour
 
     IEnumerator AlienShooting(Transform playerTransform)
     {
-        while (true && alien.curState == Alien.State.PATROLLING)
+        while (true && alien.curState == Alien.State.PATROLLING && playerTransform != null)
         {
             Vector2 direction = (playerTransform.position - transform.position).normalized;
             GameObject alienBullet = Instantiate(bullet, transform.position/* + new Vector3(direction.x * .3f, direction.y * .3f, 0)*/, transform.rotation);

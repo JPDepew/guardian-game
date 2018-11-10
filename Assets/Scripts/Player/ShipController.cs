@@ -10,16 +10,16 @@ public class ShipController : MonoBehaviour
     public GameObject leftShip;
 
     public float acceleration = 0.1f;
-    public float speed = 1;
+    public float maxSpeed = 2;
+
     public float linearInterpolationTime = 0.2f;
-    public float maxLookSpeed = 5;
     public float destroyWaitTime = 10;
 
     private AudioSource[] audioSources;
     private Vector2 direction;
     private SpriteRenderer spriteRenderer;
     private PlayerStats playerStats;
-    private bool shouldDestroyShip;
+    public bool shouldDestroyShip { get; set; }
 
     private float invulnerabilityTime = 2f;
     private float invulnerabilityTargetTime;
@@ -69,9 +69,10 @@ public class ShipController : MonoBehaviour
         {
             leftShip.SetActive(true);
             spriteRenderer.enabled = false;
-            //spriteRenderer.flipX = true;
-            //transform.localScale = new Vector2(-Mathf.Abs(transform.localScale.x), transform.localScale.y);
-            direction += acceleration * Vector2.left;
+            if (direction.x > -maxSpeed)
+            {
+                direction += acceleration * Vector2.left;
+            }
             if (!fuelParticleSystem.isPlaying)
             {
                 fuelParticleSystem.Play();
@@ -85,9 +86,10 @@ public class ShipController : MonoBehaviour
         {
             leftShip.SetActive(false);
             spriteRenderer.enabled = true;
-            //spriteRenderer.flipX = false;
-            //transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x), transform.localScale.y);
-            direction += acceleration * Vector2.right;
+            if (direction.x < maxSpeed)
+            {
+                direction += acceleration * Vector2.right;
+            }
             if (!fuelParticleSystem.isPlaying)
             {
                 fuelParticleSystem.Play();
@@ -183,7 +185,7 @@ public class ShipController : MonoBehaviour
         GetComponent<Collider2D>().enabled = false;
         playerStats.DecrementLives();
 
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(destroyWaitTime);
         Destroy(gameObject);
     }
 
@@ -195,10 +197,11 @@ public class ShipController : MonoBehaviour
             StartCoroutine(DestroySelf());
             FindObjectOfType<GameMaster>().RespawnPlayer();
         }
-        if(collision.tag == "AlienBullet")
+        if (collision.tag == "AlienBullet")
         {
             StartCoroutine(DestroySelf());
             Instantiate(explosion, transform.position, transform.rotation);
+            FindObjectOfType<GameMaster>().RespawnPlayer();
         }
     }
 }

@@ -21,7 +21,9 @@ public class Alien : Enemy
     float verticalHalfSize;
     bool avoidingWall;
 
-    // Use this for initialization
+    public delegate void OnDestroyed();
+    public static event OnDestroyed onAlienDestroyed;
+
     protected override void Start()
     {
         base.Start();
@@ -183,6 +185,7 @@ public class Alien : Enemy
         Destroy(windows);
         int index = Random.Range(6, 9);
         audioSource[index].Play();
+        audioSource[10].Stop();
         if (curState != State.INFECTED)
         {
             PlayerStats.instance.IncreaseScoreBy(150);
@@ -202,6 +205,10 @@ public class Alien : Enemy
             }
         }
         curState = State.DEAD;
+        if(onAlienDestroyed != null)
+        {
+            onAlienDestroyed();
+        }
         return base.DestroySelf();
     }
 }

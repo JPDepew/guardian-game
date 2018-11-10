@@ -114,7 +114,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rayPos: {fileID: 4379171268990940}
   speed: 1
-  timeTillDeath: 0.3
   invisibleTime: 0.5
   layerMask:
     serializedVersion: 2
@@ -3973,7 +3972,7 @@ ParticleSystem:
     widthOverTrail:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.1
+      scalar: 0.03
       minScalar: 1
       maxCurve:
         serializedVersion: 2

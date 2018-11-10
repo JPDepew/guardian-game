@@ -9,7 +9,7 @@ public class GameMaster : MonoBehaviour
     public GameObject human;
 
     public float numberOfAliens;
-    public float playerRespawnDelay = 1f;
+    public float playerRespawnDelay = 10f;
     public float instantiateNewWaveDelay = 2f;
 
     public enum GameState { RUNNING, STOPPED }
@@ -23,12 +23,11 @@ public class GameMaster : MonoBehaviour
     private GameObject shipReference;
     private bool respawningCharacter;
     private bool instantiatingNewWave;
-    private float playerRespawnTimer = 1f;
     private float instantiateNewWaveTimer = 2f;
 
     private int score;
     private int scoreTracker;
-    private int asteroidCountTracker;
+    private int alienDestroyedCountTracker;
     private int dstAsteroidsCanSpawnFromPlayer = 3;
     private float verticalHalfSize = 0;
     private float horizontalHalfSize = 0;
@@ -39,11 +38,13 @@ public class GameMaster : MonoBehaviour
         playerStats = PlayerStats.instance;
         verticalHalfSize = Camera.main.orthographicSize;
         horizontalHalfSize = verticalHalfSize * Screen.width / Screen.height;
-        Asteroid.onSmallAsteroidDestroyed += OnSmallAsteroidDestroyed;
+        StartGame();
+        Alien.onAlienDestroyed += OnAlienDestroyed;
     }
 
     private void Update()
     {
+        Debug.Log(ship.transform.position.x);
         if (scoreTracker > 10000)
         {
             scoreTracker = 0;
@@ -51,22 +52,15 @@ public class GameMaster : MonoBehaviour
         }
 
         HandleUI();
-        HandleRespawnTimer();
         HandleWaveTimer();
     }
 
     private void StartGame()
     {
         gameState = GameState.RUNNING;
-        asteroidCountTracker = 0;
+        alienDestroyedCountTracker = 0;
         shipReference = Instantiate(ship);
         shipController = shipReference.GetComponent<ShipController>();
-
-        Asteroid[] asteroids = FindObjectsOfType<Asteroid>();
-        for (int i = 0; i < asteroids.Length; i++)
-        {
-            Destroy(asteroids[i].gameObject);
-        }
 
         InstantiateNewWave();
     }
@@ -75,19 +69,6 @@ public class GameMaster : MonoBehaviour
     {
         livesText.text = playerStats.GetLives().ToString() + "x";
         scoreText.text = playerStats.GetScore().ToString();
-    }
-
-    private void HandleRespawnTimer()
-    {
-        if (respawningCharacter)
-        {
-            if (Time.time > playerRespawnTimer)
-            {
-                shipReference = Instantiate(ship);
-                shipController = shipReference.GetComponent<ShipController>();
-                respawningCharacter = false;
-            }
-        }
     }
 
     private void HandleWaveTimer()
@@ -106,28 +87,28 @@ public class GameMaster : MonoBehaviour
     {
         for (int i = 0; i < numberOfAliens; i++)
         {
-            int xRange = (int)Random.Range(-horizontalHalfSize, horizontalHalfSize);
+            int xRange = (int)Random.Range(shipReference.transform.position.x - 50, shipReference.transform.position.x + 50);
             int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
 
-            Vector2 asteroidPositon = new Vector2(xRange, yRange);
-            if ((asteroidPositon - (Vector2)shipReference.transform.position).magnitude < dstAsteroidsCanSpawnFromPlayer)
+            Vector2 alienPositon = new Vector2(xRange, yRange);
+            if ((alienPositon - (Vector2)shipReference.transform.position).magnitude < dstAsteroidsCanSpawnFromPlayer)
             {
                 i--; // This is probably really sketchy, I know... But it works really well...
             }
             else
             {
-                Instantiate(alien, asteroidPositon, transform.rotation);
+                Instantiate(alien, alienPositon, transform.rotation);
             }
         }
     }
 
-    private void OnSmallAsteroidDestroyed()
+    private void OnAlienDestroyed()
     {
-        asteroidCountTracker++;
-        if (asteroidCountTracker >= numberOfAliens * 4)
+        alienDestroyedCountTracker++;
+        if (alienDestroyedCountTracker >= numberOfAliens)
         {
             numberOfAliens++;
-            asteroidCountTracker = 0;
+            alienDestroyedCountTracker = 0;
             instantiateNewWaveTimer = Time.time + instantiateNewWaveDelay;
             instantiatingNewWave = true;
         }
@@ -140,21 +121,27 @@ public class GameMaster : MonoBehaviour
 
     public void IncreaseScore(int amount)
     {
-        score += amount;
+        PlayerStats.instance.IncreaseScoreBy(amount);
         scoreTracker += amount;
     }
 
     public void RespawnPlayer()
     {
-    //    if (playerStats.GetLives() > 0)
-    //    {
-    //        respawningCharacter = true;
-    //        playerRespawnTimer = Time.time + playerRespawnDelay;
-    //    }
-    //    else
-    //    {
-    //        StartCoroutine(RestartSceneTimer());
-    //    }
+        if (playerStats.GetLives() > 0)
+        {
+            StartCoroutine(RespawnPlayerTimer());
+        }
+        else
+        {
+            StartCoroutine(RestartSceneTimer());
+        }
+    }
+
+    IEnumerator RespawnPlayerTimer()
+    {
+        yield return new WaitForSeconds(playerRespawnDelay);
+        shipReference = Instantiate(ship);
+        shipController = shipReference.GetComponent<ShipController>();
     }
 
     IEnumerator RestartSceneTimer()

@@ -6,8 +6,17 @@ public class AlienBullet : MonoBehaviour {
 
     public Vector2 direction;
     public float speed = 1;
+    private SpriteRenderer sRnderer;
+    private void Start()
+    {
+        sRnderer = GetComponent<SpriteRenderer>();
+    }
 
-	void Update () {
+    void Update () {
         transform.Translate(direction * speed);
+        if (!sRnderer.isVisible)
+        {
+            Destroy(gameObject);
+        }
 	}
 }

@@ -41,5 +41,9 @@ public class MoveLeft : MonoBehaviour
                 rightSide.transform.position = newPosition;
             }
         }
+        else
+        {
+            player = GameObject.FindWithTag("Player");
+        }
     }
 }

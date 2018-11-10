@@ -4,13 +4,31 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;
+    public ShipController ship;
+    Transform target;
+    private void Start()
+    {
+        ship = FindObjectOfType<ShipController>();
+        target = ship.transform;
+    }
 
     void Update()
     {
-        if (target != null)
+        if (target == null)
         {
-            transform.position = new Vector3(target.position.x, transform.position.y, transform.position.z);
+            GameObject temp = GameObject.FindWithTag("Player");
+            if (temp != null)
+            {
+                ship = temp.GetComponent<ShipController>();
+                target = ship.transform;
+            }
+        }
+        else
+        {
+            if (!ship.shouldDestroyShip)
+            {
+                transform.position = new Vector3(target.position.x, transform.position.y, transform.position.z);
+            }
         }
     }
 }

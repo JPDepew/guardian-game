@@ -7,7 +7,7 @@ public class AlienDetector : MonoBehaviour
     Alien alien;
     AlienShoot alienShoot;
 
-    void Start()
+    void Awake()
     {
         alien = GetComponentInParent<Alien>();
         alienShoot = GetComponentInParent<AlienShoot>();
