@@ -19,7 +19,7 @@ public class AlienDetector : MonoBehaviour
         {
             Human human = collision.GetComponent<Human>();
 
-            if (!human.abducted)
+            if (human.curState == Human.State.GROUNDED || human.curState == Human.State.FALLING)
             {
                 alien.ChaseHuman(human);
                 alien.curState = Alien.State.CHASING;

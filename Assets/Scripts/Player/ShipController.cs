@@ -5,6 +5,7 @@ public class ShipController : MonoBehaviour
 {
     public GameObject gunPosition;
     public GameObject bullet;
+    public GameObject bulletDisinfect;
     public GameObject explosion;
     public ParticleSystem fuelParticleSystem;
     public GameObject leftShip;
@@ -15,11 +16,13 @@ public class ShipController : MonoBehaviour
     public float linearInterpolationTime = 0.2f;
     public float destroyWaitTime = 10;
 
+    private Human human;
     private AudioSource[] audioSources;
     private Vector2 direction;
     private SpriteRenderer spriteRenderer;
     private PlayerStats playerStats;
     public bool shouldDestroyShip { get; set; }
+    private bool canShoot = true;
 
     private float invulnerabilityTime = 2f;
     private float invulnerabilityTargetTime;
@@ -144,6 +147,11 @@ public class ShipController : MonoBehaviour
         if (transform.position.y <= -verticalHalfSize + 1 && direction.y < 0)
         {
             direction = new Vector2(direction.x, 0);
+            if (human)
+            {
+                human.transform.parent = null;
+                human.curState = Human.State.GROUNDED;
+            }
         }
         if (transform.position.y >= verticalHalfSize - 0.5f && direction.y > 0)
         {
@@ -151,13 +159,36 @@ public class ShipController : MonoBehaviour
         }
 
         // Shooting
-        if (Input.GetKeyDown(KeyCode.Z) && !shouldDestroyShip)
+        if (Input.GetKeyDown(KeyCode.Z) && !shouldDestroyShip && canShoot)
         {
             audioSources[0].Play();
             GameObject tempBullet = Instantiate(bullet, gunPosition.transform.position, transform.rotation);
 
-            tempBullet.transform.localScale = leftShip.activeSelf == true ? new Vector2(-tempBullet.transform.localScale.x, tempBullet.transform.localScale.y) : new Vector2(tempBullet.transform.localScale.x, tempBullet.transform.localScale.y);
+            tempBullet.transform.localScale = leftShip.activeSelf == true ?
+                new Vector2(-tempBullet.transform.localScale.x, tempBullet.transform.localScale.y) :
+                new Vector2(tempBullet.transform.localScale.x, tempBullet.transform.localScale.y);
+
+            canShoot = false;
+            StartCoroutine(WaitBetweenShooting());
         }
+        if (Input.GetKeyDown(KeyCode.X) && !shouldDestroyShip && canShoot)
+        {
+            audioSources[0].Play();
+            GameObject tempBullet = Instantiate(bulletDisinfect, gunPosition.transform.position, transform.rotation);
+
+            tempBullet.transform.localScale = leftShip.activeSelf == true ?
+                new Vector2(-tempBullet.transform.localScale.x, tempBullet.transform.localScale.y) :
+                new Vector2(tempBullet.transform.localScale.x, tempBullet.transform.localScale.y);
+
+            canShoot = false;
+            StartCoroutine(WaitBetweenShooting());
+        }
+    }
+
+    IEnumerator WaitBetweenShooting()
+    {
+        yield return new WaitForSeconds(0.1f);
+        canShoot = true;
     }
 
     private void HandleInvulnerability()
@@ -185,6 +216,11 @@ public class ShipController : MonoBehaviour
         GetComponent<Collider2D>().enabled = false;
         playerStats.DecrementLives();
 
+        if (human)
+        {
+            human.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
+        }
+
         yield return new WaitForSeconds(destroyWaitTime);
         Destroy(gameObject);
     }
@@ -202,6 +238,16 @@ public class ShipController : MonoBehaviour
             StartCoroutine(DestroySelf());
             Instantiate(explosion, transform.position, transform.rotation);
             FindObjectOfType<GameMaster>().RespawnPlayer();
+        }
+        if(collision.tag == "Human")
+        {
+            human = collision.transform.GetComponent<Human>();
+            if(human.curState == Human.State.FALLING)
+            {
+                human.transform.SetParent(transform);
+                human.transform.position = new Vector2(transform.position.x, transform.position.y - 0.3f);
+                human.curState = Human.State.RESCUED;
+            }
         }
     }
 }

@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Human : MonoBehaviour
 {
-    public float acceleration = 0.01f;
-    public bool abducted { get; set; }
-    public bool grounded { get; set; }
+    public enum State { GROUNDED, ABDUCTED, FALLING, INFECTED, RESCUED }
+    public State curState;
 
+    public float acceleration = 0.01f;
+
+    private Transform currentGround;
     private float actualSpeed = 0;
     private GameObject player;
     private GameObject rightSide;
@@ -17,8 +19,7 @@ public class Human : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        abducted = false;
-        grounded = true;
+        curState = State.GROUNDED;
         player = GameObject.FindWithTag("Player");
         rightSide = GameObject.FindWithTag("rightMapSide");
         leftSide = GameObject.FindWithTag("leftMapSide");
@@ -28,8 +29,9 @@ public class Human : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!abducted)
+        if (curState == State.FALLING)
         {
+            transform.parent = currentGround;
             if (transform.position.y > -verticalHalfSize + 1)
             {
                 actualSpeed += acceleration;
@@ -37,14 +39,20 @@ public class Human : MonoBehaviour
             }
             else
             {
-                grounded = true;
+                curState = State.GROUNDED;
             }
+        }
+        if(curState == State.GROUNDED)
+        {
+            transform.parent = currentGround;
         }
     }
 
-    public void SetAbducted()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        grounded = false;
-        abducted = true;
+        if (collision.CompareTag("rightMapSide") || collision.CompareTag("leftMapSide"))
+        {
+            currentGround = collision.transform;
+        }
     }
 }

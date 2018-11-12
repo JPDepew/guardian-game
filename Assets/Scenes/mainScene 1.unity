@@ -273,7 +273,9 @@ MonoBehaviour:
   alien: {fileID: 1300934526662340, guid: 3c9fe8a63cc2fff4bb065681ac909ed8, type: 2}
   ship: {fileID: 1990060262887086, guid: e22fdae463430994da85e9a38068837c, type: 2}
   human: {fileID: 0}
-  numberOfAliens: 2
+  alienSpawn: {fileID: 198513220082984266, guid: 10147b97b486afa43a2e2ef6ae144848,
+    type: 2}
+  numberOfAliens: 12
   playerRespawnDelay: 6
   instantiateNewWaveDelay: 2
   gameState: 0
@@ -719,6 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ea09dc6213b67742ba11b33cf36f502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curState: 0
   acceleration: 0.0003
 --- !u!1 &835270263
 GameObject:
@@ -1062,6 +1065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ea09dc6213b67742ba11b33cf36f502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curState: 0
   acceleration: 0.0003
 --- !u!1 &1513533445
 GameObject:
@@ -1517,6 +1521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ea09dc6213b67742ba11b33cf36f502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curState: 0
   acceleration: 0.0003
 --- !u!1 &1932980404
 GameObject:

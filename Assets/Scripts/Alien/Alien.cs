@@ -53,6 +53,17 @@ public class Alien : Enemy
         StartCoroutine("ChasingHuman", human);
     }
 
+    public override void DisinfectEnemy(Vector2 hitPoint)
+    {
+        base.DisinfectEnemy(hitPoint);
+        if (curState == State.INFECTED)
+        {
+            human.curState = Human.State.FALLING;
+            human.transform.parent = transform.parent;
+            human.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+        }
+    }
+
     IEnumerator ChangeDirection()
     {
         while (true)
@@ -90,7 +101,7 @@ public class Alien : Enemy
     {
         while (true)
         {
-            if (!_human.abducted)
+            if (_human.curState == Human.State.GROUNDED || _human.curState == Human.State.FALLING)
             {
                 newDirection = -(transform.position - _human.transform.position).normalized;
                 yield return null;
@@ -111,11 +122,11 @@ public class Alien : Enemy
         {
             human = collision.GetComponent<Human>();
 
-            if (!human.abducted)
+            if (human.curState == Human.State.FALLING || human.curState == Human.State.GROUNDED)
             {
                 collision.transform.position = new Vector2(transform.position.x, transform.position.y - humanOffset);
                 collision.transform.parent = transform;
-                human.abducted = true;
+                human.curState = Human.State.ABDUCTED;
 
                 StopAllCoroutines();
                 StartCoroutine("Abducting");
@@ -140,6 +151,7 @@ public class Alien : Enemy
         {
             if (transform.position.y > verticalHalfSize - 1)
             {
+                human.curState = Human.State.INFECTED;
                 StartCoroutine("ChasePlayer");
                 break;
             }
@@ -157,7 +169,12 @@ public class Alien : Enemy
 
         while (true)
         {
-            if (player != null)
+            if (player == null || player.shouldDestroyShip)
+            {
+                newDirection = Vector2.left;
+                player = FindObjectOfType<ShipController>();
+            }
+            else
             {
                 newDirection = (player.transform.position - transform.position).normalized;
             }
@@ -191,11 +208,11 @@ public class Alien : Enemy
             PlayerStats.instance.IncreaseScoreBy(150);
             if (human)
             {
-                human.abducted = false;
-                human.transform.SetParent(null);
+                human.curState = Human.State.FALLING;
+                human.transform.SetParent(transform.parent);
             }
         }
-        else // not infected
+        else // infected
         {
             PlayerStats.instance.IncreaseScoreBy(50);
             if (human)
@@ -205,7 +222,7 @@ public class Alien : Enemy
             }
         }
         curState = State.DEAD;
-        if(onAlienDestroyed != null)
+        if (onAlienDestroyed != null)
         {
             onAlienDestroyed();
         }

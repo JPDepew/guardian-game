@@ -27,7 +27,7 @@ public class CameraFollow : MonoBehaviour
         {
             if (!ship.shouldDestroyShip)
             {
-                transform.position = new Vector3(target.position.x, transform.position.y, transform.position.z);
+                transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, transform.position.y, -10), 0.8f);
             }
         }
     }

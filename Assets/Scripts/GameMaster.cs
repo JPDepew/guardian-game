@@ -7,6 +7,7 @@ public class GameMaster : MonoBehaviour
     public GameObject alien;
     public GameObject ship;
     public GameObject human;
+    public ParticleSystem alienSpawn;
 
     public float numberOfAliens;
     public float playerRespawnDelay = 10f;
@@ -44,7 +45,6 @@ public class GameMaster : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(ship.transform.position.x);
         if (scoreTracker > 10000)
         {
             scoreTracker = 0;
@@ -97,9 +97,16 @@ public class GameMaster : MonoBehaviour
             }
             else
             {
-                Instantiate(alien, alienPositon, transform.rotation);
+                StartCoroutine("SpawnAlien", alienPositon);
             }
         }
+    }
+
+    IEnumerator SpawnAlien(Vector2 alienPosition)
+    {
+        Instantiate(alienSpawn, alienPosition, transform.rotation);
+        yield return new WaitForSeconds(alienSpawn.main.duration);
+        Instantiate(alien, alienPosition, transform.rotation);
     }
 
     private void OnAlienDestroyed()

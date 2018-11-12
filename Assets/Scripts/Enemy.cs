@@ -49,6 +49,16 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public virtual void DisinfectEnemy(Vector2 hitPoint)
+    {
+        Vector2 directionToEnemy = ((Vector2)transform.position - hitPoint).normalized;
+        float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
+
+        int index = Random.Range(0, 5);
+        audioSource[index].Play();
+        StartCoroutine(Rotate(directionToHitY));
+    }
+
     protected virtual IEnumerator DestroySelf()
     {
         spriteRenderer.color = new Color(0, 0, 0, 0);
