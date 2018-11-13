@@ -40,8 +40,8 @@ public class Bullet : MonoBehaviour
 
         if (hit)
         {
-            Transform enemy = hit.transform;
-            HitAction(enemy, hit.point);
+            Transform hitObject = hit.transform;
+            HitAction(hitObject, hit.point);
             StartCoroutine(DestroyObject());
         }
     }

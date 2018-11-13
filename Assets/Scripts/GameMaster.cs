@@ -62,7 +62,7 @@ public class GameMaster : MonoBehaviour
         shipReference = Instantiate(ship);
         shipController = shipReference.GetComponent<ShipController>();
 
-        InstantiateNewWave();
+        StartCoroutine(InstantiateNewWave());
     }
 
     private void HandleUI()
@@ -77,13 +77,13 @@ public class GameMaster : MonoBehaviour
         {
             if (Time.time > instantiateNewWaveTimer)
             {
-                InstantiateNewWave();
+                StartCoroutine(InstantiateNewWave());
                 instantiatingNewWave = false;
             }
         }
     }
 
-    private void InstantiateNewWave()
+    private IEnumerator InstantiateNewWave()
     {
         for (int i = 0; i < numberOfAliens; i++)
         {
@@ -99,6 +99,7 @@ public class GameMaster : MonoBehaviour
             {
                 StartCoroutine("SpawnAlien", alienPositon);
             }
+            yield return null;
         }
     }
 

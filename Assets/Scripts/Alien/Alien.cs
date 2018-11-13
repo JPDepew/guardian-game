@@ -66,6 +66,7 @@ public class Alien : Enemy
 
     IEnumerator ChangeDirection()
     {
+        curState = State.PATROLLING;
         while (true)
         {
             newDirection = Random.insideUnitCircle.normalized;
@@ -101,7 +102,7 @@ public class Alien : Enemy
     {
         while (true)
         {
-            if (_human.curState == Human.State.GROUNDED || _human.curState == Human.State.FALLING)
+            if (_human && (_human.curState == Human.State.GROUNDED || _human.curState == Human.State.FALLING))
             {
                 newDirection = -(transform.position - _human.transform.position).normalized;
                 yield return null;
@@ -147,7 +148,7 @@ public class Alien : Enemy
     {
         newDirection = Vector2.up;
         curState = State.ABDUCTING;
-        while (true)
+        while (human && human.curState != Human.State.DEAD)
         {
             if (transform.position.y > verticalHalfSize - 1)
             {
@@ -158,6 +159,10 @@ public class Alien : Enemy
 
             yield return null;
         }
+        human = null;
+        // This occurs if he loses the human
+        StartCoroutine("ChangeDirection");
+        StartCoroutine("AvoidWalls");
     }
 
     IEnumerator ChasePlayer()

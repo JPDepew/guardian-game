@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Hittable
 {
     public GameObject explosion;
     public ParticleSystem hit;
@@ -17,8 +17,6 @@ public class Enemy : MonoBehaviour
     protected SpriteRenderer spriteRenderer;
     protected CircleCollider2D circleCollider;
 
-    float timeToBounceBack = 0.1f;
-
     protected virtual void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -27,7 +25,7 @@ public class Enemy : MonoBehaviour
         health = maxHealth;
     }
 
-    public void DamageEnemy(float damage, Vector2 hitPosition)
+    public override void DamageSelf(float damage, Vector2 hitPosition)
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPosition).normalized;
         health -= damage;

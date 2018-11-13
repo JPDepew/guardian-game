@@ -149,8 +149,8 @@ public class ShipController : MonoBehaviour
             direction = new Vector2(direction.x, 0);
             if (human)
             {
-                human.transform.parent = null;
-                human.curState = Human.State.GROUNDED;
+                //human.transform.parent = null;
+                //human.curState = Human.State.GROUNDED;
             }
         }
         if (transform.position.y >= verticalHalfSize - 0.5f && direction.y > 0)
@@ -229,7 +229,7 @@ public class ShipController : MonoBehaviour
     {
         if (collision.tag == "Alien")
         {
-            collision.GetComponent<Enemy>().DamageEnemy(100, transform.position);
+            collision.GetComponent<Enemy>().DamageSelf(100, transform.position);
             StartCoroutine(DestroySelf());
             FindObjectOfType<GameMaster>().RespawnPlayer();
         }
