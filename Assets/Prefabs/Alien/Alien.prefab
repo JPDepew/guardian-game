@@ -35,7 +35,7 @@ GameObject:
   - component: {fileID: 82392266333243560}
   - component: {fileID: 58119630571039144}
   - component: {fileID: 50277967784638276}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Alien
   m_TagString: Alien
   m_Icon: {fileID: 0}

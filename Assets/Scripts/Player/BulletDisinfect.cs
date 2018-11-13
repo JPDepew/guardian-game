@@ -6,6 +6,6 @@ public class BulletDisinfect : Bullet {
 
     protected override void HitAction(Transform enemy, Vector2 hitPoint)
     {
-        enemy.GetComponent<Enemy>().DisinfectEnemy(hitPoint);
+        enemy.GetComponent<Alien>().DisinfectEnemy(hitPoint);
     }
 }

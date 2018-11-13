@@ -117,7 +117,7 @@ MonoBehaviour:
   invisibleTime: 0.5
   layerMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1024
 --- !u!198 &198530238585574006
 ParticleSystem:
   m_ObjectHideFlags: 1

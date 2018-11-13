@@ -245,7 +245,7 @@ public class ShipController : MonoBehaviour
             if(human.curState == Human.State.FALLING)
             {
                 human.transform.SetParent(transform);
-                human.transform.position = new Vector2(transform.position.x, transform.position.y - 0.3f);
+                human.transform.position = new Vector2(transform.position.x, transform.position.y - 0.5f);
                 human.curState = Human.State.RESCUED;
             }
         }

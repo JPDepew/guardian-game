@@ -56,11 +56,12 @@ public class Alien : Enemy
     public override void DisinfectEnemy(Vector2 hitPoint)
     {
         base.DisinfectEnemy(hitPoint);
-        if (curState == State.INFECTED)
+        if (human && curState == State.INFECTED)
         {
             human.curState = Human.State.FALLING;
             human.transform.parent = transform.parent;
             human.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+            human = null;
         }
     }
 
@@ -148,21 +149,28 @@ public class Alien : Enemy
     {
         newDirection = Vector2.up;
         curState = State.ABDUCTING;
+        bool infectedHuman = false;
         while (human && human.curState != Human.State.DEAD)
         {
             if (transform.position.y > verticalHalfSize - 1)
             {
                 human.curState = Human.State.INFECTED;
                 StartCoroutine("ChasePlayer");
+                StopCoroutine("Abducting");
+                infectedHuman = true;
                 break;
             }
 
             yield return null;
         }
-        human = null;
-        // This occurs if he loses the human
-        StartCoroutine("ChangeDirection");
-        StartCoroutine("AvoidWalls");
+
+        if (!infectedHuman)
+        {
+            human = null;
+            // This occurs if he loses the human
+            StartCoroutine("ChangeDirection");
+            StartCoroutine("AvoidWalls");
+        }
     }
 
     IEnumerator ChasePlayer()
@@ -193,7 +201,7 @@ public class Alien : Enemy
         if (objectToFade != null)
         {
             Color color = objectToFade.color;
-            while (objectToFade.color.g > 0 && objectToFade != null)
+            while (objectToFade != null && objectToFade.color.g > 0)
             {
                 objectToFade.color = new Color(objectToFade.color.r, objectToFade.color.g - 0.01f, objectToFade.color.b - 0.01f);
                 yield return null;
@@ -219,11 +227,15 @@ public class Alien : Enemy
         }
         else // infected
         {
-            PlayerStats.instance.IncreaseScoreBy(50);
             if (human)
             {
+                PlayerStats.instance.IncreaseScoreBy(50);
                 human.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
                 human.GetComponent<BoxCollider2D>().enabled = false;
+            }
+            else
+            {
+                PlayerStats.instance.IncreaseScoreBy(150);
             }
         }
         curState = State.DEAD;

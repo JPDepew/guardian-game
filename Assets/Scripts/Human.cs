@@ -42,7 +42,7 @@ public class Human : Hittable
                 Destroy(gameObject);
             }
         }
-        if(curState == State.RESCUED)
+        if (curState == State.RESCUED)
         {
             if (transform.position.y <= -verticalHalfSize + 0.8f)
             {
@@ -50,7 +50,7 @@ public class Human : Hittable
                 curState = State.GROUNDED;
             }
         }
-        if(curState == State.GROUNDED)
+        if (curState == State.GROUNDED)
         {
             transform.parent = currentGround;
         }
@@ -58,7 +58,10 @@ public class Human : Hittable
 
     public override void DamageSelf(float damage, Vector2 hitPosition)
     {
-        StartCoroutine(DestroySelf());
+        if (curState == State.FALLING || curState == State.ABDUCTED || curState == State.INFECTED)
+        {
+            StartCoroutine(DestroySelf());
+        }
     }
 
     protected virtual IEnumerator DestroySelf()
