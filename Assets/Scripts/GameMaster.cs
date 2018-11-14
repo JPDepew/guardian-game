@@ -10,6 +10,9 @@ public class GameMaster : MonoBehaviour
     public Text bonusText;
     public ParticleSystem alienSpawn;
 
+    public GameObject side1;
+    public GameObject side2;
+
     public float numberOfAliens;
     public float playerRespawnDelay = 10f;
     public float instantiateNewWaveDelay = 2f;
@@ -25,6 +28,7 @@ public class GameMaster : MonoBehaviour
     private GameObject shipReference;
     private bool respawningCharacter;
 
+    private bool firstSpawn = true;
     private int bonus;
     private int score;
     private int scoreTracker;
@@ -72,10 +76,19 @@ public class GameMaster : MonoBehaviour
 
     IEnumerator InstantiateNewWave()
     {
-        // Add small screen showing bonus for humans
-        //bonusText.text = "Surviving humans: " + (bonus / 500) + " Bonus: " + bonus;
+        if (!firstSpawn)
+        {
+            bonusText.text = "Surviving humans: " + (bonus / 500) + " Bonus: " + bonus;
+        }
+        else
+        {
+            bonusText.text = "";
+        }
+        firstSpawn = false;
         yield return new WaitForSeconds(instantiateNewWaveDelay);
+        bonusText.text = "";
         PlayerStats.instance.IncreaseScoreBy(bonus);
+        bonus = 0;
         StartCoroutine(InstantiateAliens());
         StartCoroutine(InstantiateHumans());
     }
@@ -99,7 +112,9 @@ public class GameMaster : MonoBehaviour
     {
         for (int i = 0; i < numberOfAliens; i++)
         {
-            int xRange = (int)Random.Range(shipReference.transform.position.x - 50, shipReference.transform.position.x + 50);
+            int xRange = side1.transform.position.x > side2.transform.position.x ?
+                (int)Random.Range(side1.transform.position.x + 35, side2.transform.position.x - 35) :
+                (int)Random.Range(side1.transform.position.x - 35, side2.transform.position.x + 35);
             int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
 
             Vector2 alienPositon = new Vector2(xRange, yRange);
@@ -137,7 +152,7 @@ public class GameMaster : MonoBehaviour
     private void DealWithRemainingHumans()
     {
         Human[] humans = FindObjectsOfType<Human>();
-        for(int i = 0; i < humans.Length; i++)
+        for (int i = 0; i < humans.Length; i++)
         {
             Destroy(humans[i].gameObject);
             bonus += 500;
