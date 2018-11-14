@@ -7,6 +7,7 @@ public class GameMaster : MonoBehaviour
     public GameObject alien;
     public GameObject ship;
     public GameObject human;
+    public Text bonusText;
     public ParticleSystem alienSpawn;
 
     public float numberOfAliens;
@@ -23,9 +24,8 @@ public class GameMaster : MonoBehaviour
     private ShipController shipController;
     private GameObject shipReference;
     private bool respawningCharacter;
-    private bool instantiatingNewWave;
-    private float instantiateNewWaveTimer = 2f;
 
+    private int bonus;
     private int score;
     private int scoreTracker;
     private int alienDestroyedCountTracker;
@@ -52,7 +52,6 @@ public class GameMaster : MonoBehaviour
         }
 
         HandleUI();
-        HandleWaveTimer();
     }
 
     private void StartGame()
@@ -71,19 +70,32 @@ public class GameMaster : MonoBehaviour
         scoreText.text = playerStats.GetScore().ToString();
     }
 
-    private void HandleWaveTimer()
+    IEnumerator InstantiateNewWave()
     {
-        if (instantiatingNewWave)
+        // Add small screen showing bonus for humans
+        //bonusText.text = "Surviving humans: " + (bonus / 500) + " Bonus: " + bonus;
+        yield return new WaitForSeconds(instantiateNewWaveDelay);
+        PlayerStats.instance.IncreaseScoreBy(bonus);
+        StartCoroutine(InstantiateAliens());
+        StartCoroutine(InstantiateHumans());
+    }
+
+    private IEnumerator InstantiateHumans()
+    {
+        for (int i = 0; i < 20; i++)
         {
-            if (Time.time > instantiateNewWaveTimer)
-            {
-                StartCoroutine(InstantiateNewWave());
-                instantiatingNewWave = false;
-            }
+            int xRange = (int)Random.Range(shipReference.transform.position.x - 60, shipReference.transform.position.x + 60);
+            float yRange = -4.3f;
+
+            Vector2 humanPositon = new Vector2(xRange, yRange);
+
+            Instantiate(human, humanPositon, transform.rotation);
+
+            yield return null;
         }
     }
 
-    private IEnumerator InstantiateNewWave()
+    private IEnumerator InstantiateAliens()
     {
         for (int i = 0; i < numberOfAliens; i++)
         {
@@ -117,8 +129,18 @@ public class GameMaster : MonoBehaviour
         {
             numberOfAliens++;
             alienDestroyedCountTracker = 0;
-            instantiateNewWaveTimer = Time.time + instantiateNewWaveDelay;
-            instantiatingNewWave = true;
+            DealWithRemainingHumans();
+            StartCoroutine(InstantiateNewWave());
+        }
+    }
+
+    private void DealWithRemainingHumans()
+    {
+        Human[] humans = FindObjectsOfType<Human>();
+        for(int i = 0; i < humans.Length; i++)
+        {
+            Destroy(humans[i].gameObject);
+            bonus += 500;
         }
     }
 

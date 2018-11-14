@@ -1304,8 +1304,8 @@ MonoBehaviour:
   rotateAmount: 5
   rotateTime: 0.1
   curState: 0
-  speed: 4
-  infectedSpeed: 8
+  speed: 2
+  infectedSpeed: 4
   timeToChangeDirection: 1.5
   easeToNewDirection: 0.05
   humanOffset: 0.55
