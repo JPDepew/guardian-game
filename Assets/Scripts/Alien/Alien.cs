@@ -38,7 +38,6 @@ public class Alien : Enemy
     private void Update()
     {
         float speedToUse = curState == State.INFECTED ? infectedSpeed : speed;
-
         verticalHalfSize = Camera.main.orthographicSize;
 
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
@@ -61,6 +60,13 @@ public class Alien : Enemy
             human.curState = Human.State.FALLING;
             human.transform.parent = transform.parent;
             human.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+            windows.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
+            curState = State.PATROLLING;
+
+            // Coroutines
+            StopCoroutine("ChasingHuman");
+            StartCoroutine("ChangeDirection");
+            StartCoroutine("AvoidWalls");
             human = null;
         }
     }

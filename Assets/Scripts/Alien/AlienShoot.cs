@@ -16,17 +16,6 @@ public class AlienShoot : MonoBehaviour
         alien = GetComponent<Alien>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //direction = new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y);
-        //distance = direction.magnitude;
-        //if (distance < 10)
-        //{
-        //    StartCoroutine(alienShoot());
-        //}
-    }
-
     public void StartAlienShooting(Transform playerTransform)
     {
         StartCoroutine("AlienShooting", playerTransform);
@@ -39,13 +28,18 @@ public class AlienShoot : MonoBehaviour
 
     IEnumerator AlienShooting(Transform playerTransform)
     {
-        while (true && alien.curState == Alien.State.PATROLLING && playerTransform != null)
+        while (true && (alien.curState == Alien.State.PATROLLING || alien.curState == Alien.State.INFECTED) && playerTransform != null)
         {
             Vector2 direction = (playerTransform.position - transform.position).normalized;
-            GameObject alienBullet = Instantiate(bullet, transform.position/* + new Vector3(direction.x * .3f, direction.y * .3f, 0)*/, transform.rotation);
+            GameObject alienBullet = Instantiate(bullet, transform.position, transform.rotation);
             AlienBullet tempBullet = alienBullet.GetComponent<AlienBullet>();
             tempBullet.direction = direction;
-            yield return new WaitForSeconds(1.5f);
+            float waitSeconds = 1.5f;
+            if(alien.curState == Alien.State.INFECTED)
+            {
+                waitSeconds = 0.8f;
+            }
+            yield return new WaitForSeconds(waitSeconds);
         }
     }
 }

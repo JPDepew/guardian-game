@@ -17,6 +17,8 @@ public class Enemy : Hittable
     protected SpriteRenderer spriteRenderer;
     protected CircleCollider2D circleCollider;
 
+    bool canDestroySelf = true;
+
     protected virtual void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -29,9 +31,10 @@ public class Enemy : Hittable
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPosition).normalized;
         health -= damage;
-
-        if (health <= 0)
+        Debug.Log(health + " " + canDestroySelf);
+        if (health <= 0 && canDestroySelf)
         {
+            canDestroySelf = false;
             StartCoroutine(DestroySelf());
         }
         else

@@ -27,6 +27,7 @@ public class GameMaster : MonoBehaviour
     private ShipController shipController;
     private GameObject shipReference;
     private bool respawningCharacter;
+    private Animator bonusTextAnimator;
 
     private bool firstSpawn = true;
     private int bonus;
@@ -43,12 +44,14 @@ public class GameMaster : MonoBehaviour
         playerStats = PlayerStats.instance;
         verticalHalfSize = Camera.main.orthographicSize;
         horizontalHalfSize = verticalHalfSize * Screen.width / Screen.height;
+        bonusTextAnimator = bonusText.GetComponent<Animator>();
         StartGame();
         Alien.onAlienDestroyed += OnAlienDestroyed;
     }
 
     private void Update()
     {
+        //Debug.Log(alienDestroyedCountTracker);
         if (scoreTracker > 10000)
         {
             scoreTracker = 0;
@@ -70,7 +73,7 @@ public class GameMaster : MonoBehaviour
 
     private void HandleUI()
     {
-        livesText.text = playerStats.GetLives().ToString() + "x";
+        livesText.text = "Lives: " + playerStats.GetLives().ToString();
         scoreText.text = playerStats.GetScore().ToString();
     }
 
@@ -78,15 +81,19 @@ public class GameMaster : MonoBehaviour
     {
         if (!firstSpawn)
         {
-            bonusText.text = "Surviving humans: " + (bonus / 500) + " Bonus: " + bonus;
+            bonusText.gameObject.SetActive(true);
+            bonusTextAnimator.Play("Wave End");
+            bonusText.text = "Surviving humans: " + (bonus / 500) + " x 500 = " + bonus + " bonus";
         }
         else
         {
             bonusText.text = "";
         }
         firstSpawn = false;
-        yield return new WaitForSeconds(instantiateNewWaveDelay);
+        yield return new WaitForSeconds(bonusTextAnimator.GetCurrentAnimatorStateInfo(0).length);
         bonusText.text = "";
+        bonusText.GetComponent<Animator>().StopPlayback();
+        bonusText.gameObject.SetActive(false);
         PlayerStats.instance.IncreaseScoreBy(bonus);
         bonus = 0;
         StartCoroutine(InstantiateAliens());
@@ -145,7 +152,10 @@ public class GameMaster : MonoBehaviour
             numberOfAliens++;
             alienDestroyedCountTracker = 0;
             DealWithRemainingHumans();
-            StartCoroutine(InstantiateNewWave());
+            if (this != null)
+            {
+                StartCoroutine(InstantiateNewWave());
+            }
         }
     }
 
