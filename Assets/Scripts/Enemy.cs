@@ -31,9 +31,9 @@ public class Enemy : Hittable
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPosition).normalized;
         health -= damage;
-        Debug.Log(health + " " + canDestroySelf);
         if (health <= 0 && canDestroySelf)
         {
+            Debug.Log("DamageSelfj");
             canDestroySelf = false;
             StartCoroutine(DestroySelf());
         }

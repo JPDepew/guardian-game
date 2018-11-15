@@ -13,7 +13,7 @@ public class PlayerStats : MonoBehaviour {
     {
         instance = this;
 
-        lives = 3;
+        lives = 1;
     }
 
     public int GetLives()

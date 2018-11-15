@@ -104,7 +104,9 @@ public class GameMaster : MonoBehaviour
     {
         for (int i = 0; i < 20; i++)
         {
-            int xRange = (int)Random.Range(shipReference.transform.position.x - 60, shipReference.transform.position.x + 60);
+            int xRange = side1.transform.position.x > side2.transform.position.x ?
+                (int)Random.Range(side1.transform.position.x + 35, side2.transform.position.x - 35) :
+                (int)Random.Range(side1.transform.position.x - 35, side2.transform.position.x + 35);
             float yRange = -4.3f;
 
             Vector2 humanPositon = new Vector2(xRange, yRange);
@@ -146,6 +148,7 @@ public class GameMaster : MonoBehaviour
 
     private void OnAlienDestroyed()
     {
+        Debug.Log("OnAlienDestroyed");
         alienDestroyedCountTracker++;
         if (alienDestroyedCountTracker >= numberOfAliens)
         {
@@ -201,6 +204,7 @@ public class GameMaster : MonoBehaviour
 
     IEnumerator RestartSceneTimer()
     {
+        Alien.onAlienDestroyed -= OnAlienDestroyed;
         float targetTime = Time.time + 3f;
         while (Time.time < targetTime)
         {

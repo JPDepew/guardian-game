@@ -217,6 +217,7 @@ public class Alien : Enemy
 
     protected override IEnumerator DestroySelf()
     {
+        curState = State.DEAD;
         speed = 0;
         Destroy(windows);
         int index = Random.Range(6, 9);
@@ -244,9 +245,10 @@ public class Alien : Enemy
                 PlayerStats.instance.IncreaseScoreBy(150);
             }
         }
-        curState = State.DEAD;
+        
         if (onAlienDestroyed != null)
         {
+            Debug.Log("Aline destifod");
             onAlienDestroyed();
         }
         return base.DestroySelf();

@@ -334,7 +334,7 @@ MonoBehaviour:
     type: 2}
   side1: {fileID: 128189571}
   side2: {fileID: 70061002}
-  numberOfAliens: 1
+  numberOfAliens: 5
   playerRespawnDelay: 6
   instantiateNewWaveDelay: 2
   gameState: 0
