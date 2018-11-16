@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class mainMenuManager : MonoBehaviour {
+public class SplashMaster : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

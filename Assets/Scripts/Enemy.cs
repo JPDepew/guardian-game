@@ -33,7 +33,6 @@ public class Enemy : Hittable
         health -= damage;
         if (health <= 0 && canDestroySelf)
         {
-            Debug.Log("DamageSelfj");
             canDestroySelf = false;
             StartCoroutine(DestroySelf());
         }

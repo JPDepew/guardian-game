@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class splashManager : MonoBehaviour {
+public class GameOverMaster : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

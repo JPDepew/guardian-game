@@ -24,7 +24,7 @@ public class GameMaster : MonoBehaviour
     public Text livesText;
 
     private PlayerStats playerStats;
-    private ShipController shipController;
+    //private ShipController shipController;
     private GameObject shipReference;
     private bool respawningCharacter;
     private Animator bonusTextAnimator;
@@ -36,14 +36,12 @@ public class GameMaster : MonoBehaviour
     private int alienDestroyedCountTracker;
     private int dstAsteroidsCanSpawnFromPlayer = 3;
     private float verticalHalfSize = 0;
-    private float horizontalHalfSize = 0;
 
     void Start()
     {
         gameState = GameState.STOPPED;
         playerStats = PlayerStats.instance;
         verticalHalfSize = Camera.main.orthographicSize;
-        horizontalHalfSize = verticalHalfSize * Screen.width / Screen.height;
         bonusTextAnimator = bonusText.GetComponent<Animator>();
         StartGame();
         Alien.onAlienDestroyed += OnAlienDestroyed;
@@ -66,7 +64,7 @@ public class GameMaster : MonoBehaviour
         gameState = GameState.RUNNING;
         alienDestroyedCountTracker = 0;
         shipReference = Instantiate(ship);
-        shipController = shipReference.GetComponent<ShipController>();
+        //shipController = shipReference.GetComponent<ShipController>();
 
         StartCoroutine(InstantiateNewWave());
     }
@@ -148,7 +146,6 @@ public class GameMaster : MonoBehaviour
 
     private void OnAlienDestroyed()
     {
-        Debug.Log("OnAlienDestroyed");
         alienDestroyedCountTracker++;
         if (alienDestroyedCountTracker >= numberOfAliens)
         {
@@ -168,7 +165,10 @@ public class GameMaster : MonoBehaviour
         for (int i = 0; i < humans.Length; i++)
         {
             Destroy(humans[i].gameObject);
-            bonus += 500;
+            if (!(humans[i].curState == Human.State.DEAD))
+            {
+                bonus += 500;
+            }
         }
     }
 
@@ -199,7 +199,7 @@ public class GameMaster : MonoBehaviour
     {
         yield return new WaitForSeconds(playerRespawnDelay);
         shipReference = Instantiate(ship);
-        shipController = shipReference.GetComponent<ShipController>();
+        //shipController = shipReference.GetComponent<ShipController>();
     }
 
     IEnumerator RestartSceneTimer()

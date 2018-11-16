@@ -30,14 +30,14 @@ public class ShipController : MonoBehaviour
     private bool shouldBeInvulnerable = true;
 
     float verticalHalfSize;
-    float horizontalHalfSize;
+    //float horizontalHalfSize;
 
     private void Start()
     {
         playerStats = PlayerStats.instance;
         audioSources = GetComponents<AudioSource>();
         verticalHalfSize = Camera.main.orthographicSize;
-        horizontalHalfSize = verticalHalfSize * Screen.width / Screen.height;
+        //horizontalHalfSize = verticalHalfSize * Screen.width / Screen.height;
         invulnerabilityTargetTime = Time.time + invulnerabilityTime;
         fuelParticleSystem = GetComponent<ParticleSystem>();
 
@@ -149,8 +149,7 @@ public class ShipController : MonoBehaviour
             direction = new Vector2(direction.x, 0);
             if (human)
             {
-                //human.transform.parent = null;
-                //human.curState = Human.State.GROUNDED;
+                human = null;
             }
         }
         if (transform.position.y >= verticalHalfSize - 0.5f && direction.y > 0)
@@ -207,7 +206,6 @@ public class ShipController : MonoBehaviour
     IEnumerator DestroySelf()
     {
         Instantiate(explosion, transform.position, transform.rotation);
-        int index = Random.Range(2, 6);
         audioSources[2].Play();
 
         shouldDestroyShip = true;
@@ -239,14 +237,17 @@ public class ShipController : MonoBehaviour
             Instantiate(explosion, transform.position, transform.rotation);
             FindObjectOfType<GameMaster>().RespawnPlayer();
         }
-        if(collision.tag == "Human")
+        if (collision.tag == "Human")
         {
-            human = collision.transform.GetComponent<Human>();
-            if(human.curState == Human.State.FALLING)
+            if (!human)
             {
-                human.transform.SetParent(transform);
-                human.transform.position = new Vector2(transform.position.x, transform.position.y - 0.5f);
-                human.curState = Human.State.RESCUED;
+                human = collision.transform.GetComponent<Human>();
+                if (human.curState == Human.State.FALLING)
+                {
+                    human.transform.SetParent(transform);
+                    human.transform.position = new Vector2(transform.position.x, transform.position.y - 0.5f);
+                    human.curState = Human.State.RESCUED;
+                }
             }
         }
     }

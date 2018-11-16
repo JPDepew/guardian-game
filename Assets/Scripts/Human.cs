@@ -45,6 +45,10 @@ public class Human : Hittable
                 StartCoroutine(DestroySelf());
             }
         }
+        else
+        {
+            actualSpeed = 0;
+        }
         if (curState == State.RESCUED)
         {
             if (transform.position.y <= -verticalHalfSize + 0.8f)
