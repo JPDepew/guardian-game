@@ -8,13 +8,15 @@ public class Human : Hittable
     public State curState;
 
     public float acceleration = 0.01f;
-
+    public GameObject explosion;
     private Transform currentGround;
     private float actualSpeed = 0;
     private GameObject player;
     private GameObject rightSide;
     private GameObject leftSide;
     private float verticalHalfSize;
+
+    AudioSource[] audioSources;
 
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider2D;
@@ -25,6 +27,7 @@ public class Human : Hittable
         verticalHalfSize = Camera.main.orthographicSize;
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider2D = GetComponent<BoxCollider2D>();
+        audioSources = GetComponents<AudioSource>();
     }
 
     void Update()
@@ -39,13 +42,14 @@ public class Human : Hittable
             }
             else
             {
-                Destroy(gameObject);
+                StartCoroutine(DestroySelf());
             }
         }
         if (curState == State.RESCUED)
         {
             if (transform.position.y <= -verticalHalfSize + 0.8f)
             {
+                audioSources[1].Play();
                 transform.parent = currentGround;
                 curState = State.GROUNDED;
             }
@@ -70,7 +74,7 @@ public class Human : Hittable
         boxCollider2D.enabled = false;
         curState = State.DEAD;
         //Instantiate(explosion, transform.position, transform.rotation);
-
+        audioSources[0].Play();
         yield return new WaitForSeconds(3f);
         Destroy(gameObject);
     }
