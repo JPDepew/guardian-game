@@ -12,7 +12,7 @@ public class CameraFollow : MonoBehaviour
         target = ship.transform;
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (target == null)
         {
