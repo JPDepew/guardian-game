@@ -53,6 +53,7 @@ public class Human : Hittable
         {
             if (transform.position.y <= -verticalHalfSize + 0.8f)
             {
+                transform.parent.GetComponent<ShipController>().human = null;
                 audioSources[1].Play();
                 transform.parent = currentGround;
                 curState = State.GROUNDED;

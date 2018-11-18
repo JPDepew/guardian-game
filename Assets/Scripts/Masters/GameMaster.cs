@@ -24,7 +24,6 @@ public class GameMaster : MonoBehaviour
     public Text livesText;
 
     private PlayerStats playerStats;
-    //private ShipController shipController;
     private GameObject shipReference;
     private bool respawningCharacter;
     private Animator bonusTextAnimator;
@@ -151,7 +150,7 @@ public class GameMaster : MonoBehaviour
         {
             numberOfAliens++;
             alienDestroyedCountTracker = 0;
-            DealWithRemainingHumans();
+            DealWithRemainingHumansAndAliens();
             if (this != null)
             {
                 StartCoroutine(InstantiateNewWave());
@@ -159,8 +158,13 @@ public class GameMaster : MonoBehaviour
         }
     }
 
-    private void DealWithRemainingHumans()
+    private void DealWithRemainingHumansAndAliens()
     {
+        //Alien[] aliens = FindObjectsOfType<Alien>();
+        //for(int i = 0; i< aliens.Length; i++)
+        //{
+        //    Destroy(aliens[i]);
+        //}
         Human[] humans = FindObjectsOfType<Human>();
         for (int i = 0; i < humans.Length; i++)
         {
@@ -199,17 +203,16 @@ public class GameMaster : MonoBehaviour
     {
         yield return new WaitForSeconds(playerRespawnDelay);
         shipReference = Instantiate(ship);
-        //shipController = shipReference.GetComponent<ShipController>();
+    }
+
+    private void OnDestroy()
+    {
+        Alien.onAlienDestroyed -= OnAlienDestroyed;
     }
 
     IEnumerator RestartSceneTimer()
     {
-        Alien.onAlienDestroyed -= OnAlienDestroyed;
-        float targetTime = Time.time + 3f;
-        while (Time.time < targetTime)
-        {
-            yield return null;
-        }
-        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        yield return new WaitForSeconds(3);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
 }

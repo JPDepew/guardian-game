@@ -16,7 +16,7 @@ public class ShipController : MonoBehaviour
     public float linearInterpolationTime = 0.2f;
     public float destroyWaitTime = 10;
 
-    private Human human;
+    public Human human { get; set; }
     private AudioSource[] audioSources;
     private Vector2 direction;
     private SpriteRenderer spriteRenderer;
@@ -147,10 +147,10 @@ public class ShipController : MonoBehaviour
         if (transform.position.y <= -verticalHalfSize + 1 && direction.y < 0)
         {
             direction = new Vector2(direction.x, 0);
-            if (human)
-            {
-                human = null;
-            }
+            //if (human)
+            //{
+            //    human = null;
+            //}
         }
         if (transform.position.y >= verticalHalfSize - 0.5f && direction.y > 0)
         {
