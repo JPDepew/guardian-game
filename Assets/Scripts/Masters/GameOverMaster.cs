@@ -17,8 +17,8 @@ public class GameOverMaster : MonoBehaviour
             Constants.S.SetHighScore();
         }
 
-        highScoreText.text = "High Score: " + Constants.S.highScore.ToString();
-        scoreText.text = "Score: " + Constants.S.score.ToString();
+        //highScoreText.text = "High Score: " + Constants.S.highScore.ToString();
+        scoreText.text = "Score: " + Data.Instance.score.ToString();
         Constants.S.resetScore();
     }
 

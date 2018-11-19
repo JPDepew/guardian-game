@@ -30,14 +30,12 @@ public class ShipController : MonoBehaviour
     private bool shouldBeInvulnerable = true;
 
     float verticalHalfSize;
-    //float horizontalHalfSize;
 
     private void Start()
     {
         playerStats = PlayerStats.instance;
         audioSources = GetComponents<AudioSource>();
         verticalHalfSize = Camera.main.orthographicSize;
-        //horizontalHalfSize = verticalHalfSize * Screen.width / Screen.height;
         invulnerabilityTargetTime = Time.time + invulnerabilityTime;
         fuelParticleSystem = GetComponent<ParticleSystem>();
 
@@ -147,10 +145,6 @@ public class ShipController : MonoBehaviour
         if (transform.position.y <= -verticalHalfSize + 1 && direction.y < 0)
         {
             direction = new Vector2(direction.x, 0);
-            //if (human)
-            //{
-            //    human = null;
-            //}
         }
         if (transform.position.y >= verticalHalfSize - 0.5f && direction.y > 0)
         {
@@ -247,6 +241,10 @@ public class ShipController : MonoBehaviour
                     human.transform.SetParent(transform);
                     human.transform.position = new Vector2(transform.position.x, transform.position.y - 0.5f);
                     human.curState = Human.State.RESCUED;
+                }
+                else
+                {
+                    human = null;
                 }
             }
         }

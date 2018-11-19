@@ -40,9 +40,4 @@ public class PlayerStats : MonoBehaviour {
     {
         lives++;
     }
-
-    public void gameOver()
-    {
-        Constants.S.setScore(score);
-    }
 }

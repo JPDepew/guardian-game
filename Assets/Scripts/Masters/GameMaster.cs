@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
@@ -60,6 +61,7 @@ public class GameMaster : MonoBehaviour
 
     private void StartGame()
     {
+        Data.Instance.score = 0;
         gameState = GameState.RUNNING;
         alienDestroyedCountTracker = 0;
         shipReference = Instantiate(ship);
@@ -213,7 +215,7 @@ public class GameMaster : MonoBehaviour
     IEnumerator NewScene()
     {
         yield return new WaitForSeconds(2);
-        playerStats.gameOver();
-        UnityEngine.SceneManagement.SceneManager.LoadScene(2);
+        Data.Instance.score = playerStats.GetScore();
+        SceneManager.LoadScene(2);
     }
 }
