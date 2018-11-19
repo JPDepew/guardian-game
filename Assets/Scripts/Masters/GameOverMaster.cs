@@ -1,16 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class GameOverMaster : MonoBehaviour {
+public class GameOverMaster : MonoBehaviour
+{
+    public Text highScoreText;
+    public Text scoreText;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    float timer = 0;
+
+    private void Start()
+    {
+        highScoreText.text = "High Score: " + Constants.S.highScore.ToString();
+        scoreText.text = "Score: " + Data.Instance.score.ToString();
+        Data.Instance.ResetAll();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene(2);
+        }
+    }
 }
