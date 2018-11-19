@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class UI : MonoBehaviour
 {
-
     AudioSource[] audioSource;
     public Animator Instructions;
 
@@ -15,15 +14,15 @@ public class UI : MonoBehaviour
         audioSource = GetComponents<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void Play()
     {
         audioSource[0].Play();
+        StartCoroutine(StartGame());
+    }
+
+    IEnumerator StartGame()
+    {
+        yield return new WaitForSeconds(0.2f);
         SceneManager.LoadScene(1);
     }
 

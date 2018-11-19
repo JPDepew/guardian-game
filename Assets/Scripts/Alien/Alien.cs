@@ -219,9 +219,7 @@ public class Alien : Enemy
     {
         speed = 0;
         Destroy(windows);
-        int index = Random.Range(6, 9);
-        audioSource[index].Play();
-        audioSource[10].Stop();
+        audioSource[6].Stop();
         if (curState != State.INFECTED)
         {
             PlayerStats.instance.IncreaseScoreBy(150);

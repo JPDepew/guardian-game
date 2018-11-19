@@ -65,7 +65,7 @@ public class Enemy : Hittable
         circleCollider.enabled = false;
         Instantiate(explosion, transform.position, transform.rotation);
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(0f);
         Destroy(gameObject);
     }
 

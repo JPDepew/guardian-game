@@ -12,11 +12,6 @@ public class SplashMaster : MonoBehaviour
         StartCoroutine(ChangeScene());
     }
 
-    void Update()
-    {
-
-    }
-
     IEnumerator ChangeScene()
     {
         yield return new WaitForSeconds(1);
