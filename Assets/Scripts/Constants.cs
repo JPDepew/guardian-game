@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class Constants : MonoBehaviour
 {
     public int highScore = 0;
+    public int score = 0;
 
     string playerPrefHighScoreKey = "playerHighScore";
 
@@ -16,9 +17,9 @@ public class Constants : MonoBehaviour
         SetPlayerPrefs();
     }
 
-    public void SetHighScore(int newHighScore)
+    public void SetHighScore()
     {
-        highScore = newHighScore;
+        highScore = score;
         PlayerPrefs.SetInt(playerPrefHighScoreKey, highScore);
     }
 
@@ -32,5 +33,15 @@ public class Constants : MonoBehaviour
         {
             PlayerPrefs.SetInt(playerPrefHighScoreKey, highScore);
         }
+    }
+
+    public void resetScore()
+    {
+        score = 0;
+    }
+
+    public void setScore(int newScore)
+    {
+        score = newScore;
     }
 }

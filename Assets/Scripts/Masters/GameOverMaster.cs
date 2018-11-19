@@ -11,9 +11,15 @@ public class GameOverMaster : MonoBehaviour
 
     private void Start()
     {
+
+        if (Constants.S.score > Constants.S.highScore)
+        {
+            Constants.S.SetHighScore();
+        }
+
         highScoreText.text = "High Score: " + Constants.S.highScore.ToString();
-        scoreText.text = "Score: " + Data.Instance.score.ToString();
-        Data.Instance.ResetAll();
+        scoreText.text = "Score: " + Constants.S.score.ToString();
+        Constants.S.resetScore();
     }
 
     void Update()

@@ -195,7 +195,7 @@ public class GameMaster : MonoBehaviour
         }
         else
         {
-            StartCoroutine(RestartSceneTimer());
+            StartCoroutine(NewScene());
         }
     }
 
@@ -210,9 +210,10 @@ public class GameMaster : MonoBehaviour
         Alien.onAlienDestroyed -= OnAlienDestroyed;
     }
 
-    IEnumerator RestartSceneTimer()
+    IEnumerator NewScene()
     {
-        yield return new WaitForSeconds(3);
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+        yield return new WaitForSeconds(2);
+        playerStats.gameOver();
+        UnityEngine.SceneManagement.SceneManager.LoadScene(2);
     }
 }
