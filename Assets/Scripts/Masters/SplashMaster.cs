@@ -15,6 +15,6 @@ public class SplashMaster : MonoBehaviour
     IEnumerator ChangeScene()
     {
         yield return new WaitForSeconds(1);
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 }

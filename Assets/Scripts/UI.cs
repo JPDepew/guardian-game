@@ -7,6 +7,7 @@ public class UI : MonoBehaviour
 {
     AudioSource[] audioSource;
     public Animator Instructions;
+    bool zDownLastFrame = false;
 
     // Use this for initialization
     void Start()
@@ -23,7 +24,7 @@ public class UI : MonoBehaviour
     IEnumerator StartGame()
     {
         yield return new WaitForSeconds(0.2f);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
     public void ShowInstructions()
@@ -50,32 +51,63 @@ public class UI : MonoBehaviour
         Instructions.Play("Instructions1");
         while (true)
         {
+            if (zDownLastFrame && Input.GetKeyUp(KeyCode.Z))
+            {
+                //Input.ResetInputAxes();
+                zDownLastFrame = false;
+                StartCoroutine(CycleInstructions2());
+                break;
+            }
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                break;
+                zDownLastFrame = true;  
             }
             yield return null;
         }
+    }
+
+    IEnumerator CycleInstructions2()
+    {
         Instructions.Play("Instructions2");
-        Input.ResetInputAxes();
         while (true)
         {
+            if (zDownLastFrame && Input.GetKeyUp(KeyCode.Z))
+            {
+                //Input.ResetInputAxes();
+                zDownLastFrame = false;
+                StartCoroutine(CycleInstructions3());
+                break;
+            }
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                break;
+                zDownLastFrame = true;
             }
             yield return null;
         }
+    }
+
+    IEnumerator CycleInstructions3()
+    {
         Instructions.Play("Instructions3");
-        Input.ResetInputAxes();
         while (true)
         {
+            if (zDownLastFrame && Input.GetKeyUp(KeyCode.Z))
+            {
+                //Input.ResetInputAxes();
+                zDownLastFrame = false;
+                StartCoroutine(CycleInstructions4());
+                break;
+            }
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                break;
+                zDownLastFrame = true;
             }
             yield return null;
         }
+    }
+
+    IEnumerator CycleInstructions4()
+    {
         Instructions.Play("FadeOut");
         yield return new WaitForSeconds(Instructions.GetCurrentAnimatorStateInfo(0).length);
         Instructions.gameObject.SetActive(false);

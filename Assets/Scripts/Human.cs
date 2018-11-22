@@ -61,7 +61,12 @@ public class Human : Hittable
         }
         if (curState == State.GROUNDED)
         {
+            gameObject.layer = 0;
             transform.parent = currentGround;
+        }
+        else
+        {
+            gameObject.layer = 8;
         }
     }
 

@@ -214,8 +214,8 @@ public class GameMaster : MonoBehaviour
 
     IEnumerator NewScene()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(4);
         Data.Instance.score = playerStats.GetScore();
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(3);
     }
 }
