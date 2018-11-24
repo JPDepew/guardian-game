@@ -20,22 +20,22 @@ public class MoveLeft : MonoBehaviour
     {
         if (player != null)
         {
-            if (player.transform.position.x > rightSide.transform.position.x + 50)
+            if (player.transform.position.x > rightSide.transform.position.x)
             {
                 Vector3 newPosition = new Vector3(rightSide.transform.position.x + distance, leftSide.transform.position.y, 0);
                 leftSide.transform.position = newPosition;
             }
-            else if (player.transform.position.x < rightSide.transform.position.x + 50)
+            else if (player.transform.position.x < rightSide.transform.position.x)
             {
                 Vector3 newPosition = new Vector3(rightSide.transform.position.x - distance, leftSide.transform.position.y, 0);
                 leftSide.transform.position = newPosition;
             }
-            if (player.transform.position.x > leftSide.transform.position.x + 50)
+            if (player.transform.position.x > leftSide.transform.position.x)
             {
                 Vector3 newPosition = new Vector3(leftSide.transform.position.x + distance, rightSide.transform.position.y, 0);
                 rightSide.transform.position = newPosition;
             }
-            else if (player.transform.position.x < leftSide.transform.position.x + 50)
+            else if (player.transform.position.x < leftSide.transform.position.x)
             {
                 Vector3 newPosition = new Vector3(leftSide.transform.position.x - distance, rightSide.transform.position.y, 0);
                 rightSide.transform.position = newPosition;

@@ -101,11 +101,11 @@ public class GameMaster : MonoBehaviour
 
     private IEnumerator InstantiateHumans()
     {
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 10; i++)
         {
             int xRange = side1.transform.position.x > side2.transform.position.x ?
-                (int)Random.Range(side1.transform.position.x + 35, side2.transform.position.x - 35) :
-                (int)Random.Range(side1.transform.position.x - 35, side2.transform.position.x + 35);
+                (int)Random.Range(side1.transform.position.x + 18, side2.transform.position.x - 18) :
+                (int)Random.Range(side1.transform.position.x - 18, side2.transform.position.x + 18);
             float yRange = -4.3f;
 
             Vector2 humanPositon = new Vector2(xRange, yRange);
@@ -121,8 +121,8 @@ public class GameMaster : MonoBehaviour
         for (int i = 0; i < numberOfAliens; i++)
         {
             int xRange = side1.transform.position.x > side2.transform.position.x ?
-                (int)Random.Range(side1.transform.position.x + 35, side2.transform.position.x - 35) :
-                (int)Random.Range(side1.transform.position.x - 35, side2.transform.position.x + 35);
+                (int)Random.Range(side1.transform.position.x + 18, side2.transform.position.x - 18) :
+                (int)Random.Range(side1.transform.position.x - 18, side2.transform.position.x + 18);
             int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
 
             Vector2 alienPositon = new Vector2(xRange, yRange);
@@ -140,9 +140,9 @@ public class GameMaster : MonoBehaviour
 
     IEnumerator SpawnAlien(Vector2 alienPosition)
     {
-        Instantiate(alienSpawn, alienPosition, transform.rotation);
+        Transform tempTransform = Instantiate(alienSpawn, alienPosition, transform.rotation).transform;
         yield return new WaitForSeconds(alienSpawn.main.duration);
-        Instantiate(alien, alienPosition, transform.rotation);
+        Instantiate(alien, tempTransform.position, transform.rotation);
     }
 
     private void OnAlienDestroyed()
