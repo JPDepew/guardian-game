@@ -924,7 +924,7 @@ MonoBehaviour:
   infectedSpeed: 4
   timeToChangeDirection: 1.5
   easeToNewDirection: 0.05
-  humanOffset: 0.55
+  humanOffset: 0.45
   horizontalBounds: {x: -7, y: 65}
   windows: {fileID: 212322861071006600}
 --- !u!114 &114775693183906368
