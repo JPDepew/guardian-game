@@ -52,6 +52,7 @@ public class Alien : Enemy
         StartCoroutine("ChasingHuman", human);
     }
 
+    // we won't need this after the change
     public override void DisinfectEnemy(Vector2 hitPoint)
     {
         base.DisinfectEnemy(hitPoint);
@@ -151,6 +152,7 @@ public class Alien : Enemy
         }
     }
 
+    // JOSIAH - LOOK HERE
     IEnumerator Abducting()
     {
         newDirection = Vector2.up;
@@ -160,6 +162,10 @@ public class Alien : Enemy
         {
             if (transform.position.y > verticalHalfSize - 1)
             {
+                // The alien travels upwards until the human is infected. Instead of this stuff, the alien will need to do 3 things:
+                // 1) Instantate a mutated alien
+                // 2) Destroy itself
+                // 3) Destroy the human it has captured
                 human.curState = Human.State.INFECTED;
                 StartCoroutine("ChasePlayer");
                 StopCoroutine("Abducting");
@@ -215,7 +221,7 @@ public class Alien : Enemy
         }
     }
 
-    protected override IEnumerator DestroySelf()
+    protected override void DestroySelf()
     {
         speed = 0;
         Destroy(windows);
@@ -248,6 +254,6 @@ public class Alien : Enemy
         {
             onAlienDestroyed();
         }
-        return base.DestroySelf();
+        base.DestroySelf();
     }
 }

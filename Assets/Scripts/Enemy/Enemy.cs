@@ -17,8 +17,6 @@ public class Enemy : Hittable
     protected SpriteRenderer spriteRenderer;
     protected CircleCollider2D circleCollider;
 
-    bool canDestroySelf = true;
-
     protected virtual void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -31,10 +29,9 @@ public class Enemy : Hittable
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPosition).normalized;
         health -= damage;
-        if (health <= 0 && canDestroySelf)
+        if (health <= 0)
         {
-            canDestroySelf = false;
-            StartCoroutine(DestroySelf());
+            DestroySelf();
         }
         else
         {
@@ -54,19 +51,16 @@ public class Enemy : Hittable
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPoint).normalized;
         float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
 
-        int index = Random.Range(0, 5);
-        audioSource[index].Play();
-        StartCoroutine(Rotate(directionToHitY));
+        // TODO: find a better disinfect sound
+        //int index = Random.Range(0, 5);
+        //audioSource[index].Play();
+        //StartCoroutine(Rotate(directionToHitY));
     }
 
-    protected virtual IEnumerator DestroySelf()
+    protected virtual void DestroySelf()
     {
-        spriteRenderer.color = new Color(0, 0, 0, 0);
-        circleCollider.enabled = false;
-        Instantiate(explosion, transform.position, transform.rotation);
-
-        yield return new WaitForSeconds(0f);
         Destroy(gameObject);
+        Instantiate(explosion, transform.position, transform.rotation);
     }
 
     IEnumerator Rotate(float directionToHitY)
