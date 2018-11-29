@@ -13,13 +13,13 @@ public class Bullet : MonoBehaviour
     private float direction;
     private bool shouldRaycast = true;
 
-    private void Start()
+    protected virtual void Start()
     {
         direction = Mathf.Sign(transform.localScale.x);
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         transform.Translate(Vector3.right * speed * direction);
 
@@ -33,11 +33,11 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    void Raycasting()
+    protected void Raycasting()
     {
         hit = Physics2D.Raycast(rayPos.position, Vector2.right * direction, speed, layerMask);
         Debug.DrawRay(rayPos.position, Vector2.right * direction * speed, Color.red);
-
+        Debug.Log("poop");
         if (hit)
         {
             Transform hitObject = hit.transform;
