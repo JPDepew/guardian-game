@@ -7,10 +7,13 @@ public class MutatedAlien : Enemy {
     public float speed = 8;
     public float easeToNewDirection = 0.2f;
 
+    public delegate void OnDestroyed();
+    public static event OnDestroyed onMutatedAlienDestroyed;
+
     protected override void Start()
     {
         StartCoroutine(ChasePlayer());
-        //base.Start();
+        base.Start();
     }
 
     // Update is called once per frame
@@ -21,6 +24,8 @@ public class MutatedAlien : Enemy {
 
     public override void DamageSelf(float damage, Vector2 hitPosition)
     {
+        int index = Random.Range(0, 2);
+        audioSources[index].Play();
         base.DamageSelf(damage, hitPosition);
     }
 
@@ -33,6 +38,13 @@ public class MutatedAlien : Enemy {
 
     protected override void DestroySelf()
     {
+        PlayerStats.instance.IncreaseScoreBy(50);
+        if(onMutatedAlienDestroyed != null)
+        {
+            onMutatedAlienDestroyed();
+        }
+        scoreText = Instantiate(scoreText, new Vector3(transform.position.x,transform.position.y,-5), transform.rotation);
+        scoreText.text = "50";
         PlayerStats.instance.IncreaseScoreBy(50);
         base.DestroySelf();
     }

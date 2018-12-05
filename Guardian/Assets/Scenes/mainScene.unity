@@ -4952,6 +4952,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   alien: {fileID: 1300934526662340, guid: 3c9fe8a63cc2fff4bb065681ac909ed8, type: 2}
+  flyingSaucer: {fileID: 1191564587170516, guid: e754d2b79fb95ac4ba8267538d23cec7,
+    type: 2}
   ship: {fileID: 1990060262887086, guid: e22fdae463430994da85e9a38068837c, type: 2}
   human: {fileID: 1691991003821096, guid: ee2d588b6b6f794419524debbecde589, type: 2}
   bonusText: {fileID: 1582100742}
@@ -5001,7 +5003,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a526c2d026ea6f47aed0bd71ad27e29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bigLaser: 1
+  bigLaser: 0
 --- !u!114 &449487486
 MonoBehaviour:
   m_ObjectHideFlags: 0

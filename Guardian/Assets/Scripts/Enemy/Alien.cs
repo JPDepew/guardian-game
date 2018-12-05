@@ -23,6 +23,7 @@ public class Alien : Enemy
 
     public delegate void OnDestroyed();
     public static event OnDestroyed onAlienDestroyed;
+    public GameObject infectedAlien;
 
     protected override void Start()
     {
@@ -50,26 +51,6 @@ public class Alien : Enemy
         StopCoroutine("ChangeDirection");
         StopCoroutine("AvoidWalls");
         StartCoroutine("ChasingHuman", human);
-    }
-
-    // we won't need this after the change
-    public override void DisinfectEnemy(Vector2 hitPoint)
-    {
-        base.DisinfectEnemy(hitPoint);
-        if (human && curState == State.INFECTED)
-        {
-            human.curState = Human.State.FALLING;
-            human.transform.parent = transform.parent;
-            human.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
-            windows.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
-            curState = State.PATROLLING;
-
-            // Coroutines
-            StopCoroutine("ChasingHuman");
-            StartCoroutine("ChangeDirection");
-            StartCoroutine("AvoidWalls");
-            human = null;
-        }
     }
 
     IEnumerator ChangeDirection()
@@ -125,8 +106,16 @@ public class Alien : Enemy
         }
     }
 
-    public void OnTriggerEnter2D(Collider2D collision)
+    public override void DamageSelf(float damage, Vector2 hitPosition)
     {
+        base.DamageSelf(damage, hitPosition);
+        int index = Random.Range(0, 5);
+        audioSources[index].Play();
+    }
+
+    protected override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
         if (collision.tag == "Human" && !human)
         {
             human = collision.GetComponent<Human>();
@@ -146,10 +135,6 @@ public class Alien : Enemy
                 human = null;
             }
         }
-        if (collision.tag == "leftMapSide" || collision.tag == "rightMapSide")
-        {
-            transform.parent = collision.transform;
-        }
     }
 
     // JOSIAH - LOOK HERE
@@ -162,14 +147,8 @@ public class Alien : Enemy
         {
             if (transform.position.y > verticalHalfSize - 1)
             {
-                // The alien travels upwards until the human is infected. Instead of this stuff, the alien will need to do 3 things:
-                // 1) Instantate a mutated alien
-                // 2) Destroy itself
-                // 3) Destroy the human it has captured
-                human.curState = Human.State.INFECTED;
-                StartCoroutine("ChasePlayer");
-                StopCoroutine("Abducting");
-                infectedHuman = true;
+                Instantiate(infectedAlien, new Vector2(transform.position.x, transform.position.y - 0.3f), Quaternion.Euler(Vector2.zero));
+                Destroy(gameObject);
                 break;
             }
 
@@ -185,75 +164,24 @@ public class Alien : Enemy
         }
     }
 
-    IEnumerator ChasePlayer()
-    {
-        ShipController player = FindObjectOfType<ShipController>();
-        curState = State.INFECTED;
-        StartCoroutine("FadeToRed", windows);
-        StartCoroutine("FadeToRed", human.GetComponent<SpriteRenderer>());
-
-        while (true)
-        {
-            if (player == null || player.shouldDestroyShip)
-            {
-                newDirection = Vector2.left;
-                player = FindObjectOfType<ShipController>();
-            }
-            else
-            {
-                newDirection = (player.transform.position - transform.position).normalized;
-            }
-
-            yield return new WaitForSeconds(0.5f);
-        }
-    }
-
-    IEnumerator FadeToRed(SpriteRenderer objectToFade)
-    {
-        if (objectToFade != null)
-        {
-            Color color = objectToFade.color;
-            while (objectToFade != null && objectToFade.color.g > 0)
-            {
-                objectToFade.color = new Color(objectToFade.color.r, objectToFade.color.g - 0.01f, objectToFade.color.b - 0.01f);
-                yield return null;
-            }
-        }
-    }
-
     protected override void DestroySelf()
     {
         speed = 0;
         Destroy(windows);
-        audioSource[6].Stop();
-        if (curState != State.INFECTED)
+        audioSources[6].Stop();
+
+        PlayerStats.instance.IncreaseScoreBy(150);
+        if (human)
         {
-            PlayerStats.instance.IncreaseScoreBy(150);
-            if (human)
-            {
-                human.curState = Human.State.FALLING;
-                human.transform.SetParent(transform.parent);
-            }
+            human.curState = Human.State.FALLING;
+            human.transform.SetParent(transform.parent);
         }
-        else // infected
-        {
-            if (human)
-            {
-                PlayerStats.instance.IncreaseScoreBy(50);
-                human.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
-                human.GetComponent<BoxCollider2D>().enabled = false;
-            }
-            else
-            {
-                PlayerStats.instance.IncreaseScoreBy(150);
-            }
-        }
-        
-        curState = State.DEAD;
         if (onAlienDestroyed != null)
         {
             onAlienDestroyed();
         }
+        scoreText = Instantiate(scoreText, new Vector3(transform.position.x, transform.position.y, -5), transform.rotation);
+        scoreText.text = "150";
         base.DestroySelf();
     }
 }

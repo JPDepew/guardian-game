@@ -19,7 +19,7 @@ public class BigLaser : MonoBehaviour
     {
         if (collision.tag == "Alien")
         {
-            Alien alien = collision.GetComponent<Alien>();
+            Enemy alien = collision.GetComponent<Enemy>();
             if (alien.GetComponent<Renderer>().isVisible)
             {
                 alien.DamageSelf(100, transform.position);
@@ -33,5 +33,13 @@ public class BigLaser : MonoBehaviour
                 human.DamageSelf(100, transform.position);
             }
         }
+        //if(collision.tag == "MutatedAlien")
+        //{
+        //    MutatedAlien alien = collision.GetComponent<MutatedAlien>();
+        //    if (alien.GetComponent<Renderer>().isVisible)
+        //    {
+        //        alien.DamageSelf(100, transform.position);
+        //    }
+        //}
     }
 }

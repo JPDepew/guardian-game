@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class AlienShoot : MonoBehaviour
 {
-
-    //private Vector2 direction;
     private float distance;
     private GameObject player;
     public GameObject bullet;
@@ -28,7 +26,7 @@ public class AlienShoot : MonoBehaviour
 
     IEnumerator AlienShooting(Transform playerTransform)
     {
-        while (true && (alien.curState == Alien.State.PATROLLING || alien.curState == Alien.State.INFECTED) && playerTransform != null)
+        while (true && (alien.curState == Alien.State.PATROLLING) && playerTransform != null)
         {
             Vector2 direction = (playerTransform.position - transform.position).normalized;
             GameObject alienBullet = Instantiate(bullet, transform.position, transform.rotation);

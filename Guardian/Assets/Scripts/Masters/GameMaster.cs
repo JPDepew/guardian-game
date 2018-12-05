@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class GameMaster : MonoBehaviour
 {
     public GameObject alien;
+    public GameObject flyingSaucer;
     public GameObject ship;
     public GameObject human;
     public Text bonusText;
@@ -29,6 +30,7 @@ public class GameMaster : MonoBehaviour
     private bool respawningCharacter;
     private Animator bonusTextAnimator;
 
+    private float waveCount = 0f;
     private bool firstSpawn = true;
     private int bonus;
     private int score;
@@ -45,11 +47,11 @@ public class GameMaster : MonoBehaviour
         bonusTextAnimator = bonusText.GetComponent<Animator>();
         StartGame();
         Alien.onAlienDestroyed += OnAlienDestroyed;
+        MutatedAlien.onMutatedAlienDestroyed += OnAlienDestroyed;
     }
 
     private void Update()
     {
-        //Debug.Log(alienDestroyedCountTracker);
         if (scoreTracker > 10000)
         {
             scoreTracker = 0;
@@ -65,7 +67,6 @@ public class GameMaster : MonoBehaviour
         gameState = GameState.RUNNING;
         alienDestroyedCountTracker = 0;
         shipReference = Instantiate(ship);
-        //shipController = shipReference.GetComponent<ShipController>();
 
         StartCoroutine(InstantiateNewWave());
     }
@@ -78,7 +79,7 @@ public class GameMaster : MonoBehaviour
 
     IEnumerator InstantiateNewWave()
     {
-        if (!firstSpawn)
+        if (waveCount > 0)
         {
             bonusText.gameObject.SetActive(true);
             bonusTextAnimator.Play("Wave End");
@@ -97,6 +98,7 @@ public class GameMaster : MonoBehaviour
         bonus = 0;
         StartCoroutine(InstantiateAliens());
         StartCoroutine(InstantiateHumans());
+        waveCount++;
     }
 
     private IEnumerator InstantiateHumans()
@@ -126,6 +128,10 @@ public class GameMaster : MonoBehaviour
             int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
 
             Vector2 alienPositon = new Vector2(xRange, yRange);
+            while (shipReference == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+            }
             if ((alienPositon - (Vector2)shipReference.transform.position).magnitude < dstAsteroidsCanSpawnFromPlayer)
             {
                 i--; // This is probably really sketchy, I know... But it works really well...
@@ -147,12 +153,20 @@ public class GameMaster : MonoBehaviour
 
     private void OnAlienDestroyed()
     {
+        Debug.Log("Alien Destoryed");
         alienDestroyedCountTracker++;
+        if(alienDestroyedCountTracker == numberOfAliens - 2)
+        {
+            if (waveCount % 2 == 0)
+            {
+                Instantiate(flyingSaucer, new Vector2(0, Camera.main.orthographicSize + 20), transform.rotation);
+            }
+        }
         if (alienDestroyedCountTracker >= numberOfAliens)
         {
             numberOfAliens++;
             alienDestroyedCountTracker = 0;
-            DealWithRemainingHumansAndAliens();
+            DealWithRemainingHumans();
             if (this != null)
             {
                 StartCoroutine(InstantiateNewWave());
@@ -160,13 +174,8 @@ public class GameMaster : MonoBehaviour
         }
     }
 
-    private void DealWithRemainingHumansAndAliens()
+    private void DealWithRemainingHumans()
     {
-        //Alien[] aliens = FindObjectsOfType<Alien>();
-        //for(int i = 0; i< aliens.Length; i++)
-        //{
-        //    Destroy(aliens[i]);
-        //}
         Human[] humans = FindObjectsOfType<Human>();
         for (int i = 0; i < humans.Length; i++)
         {
@@ -191,6 +200,7 @@ public class GameMaster : MonoBehaviour
 
     public void RespawnPlayer()
     {
+        playerStats.ResetAllPowerups();
         if (playerStats.GetLives() > 0)
         {
             StartCoroutine(RespawnPlayerTimer());
@@ -210,6 +220,7 @@ public class GameMaster : MonoBehaviour
     private void OnDestroy()
     {
         Alien.onAlienDestroyed -= OnAlienDestroyed;
+        MutatedAlien.onMutatedAlienDestroyed -= OnAlienDestroyed;
     }
 
     IEnumerator NewScene()

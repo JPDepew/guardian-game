@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : Hittable
 {
+    public TextMesh scoreText;
     public GameObject explosion;
     public ParticleSystem hit;
     public float maxHealth;
@@ -13,7 +15,7 @@ public class Enemy : Hittable
     protected float health;
     protected Vector2 direction;
     protected Vector2 newDirection;
-    protected AudioSource[] audioSource;
+    protected AudioSource[] audioSources;
     protected SpriteRenderer spriteRenderer;
     protected CircleCollider2D circleCollider;
 
@@ -21,7 +23,7 @@ public class Enemy : Hittable
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
-        audioSource = GetComponents<AudioSource>();
+        audioSources = GetComponents<AudioSource>();
         health = maxHealth;
     }
 
@@ -37,8 +39,6 @@ public class Enemy : Hittable
         {
             direction += Vector2.right * directionToEnemy.x * bounceBackAmount;
             Instantiate(hit, hitPosition, transform.rotation);
-            int index = Random.Range(0, 5);
-            audioSource[index].Play();
 
             float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
 
@@ -62,6 +62,14 @@ public class Enemy : Hittable
         Destroy(gameObject);
         Instantiate(explosion, transform.position, transform.rotation);
     }
+
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "leftMapSide" || collision.tag == "rightMapSide")
+        {
+            transform.parent = collision.transform;
+        }
+    } 
 
     IEnumerator Rotate(float directionToHitY)
     {

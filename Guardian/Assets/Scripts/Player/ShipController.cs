@@ -10,6 +10,9 @@ public class ShipController : MonoBehaviour
     public ParticleSystem fuelParticleSystem;
     public GameObject leftShip;
 
+    public Transform particleSystemPosLeft;
+    public Transform particleSystemPosRight;
+
     public float acceleration = 0.1f;
     public float maxSpeed = 2;
 
@@ -38,7 +41,6 @@ public class ShipController : MonoBehaviour
         audioSources = GetComponents<AudioSource>();
         verticalHalfSize = Camera.main.orthographicSize;
         invulnerabilityTargetTime = Time.time + invulnerabilityTime;
-        fuelParticleSystem = GetComponent<ParticleSystem>();
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0.5f);
@@ -67,7 +69,7 @@ public class ShipController : MonoBehaviour
     private void GetInput()
     {
         // Side to side movement
-        if (!shouldDestroyShip && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
+        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
         {
             leftShip.SetActive(true);
             spriteRenderer.enabled = false;
@@ -75,7 +77,9 @@ public class ShipController : MonoBehaviour
             {
                 direction += acceleration * Vector2.left;
             }
-            if (!fuelParticleSystem.isPlaying)
+            fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(180, -90, 0));
+            fuelParticleSystem.transform.position = particleSystemPosRight.position;
+            if (!fuelParticleSystem.isEmitting)
             {
                 fuelParticleSystem.Play();
             }
@@ -92,7 +96,9 @@ public class ShipController : MonoBehaviour
             {
                 direction += acceleration * Vector2.right;
             }
-            if (!fuelParticleSystem.isPlaying)
+            fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
+            fuelParticleSystem.transform.position = particleSystemPosLeft.position;
+            if (!fuelParticleSystem.isEmitting)
             {
                 fuelParticleSystem.Play();
             }
@@ -101,7 +107,7 @@ public class ShipController : MonoBehaviour
                 audioSources[1].Play();
             }
         }
-        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow))
+        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.Space))
         {
             if (Mathf.Abs(direction.x) > 0.01f)
             {
@@ -118,6 +124,43 @@ public class ShipController : MonoBehaviour
             else
             {
                 direction = new Vector2(0, direction.y);
+            }
+        }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (leftShip.activeSelf)
+            {
+                if (direction.x < maxSpeed)
+                {
+                    direction += acceleration * Vector2.right;
+                }
+                fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
+                fuelParticleSystem.transform.position = particleSystemPosRight.position;
+                if (!fuelParticleSystem.isEmitting)
+                {
+                    fuelParticleSystem.Play();
+                }
+                if (!audioSources[1].isPlaying)
+                {
+                    audioSources[1].Play();
+                }
+            }
+            else
+            {
+                if (direction.x > -maxSpeed)
+                {
+                    direction += acceleration * Vector2.left;
+                }
+                fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(180, -90, 0));
+                fuelParticleSystem.transform.position = particleSystemPosLeft.position;
+                if (!fuelParticleSystem.isEmitting)
+                {
+                    fuelParticleSystem.Play();
+                }
+                if (!audioSources[1].isPlaying)
+                {
+                    audioSources[1].Play();
+                }
             }
         }
 
@@ -201,7 +244,7 @@ public class ShipController : MonoBehaviour
 
     IEnumerator WaitBetweenShooting(bool disinfect)
     {
-        float waitTime = playerStats.bigLaser && !disinfect ? 0.6f : 0.1f;
+        float waitTime = playerStats.bigLaser && !disinfect ? 0.45f : 0.1f;
         yield return new WaitForSeconds(waitTime);
         canShoot = true;
     }
@@ -219,23 +262,14 @@ public class ShipController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Destroys the player, instantiates the explosion particle system, which has the explosion sound on it, and decrements lives.
+    /// </summary>
     void DestroySelf()
     {
         Instantiate(explosion, transform.position, transform.rotation);
-        //audioSources[2].Play();
-
-        //shouldDestroyShip = true;
-        //leftShip.SetActive(false);
-        //spriteRenderer.enabled = false;
-        //GetComponent<Collider2D>().enabled = false;
         playerStats.DecrementLives();
-
-        //if (human)
-        //{
-        //    Destroy(human.gameObject);
-        //}
-
-        //yield return new WaitForSeconds(destroyWaitTime);
+        playerStats.ResetAllPowerups();
         Destroy(gameObject);
     }
 
@@ -249,9 +283,9 @@ public class ShipController : MonoBehaviour
         }
         if (collision.tag == "AlienBullet")
         {
-            DestroySelf();
-            Instantiate(explosion, transform.position, transform.rotation);
+            Destroy(collision.gameObject);
             FindObjectOfType<GameMaster>().RespawnPlayer();
+            DestroySelf();
         }
         if (collision.tag == "Human")
         {
