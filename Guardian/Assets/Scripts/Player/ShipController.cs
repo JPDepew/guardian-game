@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ShipController : MonoBehaviour
@@ -6,9 +7,16 @@ public class ShipController : MonoBehaviour
     public GameObject gunPosition;
     public GameObject bullet;
     public GameObject bulletDisinfect;
+    public GameObject bigLaser;
     public GameObject explosion;
+    public GameObject healthIndicator;
     public ParticleSystem fuelParticleSystem;
     public GameObject leftShip;
+
+    public Transform healthIndicatorParent;
+    public Transform healthIndicatorPos;
+    public float healthIndicatorOffset = 0.5f;
+    private float currentHealthIndicatorOffset = 0;
 
     public Transform particleSystemPosLeft;
     public Transform particleSystemPosRight;
@@ -19,8 +27,8 @@ public class ShipController : MonoBehaviour
     public float linearInterpolationTime = 0.2f;
     public float destroyWaitTime = 10;
 
-    public GameObject bigLaser;
     public Human human { get; set; }
+    private Stack<GameObject> healthIndicators;
     private AudioSource[] audioSources;
     private Vector2 direction;
     private SpriteRenderer spriteRenderer;
@@ -37,10 +45,12 @@ public class ShipController : MonoBehaviour
 
     private void Start()
     {
+        healthIndicators = new Stack<GameObject>();
         playerStats = PlayerStats.instance;
         audioSources = GetComponents<AudioSource>();
         verticalHalfSize = Camera.main.orthographicSize;
         invulnerabilityTargetTime = Time.time + invulnerabilityTime;
+        InitializeHealthIndicators();
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0.5f);
@@ -66,11 +76,37 @@ public class ShipController : MonoBehaviour
         transform.position = transform.position + (Vector3)direction * Time.deltaTime;
     }
 
+    public void InitializeHealthIndicators()
+    {
+        currentHealthIndicatorOffset = 0;
+        foreach (GameObject gameObject in healthIndicators)
+        {
+            Destroy(gameObject);
+        }
+        healthIndicators.Clear();
+        for (int i = 0; i < playerStats.GetLives(); i++)
+        {
+            GameObject tempHealthIndicator = Instantiate(healthIndicator, healthIndicatorPos.position + Vector3.right * currentHealthIndicatorOffset, transform.rotation);
+            tempHealthIndicator.transform.parent = healthIndicatorParent;
+            healthIndicators.Push(tempHealthIndicator);
+            if (leftShip.gameObject.activeSelf)
+            {
+                tempHealthIndicator.transform.localScale = new Vector2(-tempHealthIndicator.transform.localScale.x, tempHealthIndicator.transform.localScale.y);
+                currentHealthIndicatorOffset -= healthIndicatorOffset;
+            }
+            else
+            {
+                currentHealthIndicatorOffset += healthIndicatorOffset;
+            }
+        }
+    }
+
     private void GetInput()
     {
         // Side to side movement
         if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
         {
+            healthIndicatorParent.localScale = new Vector2(-Mathf.Abs(healthIndicatorParent.localScale.x), healthIndicatorParent.localScale.y);
             leftShip.SetActive(true);
             spriteRenderer.enabled = false;
             if (direction.x > -maxSpeed)
@@ -90,6 +126,7 @@ public class ShipController : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
+            healthIndicatorParent.localScale = new Vector2(Mathf.Abs(healthIndicatorParent.localScale.x), healthIndicatorParent.localScale.y);
             leftShip.SetActive(false);
             spriteRenderer.enabled = true;
             if (direction.x < maxSpeed)

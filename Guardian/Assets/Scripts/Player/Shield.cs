@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BigLaser : MonoBehaviour
-{
+public class Shield : MonoBehaviour {
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Alien")
@@ -14,14 +14,9 @@ public class BigLaser : MonoBehaviour
                 alien.DamageSelf(100, transform.position);
             }
         }
-        if (collision.tag == "Human")
+        if (collision.tag == "AlienBullet")
         {
-            Debug.Log("WTF");
-            Human human = collision.GetComponent<Human>();
-            if (human.curState != Human.State.GROUNDED)
-            {
-                human.DamageSelf(100, transform.position);
-            }
+            Destroy(collision.gameObject);
         }
     }
 }

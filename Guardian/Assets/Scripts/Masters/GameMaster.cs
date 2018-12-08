@@ -153,13 +153,12 @@ public class GameMaster : MonoBehaviour
 
     private void OnAlienDestroyed()
     {
-        Debug.Log("Alien Destoryed");
         alienDestroyedCountTracker++;
         if(alienDestroyedCountTracker == numberOfAliens - 2)
         {
             if (waveCount % 2 == 0)
             {
-                Instantiate(flyingSaucer, new Vector2(0, Camera.main.orthographicSize + 20), transform.rotation);
+                Instantiate(flyingSaucer, new Vector2(0, Camera.main.orthographicSize + 5), transform.rotation);
             }
         }
         if (alienDestroyedCountTracker >= numberOfAliens)

@@ -10,7 +10,6 @@ public class LaserPowerup : MonoBehaviour {
     {
         if(other.tag == "Player")
         {
-            Debug.Log("hit");
             PlayerStats.instance.bigLaser = true;
             Instantiate(explosion, transform.position, transform.rotation);
             Destroy(gameObject);

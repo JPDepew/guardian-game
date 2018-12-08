@@ -22,11 +22,10 @@ GameObject:
   - component: {fileID: 212825033298032700}
   - component: {fileID: 114154950214922420}
   - component: {fileID: 50184987301346392}
-  - component: {fileID: 58047865579635828}
-  - component: {fileID: 61038417088017816}
   - component: {fileID: 82740347545313820}
   - component: {fileID: 82986941857822050}
   - component: {fileID: 82204206279417118}
+  - component: {fileID: 60625853155871218}
   m_Layer: 10
   m_Name: Alien_Infected
   m_TagString: Alien
@@ -67,8 +66,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &58047865579635828
-CircleCollider2D:
+--- !u!60 &60625853155871218
+PolygonCollider2D:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -79,22 +78,7 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.006332916, y: 0.37588868}
-  serializedVersion: 2
-  m_Radius: 0.42067406
---- !u!61 &61038417088017816
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1947277898753582}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.0021109357, y: -0.30820012}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -104,9 +88,17 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.10073052, y: 0.5587547}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.0030146586, y: -0.39192542}
+      - {x: -0.14084396, y: -0.08107515}
+      - {x: -0.41618767, y: 0.09921452}
+      - {x: -0.43294686, y: 0.55408263}
+      - {x: -0.24865587, y: 0.7490777}
+      - {x: 0.22952291, y: 0.79350144}
+      - {x: 0.37132514, y: 0.55774486}
+      - {x: 0.3363231, y: 0.07763277}
+      - {x: 0.11615887, y: -0.04951336}
 --- !u!82 &82204206279417118
 AudioSource:
   m_ObjectHideFlags: 1
@@ -413,6 +405,14 @@ MonoBehaviour:
   rotateTime: 0.1
   speed: 6
   easeToNewDirection: 0.2
+  human: {fileID: 1691991003821096, guid: ee2d588b6b6f794419524debbecde589, type: 2}
+  disinfectExplosion: {fileID: 0}
+  disinfectHumanOffset: 0.45
+  destroyDelay: 0.31
+  disinfectHealth: 3
+  hitMask: {fileID: 1420692630697412, guid: 9f82f5f963221b043bf771af582717a8, type: 2}
+  disinfectMask: {fileID: 1445406477649806, guid: fa87d4e44434d3c4e967a5472853ccf0,
+    type: 2}
 --- !u!212 &212825033298032700
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -445,8 +445,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 2046930551
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 212d89858cd22dc43bc030e35933c91c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -457,5 +457,5 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 2
   m_SpriteSortPoint: 0

@@ -23,7 +23,6 @@ public class Human : Hittable
 
     void Start()
     {
-        curState = State.GROUNDED;
         verticalHalfSize = Camera.main.orthographicSize;
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider2D = GetComponent<BoxCollider2D>();

@@ -51,6 +51,7 @@ public class Alien : Enemy
         StopCoroutine("ChangeDirection");
         StopCoroutine("AvoidWalls");
         StartCoroutine("ChasingHuman", human);
+        StartCoroutine("DelayedFindParent");
     }
 
     IEnumerator ChangeDirection()
@@ -60,6 +61,16 @@ public class Alien : Enemy
         {
             newDirection = Random.insideUnitCircle.normalized;
             yield return new WaitForSeconds(timeToChangeDirection);
+        }
+    }
+
+    IEnumerator DelayedFindParent()
+    {
+        yield return new WaitForSeconds(2f);
+        if(transform.parent == null)
+        {
+            Debug.Log("parent is null");
+            transform.parent = GameObject.FindGameObjectWithTag("rightMapSide").transform;
         }
     }
 

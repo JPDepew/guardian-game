@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStats : MonoBehaviour {
+public class PlayerStats : MonoBehaviour
+{
 
     public static PlayerStats instance;
 
     private int lives;
     private int score;
     public bool bigLaser = false;
+
+    private int scoreTracker;
 
     private void Awake()
     {
@@ -25,6 +28,12 @@ public class PlayerStats : MonoBehaviour {
     public void IncreaseScoreBy(int amount)
     {
         score += amount;
+        scoreTracker += amount;
+        if (scoreTracker > 20000)
+        {
+            IncrementLives();
+            scoreTracker = 0;
+        }
     }
 
 
@@ -40,6 +49,11 @@ public class PlayerStats : MonoBehaviour {
     public void IncrementLives()
     {
         lives++;
+        ShipController s = FindObjectOfType<ShipController>();
+        if (s != null)
+        {
+            s.InitializeHealthIndicators();
+        }
     }
 
     public void ResetAllPowerups()
