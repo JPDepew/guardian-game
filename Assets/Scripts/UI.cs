@@ -18,13 +18,7 @@ public class UI : MonoBehaviour
     public void Play()
     {
         audioSource[0].Play();
-        StartCoroutine(StartGame());
-    }
-
-    IEnumerator StartGame()
-    {
-        yield return new WaitForSeconds(0.2f);
-        SceneManager.LoadScene(2);
+        StartCoroutine(DelayedLoad(2));
     }
 
     public void ShowInstructions()
@@ -42,7 +36,18 @@ public class UI : MonoBehaviour
     {
         audioSource[0].Play();
         Application.Quit();
+    }
 
+    public void LoadCredits()
+    {
+        audioSource[0].Play();
+        StartCoroutine(DelayedLoad(4));
+    }
+
+    IEnumerator DelayedLoad(int buildIndex)
+    {
+        yield return new WaitForSeconds(0.1f);
+        SceneManager.LoadScene(buildIndex);
     }
 
     IEnumerator CycleInstructions()

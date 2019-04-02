@@ -1,21 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class DestroyObject : MonoBehaviour
 {
     public float destroyAfter = 1f;
 
-    private float destroyPoint;
-
     private void Start()
     {
-        destroyPoint = Time.time + destroyAfter;
+        StartCoroutine(DestroyAfter());
     }
 
-    void Update()
+    IEnumerator DestroyAfter()
     {
-        if(Time.time > destroyPoint)
-        {
-            Destroy(gameObject);
-        }
+        yield return new WaitForSeconds(destroyAfter);
+        Destroy(gameObject);
     }
 }

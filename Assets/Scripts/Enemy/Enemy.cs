@@ -1,27 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : Hittable
 {
+    public TextMesh scoreText;
     public GameObject explosion;
     public ParticleSystem hit;
     public float maxHealth;
     public float bounceBackAmount = 0.4f;
     public float rotateAmount = 2f;
     public float rotateTime = 0.2f;
-    protected float health;
+    public float health;
     protected Vector2 direction;
     protected Vector2 newDirection;
-    protected AudioSource[] audioSource;
+    protected AudioSource[] audioSources;
     protected SpriteRenderer spriteRenderer;
     protected CircleCollider2D circleCollider;
+
+    bool isDestroyed = false;
 
     protected virtual void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
-        audioSource = GetComponents<AudioSource>();
+        audioSources = GetComponents<AudioSource>();
         health = maxHealth;
     }
 
@@ -31,14 +35,16 @@ public class Enemy : Hittable
         health -= damage;
         if (health <= 0)
         {
-            DestroySelf();
+            if (!isDestroyed)
+            {
+                isDestroyed = true;
+                DestroySelf();
+            }
         }
         else
         {
             direction += Vector2.right * directionToEnemy.x * bounceBackAmount;
             Instantiate(hit, hitPosition, transform.rotation);
-            int index = Random.Range(0, 5);
-            audioSource[index].Play();
 
             float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
 
@@ -50,8 +56,6 @@ public class Enemy : Hittable
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPoint).normalized;
         float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
-
-        // TODO: find a better disinfect sound
         //int index = Random.Range(0, 5);
         //audioSource[index].Play();
         //StartCoroutine(Rotate(directionToHitY));
@@ -61,6 +65,14 @@ public class Enemy : Hittable
     {
         Destroy(gameObject);
         Instantiate(explosion, transform.position, transform.rotation);
+    }
+
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "leftMapSide" || collision.tag == "rightMapSide")
+        {
+            transform.parent = collision.transform;
+        }
     }
 
     IEnumerator Rotate(float directionToHitY)

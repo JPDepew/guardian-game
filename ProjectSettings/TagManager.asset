@@ -9,6 +9,9 @@ TagManager:
   - rightMapSide
   - Alien
   - AlienBullet
+  - MutatedAlien
+  - LaserPowerup
+  - Watch
   layers:
   - Default
   - TransparentFX
@@ -48,4 +51,7 @@ TagManager:
     locked: 0
   - name: Particles
     uniqueID: 4225689811
+    locked: 0
+  - name: Mutated Alien
+    uniqueID: 2046930551
     locked: 0

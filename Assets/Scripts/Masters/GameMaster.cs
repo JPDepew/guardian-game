@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class GameMaster : MonoBehaviour
 {
     public GameObject alien;
+    public GameObject flyingSaucer;
     public GameObject ship;
     public GameObject human;
-    public Text bonusText;
+    public GameObject watchAlien;
     public ParticleSystem alienSpawn;
 
     public GameObject side1;
@@ -23,12 +24,18 @@ public class GameMaster : MonoBehaviour
 
     public Text scoreText;
     public Text livesText;
+    public Text bonusText;
+    public Text waveText;
+    public Text instructionsText;
+    public Text exit;
 
     private PlayerStats playerStats;
     private GameObject shipReference;
     private bool respawningCharacter;
     private Animator bonusTextAnimator;
+    private AudioSource[] audioSources;
 
+    private float waveCount = 0f;
     private bool firstSpawn = true;
     private int bonus;
     private int score;
@@ -36,6 +43,10 @@ public class GameMaster : MonoBehaviour
     private int alienDestroyedCountTracker;
     private int dstAsteroidsCanSpawnFromPlayer = 3;
     private float verticalHalfSize = 0;
+    private bool currentWatchAlien;
+
+    private Vector3 playerPosition;
+    private Quaternion rotation;
 
     void Start()
     {
@@ -45,18 +56,32 @@ public class GameMaster : MonoBehaviour
         bonusTextAnimator = bonusText.GetComponent<Animator>();
         StartGame();
         Alien.onAlienDestroyed += OnAlienDestroyed;
+        MutatedAlien.onMutatedAlienDestroyed += OnAlienDestroyed;
+        Watch.onWatchDestroyed += OnWatchDestroyed;
+        audioSources = GetComponents<AudioSource>();
+        playerPosition = new Vector3(0, 0, 0);
+
+        StartCoroutine(InstructionsTextFadeOut());
     }
 
     private void Update()
     {
-        //Debug.Log(alienDestroyedCountTracker);
-        if (scoreTracker > 10000)
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            scoreTracker = 0;
-            playerStats.IncrementLives();
+            SceneManager.LoadScene(1);
         }
-
         HandleUI();
+    }
+
+    IEnumerator InstructionsTextFadeOut()
+    {
+        yield return new WaitForSeconds(3f);
+        while (instructionsText.color.a > 0.05f)
+        {
+            instructionsText.color = new Color(instructionsText.color.r, instructionsText.color.g, instructionsText.color.b, instructionsText.color.a - 0.05f);
+            exit.color = new Color(exit.color.r, exit.color.g, exit.color.b, exit.color.a - 0.05f);
+            yield return null;
+        }
     }
 
     private void StartGame()
@@ -65,7 +90,6 @@ public class GameMaster : MonoBehaviour
         gameState = GameState.RUNNING;
         alienDestroyedCountTracker = 0;
         shipReference = Instantiate(ship);
-        //shipController = shipReference.GetComponent<ShipController>();
 
         StartCoroutine(InstantiateNewWave());
     }
@@ -78,11 +102,12 @@ public class GameMaster : MonoBehaviour
 
     IEnumerator InstantiateNewWave()
     {
-        if (!firstSpawn)
+        if (waveCount > 0)
         {
             bonusText.gameObject.SetActive(true);
             bonusTextAnimator.Play("Wave End");
-            bonusText.text = "Surviving humans: " + (bonus / 500) + " x 500 = " + bonus + " bonus";
+            waveText.text = "Wave " + waveCount + " Complete";
+            bonusText.text = "Surviving humans: " + (bonus / 500) + " x 500 = " + bonus + " bonus\nTotal Points: " + (playerStats.GetScore() + bonus);
         }
         else
         {
@@ -97,6 +122,7 @@ public class GameMaster : MonoBehaviour
         bonus = 0;
         StartCoroutine(InstantiateAliens());
         StartCoroutine(InstantiateHumans());
+        waveCount++;
     }
 
     private IEnumerator InstantiateHumans()
@@ -121,11 +147,15 @@ public class GameMaster : MonoBehaviour
         for (int i = 0; i < numberOfAliens; i++)
         {
             int xRange = side1.transform.position.x > side2.transform.position.x ?
-                (int)Random.Range(side1.transform.position.x + 18, side2.transform.position.x - 18) :
-                (int)Random.Range(side1.transform.position.x - 18, side2.transform.position.x + 18);
+                (int)Random.Range(side1.transform.position.x + 16, side2.transform.position.x - 16) :
+                (int)Random.Range(side1.transform.position.x - 16, side2.transform.position.x + 16);
             int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
 
             Vector2 alienPositon = new Vector2(xRange, yRange);
+            while (shipReference == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+            }
             if ((alienPositon - (Vector2)shipReference.transform.position).magnitude < dstAsteroidsCanSpawnFromPlayer)
             {
                 i--; // This is probably really sketchy, I know... But it works really well...
@@ -136,6 +166,14 @@ public class GameMaster : MonoBehaviour
             }
             yield return null;
         }
+        if (waveCount % 6 == 0 && !currentWatchAlien)
+        {
+            currentWatchAlien = true;
+            audioSources[0].Stop();
+            Instantiate(watchAlien, new Vector2(shipReference.transform.position.x + 4, Camera.main.orthographicSize + 3), watchAlien.transform.rotation);
+            yield return new WaitForSeconds(6);
+            audioSources[1].Play();
+        }
     }
 
     IEnumerator SpawnAlien(Vector2 alienPosition)
@@ -145,14 +183,28 @@ public class GameMaster : MonoBehaviour
         Instantiate(alien, tempTransform.position, transform.rotation);
     }
 
+    private void OnWatchDestroyed()
+    {
+        currentWatchAlien = false;
+        audioSources[0].Play();
+        audioSources[1].Stop();
+    }
+
     private void OnAlienDestroyed()
     {
         alienDestroyedCountTracker++;
+        if (alienDestroyedCountTracker == numberOfAliens - 2)
+        {
+            if (waveCount % 2 == 0)
+            {
+                Instantiate(flyingSaucer, new Vector2(shipReference.transform.position.x + 12, Camera.main.orthographicSize - 2), transform.rotation);
+            }
+        }
         if (alienDestroyedCountTracker >= numberOfAliens)
         {
             numberOfAliens++;
             alienDestroyedCountTracker = 0;
-            DealWithRemainingHumansAndAliens();
+            DealWithRemainingHumans();
             if (this != null)
             {
                 StartCoroutine(InstantiateNewWave());
@@ -160,13 +212,8 @@ public class GameMaster : MonoBehaviour
         }
     }
 
-    private void DealWithRemainingHumansAndAliens()
+    private void DealWithRemainingHumans()
     {
-        //Alien[] aliens = FindObjectsOfType<Alien>();
-        //for(int i = 0; i< aliens.Length; i++)
-        //{
-        //    Destroy(aliens[i]);
-        //}
         Human[] humans = FindObjectsOfType<Human>();
         for (int i = 0; i < humans.Length; i++)
         {
@@ -183,14 +230,11 @@ public class GameMaster : MonoBehaviour
         gameState = GameState.STOPPED;
     }
 
-    public void IncreaseScore(int amount)
-    {
-        PlayerStats.instance.IncreaseScoreBy(amount);
-        scoreTracker += amount;
-    }
-
     public void RespawnPlayer()
     {
+        playerPosition = shipReference.transform.position;
+        rotation = shipReference.transform.rotation;
+        playerStats.ResetAllPowerups();
         if (playerStats.GetLives() > 0)
         {
             StartCoroutine(RespawnPlayerTimer());
@@ -204,12 +248,18 @@ public class GameMaster : MonoBehaviour
     IEnumerator RespawnPlayerTimer()
     {
         yield return new WaitForSeconds(playerRespawnDelay);
-        shipReference = Instantiate(ship);
+        shipReference = Instantiate(ship, new Vector2(playerPosition.x, 0), rotation);
     }
 
+    // This is necessary
+    // Without this, all is for naught.
+    // There's some weird thing with reloading scenes, where an object disappears, but it is still subscribed to an event. What?
+    // Who knows, but this solves the problem
     private void OnDestroy()
     {
         Alien.onAlienDestroyed -= OnAlienDestroyed;
+        MutatedAlien.onMutatedAlienDestroyed -= OnAlienDestroyed;
+        Watch.onWatchDestroyed -= OnWatchDestroyed;
     }
 
     IEnumerator NewScene()
