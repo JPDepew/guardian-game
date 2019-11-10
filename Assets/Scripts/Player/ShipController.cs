@@ -33,6 +33,7 @@ public class ShipController : MonoBehaviour
     private Vector2 direction;
     private SpriteRenderer spriteRenderer;
     private PlayerStats playerStats;
+    private Utilities utilities;
     private bool canShoot = true;
 
     private float invulnerabilityTime = 1f;
@@ -45,8 +46,10 @@ public class ShipController : MonoBehaviour
 
     private void Start()
     {
-        healthIndicators = new Stack<GameObject>();
         playerStats = PlayerStats.instance;
+        utilities = Utilities.instance;
+
+        healthIndicators = new Stack<GameObject>();
         audioSources = GetComponents<AudioSource>();
         verticalHalfSize = Camera.main.orthographicSize;
         invulnerabilityTargetTime = Time.time + invulnerabilityTime;
@@ -63,6 +66,7 @@ public class ShipController : MonoBehaviour
 
     void Update()
     {
+        if (utilities.gameState == Utilities.GameState.STOPPED) return;
 
         GetInput();
 

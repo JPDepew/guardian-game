@@ -15,19 +15,18 @@ public class GameMaster : MonoBehaviour
     public GameObject side1;
     public GameObject side2;
 
+    Utilities utilities;
+
     public float numberOfAliens;
     public float playerRespawnDelay = 10f;
     public float instantiateNewWaveDelay = 2f;
-
-    public enum GameState { RUNNING, STOPPED }
-    public GameState gameState;
 
     public Text scoreText;
     public Text livesText;
     public Text bonusText;
     public Text waveText;
     public Text instructionsText;
-    public Text exit;
+    public GameObject pauseCanvas;
 
     private PlayerStats playerStats;
     private GameObject shipReference;
@@ -50,27 +49,55 @@ public class GameMaster : MonoBehaviour
 
     void Start()
     {
-        gameState = GameState.STOPPED;
+        // setting instance refs
         playerStats = PlayerStats.instance;
-        verticalHalfSize = Camera.main.orthographicSize;
-        bonusTextAnimator = bonusText.GetComponent<Animator>();
-        StartGame();
+        utilities = Utilities.instance;
+
+        // Event listeners
         Alien.onAlienDestroyed += OnAlienDestroyed;
         MutatedAlien.onMutatedAlienDestroyed += OnAlienDestroyed;
         Watch.onWatchDestroyed += OnWatchDestroyed;
+
+        verticalHalfSize = Camera.main.orthographicSize;
+        bonusTextAnimator = bonusText.GetComponent<Animator>();
         audioSources = GetComponents<AudioSource>();
         playerPosition = new Vector3(0, 0, 0);
+        utilities.gameState = Utilities.GameState.STOPPED;
 
+        StartGame();
         StartCoroutine(InstructionsTextFadeOut());
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (utilities.gameState == Utilities.GameState.STOPPED)
         {
-            SceneManager.LoadScene(1);
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                SceneManager.LoadScene(1);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
         }
         HandleUI();
+    }
+
+    private void TogglePause()
+    {
+        if (utilities.gameState == Utilities.GameState.STOPPED)
+        {
+            utilities.gameState = Utilities.GameState.RUNNING;
+            Time.timeScale = 1;
+            pauseCanvas.SetActive(false);
+        }
+        else
+        {
+            utilities.gameState = Utilities.GameState.STOPPED;
+            Time.timeScale = 0;
+            pauseCanvas.SetActive(true);
+        }
     }
 
     IEnumerator InstructionsTextFadeOut()
@@ -79,15 +106,15 @@ public class GameMaster : MonoBehaviour
         while (instructionsText.color.a > 0.05f)
         {
             instructionsText.color = new Color(instructionsText.color.r, instructionsText.color.g, instructionsText.color.b, instructionsText.color.a - 0.05f);
-            exit.color = new Color(exit.color.r, exit.color.g, exit.color.b, exit.color.a - 0.05f);
             yield return null;
         }
+        instructionsText.color = new Color(0, 0, 0, 0);
     }
 
     private void StartGame()
     {
         Data.Instance.score = 0;
-        gameState = GameState.RUNNING;
+        utilities.gameState = Utilities.GameState.RUNNING;
         alienDestroyedCountTracker = 0;
         shipReference = Instantiate(ship);
 
@@ -118,7 +145,7 @@ public class GameMaster : MonoBehaviour
         bonusText.text = "";
         bonusText.GetComponent<Animator>().StopPlayback();
         bonusText.gameObject.SetActive(false);
-        PlayerStats.instance.IncreaseScoreBy(bonus);
+        playerStats.IncreaseScoreBy(bonus);
         bonus = 0;
         StartCoroutine(InstantiateAliens());
         StartCoroutine(InstantiateHumans());
@@ -195,7 +222,7 @@ public class GameMaster : MonoBehaviour
         alienDestroyedCountTracker++;
         if (alienDestroyedCountTracker == numberOfAliens - 2)
         {
-            if (waveCount % 2 == 0)
+            if (waveCount % 2 == 0 && shipReference != null)
             {
                 Instantiate(flyingSaucer, new Vector2(shipReference.transform.position.x + 12, Camera.main.orthographicSize - 2), transform.rotation);
             }
@@ -227,7 +254,7 @@ public class GameMaster : MonoBehaviour
 
     private void EndGame()
     {
-        gameState = GameState.STOPPED;
+        utilities.gameState = Utilities.GameState.STOPPED;
     }
 
     public void RespawnPlayer()

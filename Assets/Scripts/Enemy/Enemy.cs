@@ -81,13 +81,13 @@ public class Enemy : Hittable
         while (Time.time < timer)
         {
             transform.Rotate(new Vector3(0, 0, directionToHitY * rotateAmount));
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
         }
         timer = Time.time + rotateTime;
         while (Time.time < timer)
         {
             transform.Rotate(new Vector3(0, 0, -directionToHitY * rotateAmount));
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

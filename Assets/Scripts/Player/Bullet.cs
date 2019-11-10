@@ -9,6 +9,8 @@ public class Bullet : MonoBehaviour
     public LayerMask layerMask;
     public float damage = 1;
 
+    Utilities utilities;
+
     protected RaycastHit2D hit;
     SpriteRenderer spriteRenderer;
     private float direction;
@@ -16,12 +18,16 @@ public class Bullet : MonoBehaviour
 
     protected virtual void Start()
     {
+        utilities = Utilities.instance;
+
         direction = Mathf.Sign(transform.localScale.x);
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     protected virtual void Update()
     {
+        if (utilities.gameState == Utilities.GameState.STOPPED) return;
+
         transform.Translate(Vector3.right * speed * direction);
 
         if (shouldRaycast)

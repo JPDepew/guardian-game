@@ -6,6 +6,7 @@ public class Human : Hittable
 {
     public enum State { GROUNDED, ABDUCTED, FALLING, INFECTED, RESCUED, DEAD }
     public State curState;
+    Utilities utilities;
 
     public float acceleration = 0.01f;
     public float dieOffset = 1;
@@ -25,7 +26,9 @@ public class Human : Hittable
 
     void Start()
     {
+        utilities = Utilities.instance;
         verticalHalfSize = Camera.main.orthographicSize;
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider2D = GetComponent<BoxCollider2D>();
         audioSource = GetComponent<AudioSource>();
@@ -33,22 +36,25 @@ public class Human : Hittable
 
     void Update()
     {
-        if (curState == State.FALLING)
+        if (utilities.gameState == Utilities.GameState.RUNNING)
         {
-            transform.parent = currentGround;
-            if (transform.position.y > -verticalHalfSize + verticalHalfSizeOffset)
+            if (curState == State.FALLING)
             {
-                actualSpeed += acceleration;
-                transform.Translate(Vector2.down * actualSpeed, Space.World);
+                transform.parent = currentGround;
+                if (transform.position.y > -verticalHalfSize + verticalHalfSizeOffset)
+                {
+                    actualSpeed += acceleration;
+                    transform.Translate(Vector2.down * actualSpeed, Space.World);
+                }
+                else
+                {
+                    DestroySelf();
+                }
             }
             else
             {
-                DestroySelf();
+                actualSpeed = 0;
             }
-        }
-        else
-        {
-            actualSpeed = 0;
         }
         if (curState == State.RESCUED)
         {
@@ -74,7 +80,7 @@ public class Human : Hittable
     public void SetToFalling(Transform newParent)
     {
         float dstToGround = transform.position.x - verticalHalfSize + verticalHalfSizeOffset;
-        if(dstToGround < dieOffset)
+        if (dstToGround < dieOffset)
         {
             //human can live if hit ground
         }
