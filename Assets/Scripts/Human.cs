@@ -18,16 +18,21 @@ public class Human : Hittable
     private GameObject leftSide;
     private float verticalHalfSize;
     private float verticalHalfSizeOffset = 0.8f;
+    private bool shouldDie = true;
 
     AudioSource audioSource;
 
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider2D;
 
+    private void Awake()
+    {
+        verticalHalfSize = Camera.main.orthographicSize;
+    }
+
     void Start()
     {
         utilities = Utilities.instance;
-        verticalHalfSize = Camera.main.orthographicSize;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider2D = GetComponent<BoxCollider2D>();
@@ -36,25 +41,32 @@ public class Human : Hittable
 
     void Update()
     {
-        if (utilities.gameState == Utilities.GameState.RUNNING)
+        if (utilities.gameState == Utilities.GameState.STOPPED) return;
+
+        if (curState == State.FALLING)
         {
-            if (curState == State.FALLING)
+            transform.parent = currentGround;
+            if (transform.position.y > -verticalHalfSize + verticalHalfSizeOffset)
             {
-                transform.parent = currentGround;
-                if (transform.position.y > -verticalHalfSize + verticalHalfSizeOffset)
-                {
-                    actualSpeed += acceleration;
-                    transform.Translate(Vector2.down * actualSpeed, Space.World);
-                }
-                else
-                {
-                    DestroySelf();
-                }
+                actualSpeed += acceleration;
+                transform.Translate(Vector2.down * actualSpeed, Space.World);
             }
             else
             {
-                actualSpeed = 0;
+                if (shouldDie)
+                {
+                    DestroySelf();
+                }
+                else
+                {
+                    curState = State.GROUNDED;
+                    shouldDie = true;
+                }
             }
+        }
+        else
+        {
+            actualSpeed = 0;
         }
         if (curState == State.RESCUED)
         {
@@ -77,12 +89,19 @@ public class Human : Hittable
         }
     }
 
+    /// <summary>
+    /// Set the human state to falling and detect if the human will die upon hitting the ground.
+    /// </summary>
+    /// <param name="newParent">The humans new parent (the current background).</param>
     public void SetToFalling(Transform newParent)
     {
-        float dstToGround = transform.position.x - verticalHalfSize + verticalHalfSizeOffset;
-        if (dstToGround < dieOffset)
+        shouldDie = true;
+        float correctedPos = transform.position.y + verticalHalfSize;
+        float dstToGround = verticalHalfSize * 2 - correctedPos + verticalHalfSizeOffset;
+        if (correctedPos < dieOffset)
         {
             //human can live if hit ground
+            shouldDie = false;
         }
         transform.SetParent(newParent);
         curState = State.FALLING;

@@ -58,10 +58,7 @@ public class MutatedAlien : Enemy
         PlayHitSound();
         if (disinfectHealth <= 0)
         {
-            if (onMutatedAlienDestroyed != null)
-            {
-                onMutatedAlienDestroyed();
-            }
+            onMutatedAlienDestroyed?.Invoke();
             speed = speed / 2;
             GameObject temp = Instantiate(disinfectMask, new Vector2(transform.position.x, transform.position.y + 0.3f), transform.rotation);
             temp.transform.parent = transform;
@@ -74,17 +71,14 @@ public class MutatedAlien : Enemy
         GetComponent<PolygonCollider2D>().enabled = false;
         yield return new WaitForSeconds(destroyDelay);
         GameObject newHuman = Instantiate(human, new Vector2(transform.position.x, transform.position.y - disinfectHumanOffset), Quaternion.Euler(Vector2.zero));
-        newHuman.GetComponent<Human>().curState = Human.State.FALLING;
+        newHuman.GetComponent<Human>().SetToFalling(transform.parent);
         Destroy(gameObject);
     }
 
     protected override void DestroySelf()
     {
         PlayerStats.instance.IncreaseScoreBy(50);
-        if (onMutatedAlienDestroyed != null)
-        {
-            onMutatedAlienDestroyed();
-        }
+        onMutatedAlienDestroyed?.Invoke();
         base.DestroySelf();
     }
 

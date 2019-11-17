@@ -74,7 +74,7 @@ public class GameMaster : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                SceneManager.LoadScene(1);
+                EndGame();
             }
         }
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -183,6 +183,7 @@ public class GameMaster : MonoBehaviour
             {
                 yield return new WaitForSeconds(0.2f);
             }
+            // Making sure aliens don't spawn too close to the player
             if ((alienPositon - (Vector2)shipReference.transform.position).magnitude < dstAsteroidsCanSpawnFromPlayer)
             {
                 i--; // This is probably really sketchy, I know... But it works really well...
@@ -254,6 +255,8 @@ public class GameMaster : MonoBehaviour
 
     private void EndGame()
     {
+        SceneManager.LoadScene(1);
+        Time.timeScale = 1;
         utilities.gameState = Utilities.GameState.STOPPED;
     }
 
