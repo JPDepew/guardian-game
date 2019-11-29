@@ -23,7 +23,9 @@ public class ShipController : MonoBehaviour
     public Transform particleSystemPosRight;
 
     public float acceleration = 0.1f;
+    public float backwardsAcceleration = 0.1f; 
     public float maxSpeed = 2;
+    public float maxBackwardsSpeed = 2;
 
     public float linearInterpolationTime = 0.2f;
 
@@ -172,13 +174,14 @@ public class ShipController : MonoBehaviour
                 direction = new Vector2(0, direction.y);
             }
         }
+        // Reverse movement
         if (Input.GetKey(KeyCode.Space))
         {
             if (leftShip.activeSelf)
             {
-                if (direction.x < maxSpeed)
+                if (direction.x < maxBackwardsSpeed)
                 {
-                    direction += acceleration * Vector2.right;
+                    direction += backwardsAcceleration * Vector2.right;
                 }
                 fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
                 fuelParticleSystem.transform.position = particleSystemPosRight.position;
@@ -193,9 +196,9 @@ public class ShipController : MonoBehaviour
             }
             else
             {
-                if (direction.x > -maxSpeed)
+                if (direction.x > -maxBackwardsSpeed)
                 {
-                    direction += acceleration * Vector2.left;
+                    direction += backwardsAcceleration * Vector2.left;
                 }
                 fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(180, -90, 0));
                 fuelParticleSystem.transform.position = particleSystemPosLeft.position;

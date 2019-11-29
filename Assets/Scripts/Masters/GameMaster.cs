@@ -18,7 +18,6 @@ public class GameMaster : MonoBehaviour
     Utilities utilities;
 
     public float numberOfAliens;
-    public float playerRespawnDelay = 10f;
     public float instantiateNewWaveDelay = 2f;
 
     public Text scoreText;
@@ -26,6 +25,7 @@ public class GameMaster : MonoBehaviour
     public Text bonusText;
     public Text waveText;
     public Text instructionsText;
+    public Text respawnCountdownText;
     public GameObject pauseCanvas;
 
     private PlayerStats playerStats;
@@ -34,6 +34,7 @@ public class GameMaster : MonoBehaviour
     private Animator bonusTextAnimator;
     private AudioSource[] audioSources;
 
+    private float playerRespawnDelay = 3f;
     private float waveCount = 0f;
     private bool firstSpawn = true;
     private int bonus;
@@ -277,14 +278,20 @@ public class GameMaster : MonoBehaviour
 
     IEnumerator RespawnPlayerTimer()
     {
-        yield return new WaitForSeconds(playerRespawnDelay);
+        GameObject parent = respawnCountdownText.transform.parent.gameObject;
+        parent.SetActive(true);
+        respawnCountdownText.text = "3";
+        yield return new WaitForSeconds(1);
+        respawnCountdownText.text = "2";
+        yield return new WaitForSeconds(1);
+        respawnCountdownText.text = "1";
+        yield return new WaitForSeconds(1);
+        parent.SetActive(false);
         shipReference = Instantiate(ship, new Vector2(playerPosition.x, 0), rotation);
     }
 
     // This is necessary
-    // Without this, all is for naught.
-    // There's some weird thing with reloading scenes, where an object disappears, but it is still subscribed to an event. What?
-    // Who knows, but this solves the problem
+    // After reloading the scene, objects are still subscribed to events.
     private void OnDestroy()
     {
         Alien.onAlienDestroyed -= OnAlienDestroyed;

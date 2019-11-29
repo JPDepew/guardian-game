@@ -5,8 +5,10 @@ using UnityEngine;
 public class FlyingSaucer : Enemy
 {
     public float speed;
+    public float actionDstToPlayer = 7f;
     public float easeToNewDirection = 0.3f;
     public Vector2 horizontalBounds;
+    public float topOffset = 1, bottomOffset = 1;
 
     public GameObject laserPowerup;
     public GameObject shieldPowerup;
@@ -35,8 +37,23 @@ public class FlyingSaucer : Enemy
     {
         verticalHalfSize = Camera.main.orthographicSize;
 
+        HandleOffScreenDirection();
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
+    }
+
+    private void HandleOffScreenDirection()
+    {
+        if (transform.position.y > verticalHalfSize - topOffset && goToTopOfPlayer)
+        {
+            // Condition: saucer is above screen
+            newDirection = new Vector2(newDirection.x, 0);
+        }
+        else if (transform.position.y < -verticalHalfSize + bottomOffset && !goToTopOfPlayer)
+        {
+            // Condition: saucer is below screen
+            newDirection = new Vector2(newDirection.x, 0);
+        }
     }
 
     IEnumerator StartEverything()
@@ -70,27 +87,15 @@ public class FlyingSaucer : Enemy
             {
                 newDirection = Vector2.left;
                 yield return FindPlayer();
-                //player = FindObjectOfType<ShipController>();
             }
             else
             {
                 Vector2 dirToPlayer = player.transform.position - transform.position;
                 float dstToPlayer = dirToPlayer.magnitude;
-                if (dstToPlayer < 5)
+                if (dstToPlayer < actionDstToPlayer)
                 {
                     float placement = goToTopOfPlayer ? 2 : -2;
-                    if (transform.position.y > verticalHalfSize - 1 && goToTopOfPlayer)
-                    {
-                        newDirection = dirToPlayer.normalized;
-                    }
-                    else if (transform.position.y < -verticalHalfSize + 1 && !goToTopOfPlayer)
-                    {
-                        newDirection = dirToPlayer.normalized;
-                    }
-                    else
-                    {
-                        newDirection = new Vector2(dirToPlayer.x, dirToPlayer.y + placement).normalized;
-                    }
+                    newDirection = new Vector2(dirToPlayer.x, dirToPlayer.y + placement).normalized;
                 }
                 else
                 {

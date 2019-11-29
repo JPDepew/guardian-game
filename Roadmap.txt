@@ -2,15 +2,15 @@ v2.0.2
 	- Player not dying on low drop *
 	- Pause menu fix *
 v2.1.0
-	- Backwards flying slower, but faster acceleration
-	- HDR particle effects
-	- Spawning indication for player - particles/sfx
+	- Backwards flying slower, but faster acceleration * 
+	- HDR particle effects * 
+	- Spawning indication for player - particles/sfx *
 v2.2.0
 	- Mutant movement
 		- moving up and down as they chase you
 		- Max speed range
 		- Not going below screen
 	- Saucer improvements
-		- Not going below screen
+		- Not going below screen *
 v2.3.0
 	- Little map of game
