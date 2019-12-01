@@ -4877,7 +4877,8 @@ MonoBehaviour:
   particleSystemPosRight: {fileID: 4698269673787468}
   acceleration: 0.8
   backwardsAcceleration: 1.3
-  maxSpeed: 15
+  maxHorizontalSpeed: 15
+  maxVerticalSpeed: 9
   maxBackwardsSpeed: 8
   linearInterpolationTime: 0.02
 --- !u!82 &82989810532279758

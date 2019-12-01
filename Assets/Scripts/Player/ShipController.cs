@@ -24,7 +24,8 @@ public class ShipController : MonoBehaviour
 
     public float acceleration = 0.1f;
     public float backwardsAcceleration = 0.1f; 
-    public float maxSpeed = 2;
+    public float maxHorizontalSpeed = 2;
+    public float maxVerticalSpeed = 2;
     public float maxBackwardsSpeed = 2;
 
     public float linearInterpolationTime = 0.2f;
@@ -120,7 +121,7 @@ public class ShipController : MonoBehaviour
             healthIndicatorParent.localScale = new Vector2(-Mathf.Abs(healthIndicatorParent.localScale.x), healthIndicatorParent.localScale.y);
             leftShip.SetActive(true);
             spriteRenderer.enabled = false;
-            if (direction.x > -maxSpeed)
+            if (direction.x > -maxHorizontalSpeed)
             {
                 direction += acceleration * Vector2.left;
             }
@@ -140,7 +141,7 @@ public class ShipController : MonoBehaviour
             healthIndicatorParent.localScale = new Vector2(Mathf.Abs(healthIndicatorParent.localScale.x), healthIndicatorParent.localScale.y);
             leftShip.SetActive(false);
             spriteRenderer.enabled = true;
-            if (direction.x < maxSpeed)
+            if (direction.x < maxHorizontalSpeed)
             {
                 direction += acceleration * Vector2.right;
             }
@@ -216,11 +217,13 @@ public class ShipController : MonoBehaviour
         // Up and down movement
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            direction += acceleration * Vector2.up;
+            if(direction.y < maxVerticalSpeed)
+                direction += acceleration * Vector2.up;
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            direction += acceleration * Vector2.down;
+            if(direction.y > -maxVerticalSpeed)
+                direction += acceleration * Vector2.down;
         }
         if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.DownArrow))
         {
