@@ -164,6 +164,7 @@ public class Alien : Enemy
     // JOSIAH - LOOK HERE
     IEnumerator Abducting()
     {
+        audioSources[7].Play();
         newDirection = Vector2.up;
         curState = State.ABDUCTING;
         bool infectedHuman = false;
