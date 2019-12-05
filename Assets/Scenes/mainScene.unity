@@ -334,7 +334,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!20 &167867375
 Camera:
   m_ObjectHideFlags: 0
@@ -1962,13 +1962,13 @@ GameObject:
   - component: {fileID: 1611570425}
   - component: {fileID: 1611570424}
   - component: {fileID: 1611570423}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Game Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &1611570423
 MeshRenderer:
   m_ObjectHideFlags: 0

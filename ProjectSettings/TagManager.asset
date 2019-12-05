@@ -46,6 +46,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Game Map
+    uniqueID: 1328254957
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
