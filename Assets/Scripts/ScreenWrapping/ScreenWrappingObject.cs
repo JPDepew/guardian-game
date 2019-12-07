@@ -10,7 +10,7 @@ public class ScreenWrappingObject : MonoBehaviour
     protected virtual void Start()
     {
         mainCam = Camera.main.transform;
-        wrapDst = Constants2.instance.wrapDst;
+        wrapDst = Constants.S.wrapDst;
     }
 
     protected virtual void Update()

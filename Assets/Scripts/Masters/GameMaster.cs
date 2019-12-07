@@ -28,6 +28,7 @@ public class GameMaster : MonoBehaviour
     public Text respawnCountdownText;
     public GameObject pauseCanvas;
 
+    private Camera mainCamera;
     private PlayerStats playerStats;
     private GameObject shipReference;
     private bool respawningCharacter;
@@ -48,18 +49,22 @@ public class GameMaster : MonoBehaviour
     private Vector3 playerPosition;
     private Quaternion rotation;
 
+    float wrapDst = 100;
+
     void Start()
     {
         // setting instance refs
         playerStats = PlayerStats.instance;
         utilities = Utilities.instance;
+        wrapDst = Constants.S.wrapDst;
+        mainCamera = Camera.main;
 
         // Event listeners
         Alien.onAlienDestroyed += OnAlienDestroyed;
         MutatedAlien.onMutatedAlienDestroyed += OnAlienDestroyed;
         Watch.onWatchDestroyed += OnWatchDestroyed;
 
-        verticalHalfSize = Camera.main.orthographicSize;
+        verticalHalfSize = mainCamera.orthographicSize;
         bonusTextAnimator = bonusText.GetComponent<Animator>();
         audioSources = GetComponents<AudioSource>();
         playerPosition = new Vector3(0, 0, 0);
@@ -155,11 +160,10 @@ public class GameMaster : MonoBehaviour
 
     private IEnumerator InstantiateHumans()
     {
+        float camPosX = mainCamera.transform.position.x;
         for (int i = 0; i < 10; i++)
         {
-            int xRange = 20; // side1.transform.position.x > side2.transform.position.x ?
-                //(int)Random.Range(side1.transform.position.x + 18, side2.transform.position.x - 18) :
-                //(int)Random.Range(side1.transform.position.x - 18, side2.transform.position.x + 18);
+            float xRange = Random.Range(camPosX - wrapDst, camPosX + wrapDst);
             float yRange = -4.3f;
 
             Vector2 humanPositon = new Vector2(xRange, yRange);
@@ -172,11 +176,10 @@ public class GameMaster : MonoBehaviour
 
     private IEnumerator InstantiateAliens()
     {
+        float camPosX = mainCamera.transform.position.x;
         for (int i = 0; i < numberOfAliens; i++)
         {
-            int xRange = 20; // side1.transform.position.x > side2.transform.position.x ?
-                //(int)Random.Range(side1.transform.position.x + 16, side2.transform.position.x - 16) :
-                //(int)Random.Range(side1.transform.position.x - 16, side2.transform.position.x + 16);
+            float xRange = Random.Range(camPosX - wrapDst, camPosX + wrapDst);
             int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
 
             Vector2 alienPositon = new Vector2(xRange, yRange);
@@ -199,7 +202,7 @@ public class GameMaster : MonoBehaviour
         {
             currentWatchAlien = true;
             audioSources[0].Stop();
-            Instantiate(watchAlien, new Vector2(shipReference.transform.position.x + 4, Camera.main.orthographicSize + 3), watchAlien.transform.rotation);
+            Instantiate(watchAlien, new Vector2(shipReference.transform.position.x + 4, mainCamera.orthographicSize + 3), watchAlien.transform.rotation);
             yield return new WaitForSeconds(6);
             audioSources[1].Play();
         }
@@ -226,7 +229,7 @@ public class GameMaster : MonoBehaviour
         {
             if (waveCount % 2 == 0 && shipReference != null)
             {
-                Instantiate(flyingSaucer, new Vector2(shipReference.transform.position.x + 12, Camera.main.orthographicSize - 2), transform.rotation);
+                Instantiate(flyingSaucer, new Vector2(shipReference.transform.position.x + 12, mainCamera.orthographicSize - 2), transform.rotation);
             }
         }
         if (alienDestroyedCountTracker >= numberOfAliens)

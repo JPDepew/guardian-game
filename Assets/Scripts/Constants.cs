@@ -5,6 +5,7 @@ public class Constants : MonoBehaviour
 {
     public int highScore = 0;
     public int score = 0;
+    public float wrapDst = 40;
 
     string playerPrefHighScoreKey = "playerHighScore";
 

@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class DestroyObject : MonoBehaviour
+public class DestroyObject : ScreenWrappingObject
 {
     public float destroyAfter = 1f;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         StartCoroutine(DestroyAfter());
     }
 
