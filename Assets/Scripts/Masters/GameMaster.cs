@@ -157,9 +157,9 @@ public class GameMaster : MonoBehaviour
     {
         for (int i = 0; i < 10; i++)
         {
-            int xRange = side1.transform.position.x > side2.transform.position.x ?
-                (int)Random.Range(side1.transform.position.x + 18, side2.transform.position.x - 18) :
-                (int)Random.Range(side1.transform.position.x - 18, side2.transform.position.x + 18);
+            int xRange = 20; // side1.transform.position.x > side2.transform.position.x ?
+                //(int)Random.Range(side1.transform.position.x + 18, side2.transform.position.x - 18) :
+                //(int)Random.Range(side1.transform.position.x - 18, side2.transform.position.x + 18);
             float yRange = -4.3f;
 
             Vector2 humanPositon = new Vector2(xRange, yRange);
@@ -174,9 +174,9 @@ public class GameMaster : MonoBehaviour
     {
         for (int i = 0; i < numberOfAliens; i++)
         {
-            int xRange = side1.transform.position.x > side2.transform.position.x ?
-                (int)Random.Range(side1.transform.position.x + 16, side2.transform.position.x - 16) :
-                (int)Random.Range(side1.transform.position.x - 16, side2.transform.position.x + 16);
+            int xRange = 20; // side1.transform.position.x > side2.transform.position.x ?
+                //(int)Random.Range(side1.transform.position.x + 16, side2.transform.position.x - 16) :
+                //(int)Random.Range(side1.transform.position.x - 16, side2.transform.position.x + 16);
             int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
 
             Vector2 alienPositon = new Vector2(xRange, yRange);

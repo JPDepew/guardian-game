@@ -141,7 +141,7 @@
     <Compile Include="Assets\Scripts\Powerups\LaserPowerup.cs" />
     <Compile Include="Assets\Scripts\Powerups\Shield.cs" />
     <Compile Include="Assets\Scripts\Powerups\ShieldRotate.cs" />
-    <Compile Include="Assets\Scripts\ScreenWrapping\MoveLeft.cs" />
+    <Compile Include="Assets\Scripts\ScreenWrapping\ScreenWrapping.cs" />
     <Compile Include="Assets\Scripts\UI.cs" />
     <None Include="Assets\PostProcessing\Resources\Shaders\DepthOfField.shader" />
     <None Include="Assets\PostProcessing\Resources\Shaders\MotionBlur.cginc" />
