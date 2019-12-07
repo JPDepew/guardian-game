@@ -34,16 +34,18 @@ public class Alien : Enemy
         verticalHalfSize = Camera.main.orthographicSize;
         StartCoroutine("ChangeDirection");
         StartCoroutine("AvoidWalls");
-        StartCoroutine(NullParentTimer());
+        //StartCoroutine(NullParentTimer());
     }
 
-    private void Update()
+    protected override void Update()
     {
         float speedToUse = curState == State.INFECTED ? infectedSpeed : speed;
         verticalHalfSize = Camera.main.orthographicSize;
 
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
         transform.Translate(direction * speedToUse * Time.deltaTime, Space.World);
+
+        base.Update();
     }
 
     public void ChaseHuman(Human human)
@@ -52,20 +54,20 @@ public class Alien : Enemy
         StopCoroutine("ChangeDirection");
         StopCoroutine("AvoidWalls");
         StartCoroutine("ChasingHuman", human);
-        StartCoroutine("DelayedFindParent");
+        //StartCoroutine("DelayedFindParent");
     }
 
-    IEnumerator NullParentTimer()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(3);
-            if(transform.parent == null)
-            {
-                transform.parent = GameObject.FindGameObjectWithTag("leftMapSide").transform;
-            }
-        }
-    }
+    //IEnumerator NullParentTimer()
+    //{
+    //    while (true)
+    //    {
+    //        yield return new WaitForSeconds(3);
+    //        if(transform.parent == null)
+    //        {
+    //            transform.parent = GameObject.FindGameObjectWithTag("leftMapSide").transform;
+    //        }
+    //    }
+    //}
 
     IEnumerator ChangeDirection()
     {
@@ -77,15 +79,15 @@ public class Alien : Enemy
         }
     }
 
-    IEnumerator DelayedFindParent()
-    {
-        yield return new WaitForSeconds(2f);
-        if(transform.parent == null)
-        {
-            Debug.Log("parent is null");
-            transform.parent = GameObject.FindGameObjectWithTag("rightMapSide").transform;
-        }
-    }
+    //IEnumerator DelayedFindParent()
+    //{
+    //    yield return new WaitForSeconds(2f);
+    //    if(transform.parent == null)
+    //    {
+    //        Debug.Log("parent is null");
+    //        transform.parent = GameObject.FindGameObjectWithTag("rightMapSide").transform;
+    //    }
+    //}
 
     IEnumerator AvoidWalls()
     {
@@ -99,14 +101,14 @@ public class Alien : Enemy
             {
                 newDirection = new Vector2(newDirection.x, Mathf.Abs(newDirection.y));
             }
-            if (transform.localPosition.x > horizontalBounds.y)
-            {
-                newDirection = new Vector2(-Mathf.Abs(newDirection.x), newDirection.y);
-            }
-            if (transform.localPosition.x < horizontalBounds.x)
-            {
-                newDirection = new Vector2(Mathf.Abs(newDirection.x), newDirection.y);
-            }
+            //if (transform.localPosition.x > horizontalBounds.y)
+            //{
+            //    newDirection = new Vector2(-Mathf.Abs(newDirection.x), newDirection.y);
+            //}
+            //if (transform.localPosition.x < horizontalBounds.x)
+            //{
+            //    newDirection = new Vector2(Mathf.Abs(newDirection.x), newDirection.y);
+            //}
             yield return new WaitForSeconds(0.1f);
         }
     }
@@ -132,9 +134,9 @@ public class Alien : Enemy
 
     public override void DamageSelf(float damage, Vector2 hitPosition)
     {
-        base.DamageSelf(damage, hitPosition);
         int index = Random.Range(0, 6);
         audioSources[index].Play();
+        base.DamageSelf(damage, hitPosition);
     }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
@@ -198,12 +200,9 @@ public class Alien : Enemy
         PlayerStats.instance.IncreaseScoreBy(150);
         if (human)
         {
-            human.SetToFalling(transform.parent);
+            human.SetToFalling();
         }
-        if (onAlienDestroyed != null)
-        {
-            onAlienDestroyed();
-        }
+        onAlienDestroyed?.Invoke();
         scoreText = Instantiate(scoreText, new Vector3(transform.position.x, transform.position.y, -5), transform.rotation);
         scoreText.text = "150";
         base.DestroySelf();

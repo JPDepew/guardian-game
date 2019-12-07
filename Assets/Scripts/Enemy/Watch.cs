@@ -14,8 +14,6 @@ public class Watch : Enemy
     public float waitToPlaySound = 6f;
     public Vector2 rotateRange;
 
-    ShipController player;
-
     ShieldRotate[] rotators;
     float[] rotatorValues;
     private float speed = 0;
@@ -40,10 +38,12 @@ public class Watch : Enemy
         StartCoroutine(Enter());
     }
 
-    private void Update()
+    protected override void Update()
     {
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
+
+        base.Update();
     }
 
     IEnumerator PlaySound()
@@ -119,13 +119,9 @@ public class Watch : Enemy
         StartCoroutine(FindPlayer());
     }
 
-    IEnumerator FindPlayer()
+    protected override IEnumerator FindPlayer()
     {
-        while (player == null)
-        {
-            player = FindObjectOfType<ShipController>();
-            yield return new WaitForSeconds(0.3f);
-        }
+        yield return base.FindPlayer();
         StartCoroutine(Behavior());
         StartCoroutine(GetDirToPlayer());
     }

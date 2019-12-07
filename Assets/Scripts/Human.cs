@@ -30,8 +30,9 @@ public class Human : Hittable
         verticalHalfSize = Camera.main.orthographicSize;
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         utilities = Utilities.instance;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -39,8 +40,9 @@ public class Human : Hittable
         audioSource = GetComponent<AudioSource>();
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         if (utilities.gameState == Utilities.GameState.STOPPED) return;
 
         if (curState == State.FALLING)
@@ -93,7 +95,7 @@ public class Human : Hittable
     /// Set the human state to falling and detect if the human will die upon hitting the ground.
     /// </summary>
     /// <param name="newParent">The humans new parent (the current background).</param>
-    public void SetToFalling(Transform newParent)
+    public void SetToFalling()
     {
         shouldDie = true;
         float correctedPos = transform.position.y + verticalHalfSize;
@@ -103,7 +105,7 @@ public class Human : Hittable
             //human can live if hit ground
             shouldDie = false;
         }
-        transform.SetParent(newParent);
+        transform.SetParent(null);
         curState = State.FALLING;
     }
 

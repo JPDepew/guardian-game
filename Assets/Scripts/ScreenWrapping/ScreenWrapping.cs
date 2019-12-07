@@ -78,7 +78,7 @@ public class ScreenWrapping : MonoBehaviour
         }
         else
         {
-            playerTransform = GameObject.FindWithTag("Player").transform;
+            playerTransform = GameObject.FindWithTag("Player")?.transform;
         }
     }
 

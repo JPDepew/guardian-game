@@ -28,10 +28,12 @@ public class MutatedAlien : Enemy
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
+
+        base.Update();
     }
 
     public override void DamageSelf(float damage, Vector2 hitPosition)
@@ -71,7 +73,7 @@ public class MutatedAlien : Enemy
         GetComponent<PolygonCollider2D>().enabled = false;
         yield return new WaitForSeconds(destroyDelay);
         GameObject newHuman = Instantiate(human, new Vector2(transform.position.x, transform.position.y - disinfectHumanOffset), Quaternion.Euler(Vector2.zero));
-        newHuman.GetComponent<Human>().SetToFalling(transform.parent);
+        newHuman.GetComponent<Human>().SetToFalling();
         Destroy(gameObject);
     }
 
@@ -84,14 +86,13 @@ public class MutatedAlien : Enemy
 
     IEnumerator ChasePlayer()
     {
-        ShipController player = FindObjectOfType<ShipController>();
         float actualXOffset = randomXOffset;
         while (true)
         {
             if (player == null)
             {
                 newDirection = Vector2.left;
-                player = FindObjectOfType<ShipController>();
+                yield return FindPlayer();
             }
             else
             {

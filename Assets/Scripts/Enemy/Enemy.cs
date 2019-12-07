@@ -19,14 +19,23 @@ public class Enemy : Hittable
     protected SpriteRenderer spriteRenderer;
     protected CircleCollider2D circleCollider;
 
+    protected ShipController player;
+
     bool isDestroyed = false;
 
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
         audioSources = GetComponents<AudioSource>();
         health = maxHealth;
+    }
+
+    protected override void Update()
+    {
+        base.Update();
     }
 
     public override void DamageSelf(float damage, Vector2 hitPosition)
@@ -52,6 +61,15 @@ public class Enemy : Hittable
         }
     }
 
+    protected virtual IEnumerator FindPlayer()
+    {
+        while (player == null)
+        {
+            player = FindObjectOfType<ShipController>();
+            yield return new WaitForSeconds(0.3f);
+        }
+    }
+
     public virtual void DisinfectEnemy(Vector2 hitPoint)
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPoint).normalized;
@@ -63,16 +81,16 @@ public class Enemy : Hittable
 
     protected virtual void DestroySelf()
     {
-        Destroy(gameObject);
         Instantiate(explosion, transform.position, transform.rotation);
+        Destroy(gameObject);
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "leftMapSide" || collision.tag == "rightMapSide")
-        {
-            transform.parent = collision.transform;
-        }
+        //if (collision.tag == "leftMapSide" || collision.tag == "rightMapSide")
+        //{
+        //    transform.parent = collision.transform;
+        //}
     }
 
     IEnumerator Rotate(float directionToHitY)

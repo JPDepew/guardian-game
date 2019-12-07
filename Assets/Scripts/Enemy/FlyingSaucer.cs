@@ -13,7 +13,6 @@ public class FlyingSaucer : Enemy
     public GameObject laserPowerup;
     public GameObject shieldPowerup;
     public GameObject bullet;
-    ShipController player;
 
     float verticalHalfSize;
     bool avoidingWall;
@@ -33,13 +32,15 @@ public class FlyingSaucer : Enemy
         verticalHalfSize = Camera.main.orthographicSize;
     }
 
-    private void Update()
+    protected override void Update()
     {
         verticalHalfSize = Camera.main.orthographicSize;
 
         HandleOffScreenDirection();
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
+
+        base.Update();
     }
 
     private void HandleOffScreenDirection()
@@ -62,14 +63,14 @@ public class FlyingSaucer : Enemy
         StartCoroutine(ChasePlayer());
     }
 
-    IEnumerator FindPlayer()
-    {
-        while (player == null)
-        {
-            player = FindObjectOfType<ShipController>();
-            yield return new WaitForSeconds(0.3f);
-        }
-    }
+    //IEnumerator FindPlayer()
+    //{
+    //    while (player == null)
+    //    {
+    //        player = FindObjectOfType<ShipController>();
+    //        yield return new WaitForSeconds(0.3f);
+    //    }
+    //}
 
     public override void DamageSelf(float damage, Vector2 hitPosition)
     {

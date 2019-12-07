@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaserPowerup : MonoBehaviour
+public class LaserPowerup : ScreenWrappingObject
 {
     public GameObject explosion;
     public enum Powerup { Laser, Shield }
