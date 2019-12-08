@@ -679,6 +679,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highScore: 0
   score: 0
+  wrapDst: 40
 --- !u!82 &449487487
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1068,7 +1069,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &524698929
 Transform:
   m_ObjectHideFlags: 0
@@ -2094,6 +2095,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1766292218}
   - component: {fileID: 1766292217}
+  - component: {fileID: 1766292219}
   m_Layer: 12
   m_Name: Ground Line Renderer
   m_TagString: Untagged
@@ -2140,10 +2142,85 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 0, y: 0, z: 0}
+  - {x: -10, y: 0, z: 0}
   - {x: 5, y: 0, z: 0}
   - {x: 6, y: 1, z: 0}
   - {x: 7, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
+  - {x: 8, y: 0, z: 0}
   - {x: 8, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
@@ -2153,7 +2230,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.4788733
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -2208,12 +2285,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1766292216}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.31, y: -4.13, z: 0}
+  m_LocalPosition: {x: 0, y: -4.74, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1766292219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766292216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f9b67eb65bf53a40beb259b1e03bbe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxYOffset: 1.5
 --- !u!1 &1770388714
 GameObject:
   m_ObjectHideFlags: 0

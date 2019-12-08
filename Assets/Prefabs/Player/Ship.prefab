@@ -4875,7 +4875,7 @@ MonoBehaviour:
   healthIndicatorOffset: 0.1
   particleSystemPosLeft: {fileID: 4201931875760158}
   particleSystemPosRight: {fileID: 4698269673787468}
-  acceleration: 0.8
+  acceleration: 0.75
   backwardsAcceleration: 1.3
   maxHorizontalSpeed: 15
   maxVerticalSpeed: 9

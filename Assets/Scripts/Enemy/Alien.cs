@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Alien : Enemy
@@ -34,7 +33,6 @@ public class Alien : Enemy
         verticalHalfSize = Camera.main.orthographicSize;
         StartCoroutine("ChangeDirection");
         StartCoroutine("AvoidWalls");
-        //StartCoroutine(NullParentTimer());
     }
 
     protected override void Update()
@@ -54,20 +52,7 @@ public class Alien : Enemy
         StopCoroutine("ChangeDirection");
         StopCoroutine("AvoidWalls");
         StartCoroutine("ChasingHuman", human);
-        //StartCoroutine("DelayedFindParent");
     }
-
-    //IEnumerator NullParentTimer()
-    //{
-    //    while (true)
-    //    {
-    //        yield return new WaitForSeconds(3);
-    //        if(transform.parent == null)
-    //        {
-    //            transform.parent = GameObject.FindGameObjectWithTag("leftMapSide").transform;
-    //        }
-    //    }
-    //}
 
     IEnumerator ChangeDirection()
     {
@@ -78,16 +63,6 @@ public class Alien : Enemy
             yield return new WaitForSeconds(timeToChangeDirection);
         }
     }
-
-    //IEnumerator DelayedFindParent()
-    //{
-    //    yield return new WaitForSeconds(2f);
-    //    if(transform.parent == null)
-    //    {
-    //        Debug.Log("parent is null");
-    //        transform.parent = GameObject.FindGameObjectWithTag("rightMapSide").transform;
-    //    }
-    //}
 
     IEnumerator AvoidWalls()
     {
@@ -101,14 +76,6 @@ public class Alien : Enemy
             {
                 newDirection = new Vector2(newDirection.x, Mathf.Abs(newDirection.y));
             }
-            //if (transform.localPosition.x > horizontalBounds.y)
-            //{
-            //    newDirection = new Vector2(-Mathf.Abs(newDirection.x), newDirection.y);
-            //}
-            //if (transform.localPosition.x < horizontalBounds.x)
-            //{
-            //    newDirection = new Vector2(Mathf.Abs(newDirection.x), newDirection.y);
-            //}
             yield return new WaitForSeconds(0.1f);
         }
     }
