@@ -37,6 +37,7 @@ public class ShipController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private PlayerStats playerStats;
     private Utilities utilities;
+    private Constants constants;
     private bool canShoot = true;
 
     private float invulnerabilityTime = 1f;
@@ -51,6 +52,7 @@ public class ShipController : MonoBehaviour
     {
         playerStats = PlayerStats.instance;
         utilities = Utilities.instance;
+        constants = Constants.instance;
 
         healthIndicators = new Stack<GameObject>();
         audioSources = GetComponents<AudioSource>();
@@ -242,7 +244,7 @@ public class ShipController : MonoBehaviour
         {
             direction = new Vector2(direction.x, 0);
         }
-        if (transform.position.y >= verticalHalfSize - 0.5f && direction.y > 0)
+        if (transform.position.y >= verticalHalfSize - constants.topOffset && direction.y > 0)
         {
             direction = new Vector2(direction.x, 0);
         }

@@ -6,14 +6,15 @@ public class Constants : MonoBehaviour
     public int highScore = 0;
     public int score = 0;
     public float wrapDst = 40;
+    public float topOffset = 1;
 
     string playerPrefHighScoreKey = "playerHighScore";
 
-    static public Constants S;
+    static public Constants instance;
 
     private void Awake()
     {
-        S = this;
+        instance = this;
 
         SetPlayerPrefs();
     }

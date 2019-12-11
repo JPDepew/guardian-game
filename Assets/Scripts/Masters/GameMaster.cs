@@ -56,7 +56,7 @@ public class GameMaster : MonoBehaviour
         // setting instance refs
         playerStats = PlayerStats.instance;
         utilities = Utilities.instance;
-        wrapDst = Constants.S.wrapDst;
+        wrapDst = Constants.instance.wrapDst;
         mainCamera = Camera.main;
 
         // Event listeners

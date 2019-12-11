@@ -17,7 +17,7 @@ public class GroundLineRenderer : MonoBehaviour
     {
         lineRenderer = GetComponent<LineRenderer>();
         mainCamTransform = Camera.main.transform;
-        dstFromCam = Constants.S.wrapDst;
+        dstFromCam = Constants.instance.wrapDst;
         pointPositions = new List<Vector3>();
 
         size = (int)dstFromCam * 2;

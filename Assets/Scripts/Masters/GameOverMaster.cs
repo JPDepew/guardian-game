@@ -12,14 +12,14 @@ public class GameOverMaster : MonoBehaviour
     private void Start()
     {
 
-        if (Constants.S.score > Constants.S.highScore)
+        if (Constants.instance.score > Constants.instance.highScore)
         {
-            Constants.S.SetHighScore();
+            Constants.instance.SetHighScore();
         }
 
         //highScoreText.text = "High Score: " + Constants.S.highScore.ToString();
         scoreText.text = "Score: " + Data.Instance.score.ToString();
-        Constants.S.resetScore();
+        Constants.instance.resetScore();
     }
 
     void Update()

@@ -297,7 +297,7 @@ Camera:
     x: 0
     y: 0
     width: 1
-    height: 0.15
+    height: 0.065
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -612,7 +612,7 @@ MonoBehaviour:
     type: 3}
   side1: {fileID: 0}
   side2: {fileID: 0}
-  numberOfAliens: 1
+  numberOfAliens: 10
   instantiateNewWaveDelay: 2
   scoreText: {fileID: 835270265}
   livesText: {fileID: 1636475097}
@@ -679,7 +679,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highScore: 0
   score: 0
-  wrapDst: 40
+  wrapDst: 80
+  topOffset: 1.8
 --- !u!82 &449487487
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1922,8 +1923,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1611570421}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.35, y: 6.92, z: 10}
-  m_LocalScale: {x: 7, y: 7, z: 1}
+  m_LocalPosition: {x: 0.02, y: 12.51, z: 10}
+  m_LocalScale: {x: 17.688633, y: 17.688633, z: 2.5269475}
   m_Children: []
   m_Father: {fileID: 519420032}
   m_RootOrder: 1
@@ -2442,7 +2443,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -114}
+  m_AnchoredPosition: {x: 0, y: -203}
   m_SizeDelta: {x: 323.3, y: 168}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1923584921
@@ -2465,11 +2466,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 14a144a3dc13a0740abca3007297f951, type: 3}
-    m_FontSize: 30
+    m_FontSize: 25
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 3
-    m_MaxSize: 40
+    m_MinSize: 0
+    m_MaxSize: 35
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
