@@ -18,12 +18,12 @@ public class ScreenWrappingObject : MonoBehaviour
         // The camera is too far to the right
         if (mainCam.position.x - transform.position.x > wrapDst)
         {
-            transform.position = new Vector3(mainCam.position.x + wrapDst - 10, transform.position.y, transform.position.z);
+            transform.position = new Vector3(mainCam.position.x + wrapDst - 1, transform.position.y, transform.position.z);
         }
         // Cam is too far to left
         else if (mainCam.position.x - transform.position.x < -wrapDst)
         {
-            transform.position = new Vector3(mainCam.position.x - wrapDst + 10, transform.position.y, transform.position.z);
+            transform.position = new Vector3(mainCam.position.x - wrapDst + 1, transform.position.y, transform.position.z);
         }
     }
 }
