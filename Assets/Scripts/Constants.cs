@@ -7,6 +7,8 @@ public class Constants : MonoBehaviour
     public int score = 0;
     public float wrapDst = 40;
     public float topOffset = 1;
+    public float bottomOffset = 0.8f;
+    public int humanBonus = 200;
 
     string playerPrefHighScoreKey = "playerHighScore";
 

@@ -17,7 +17,8 @@ public class GameMaster : MonoBehaviour
 
     Utilities utilities;
 
-    public float numberOfAliens;
+    public float initialNumberOfHumans;
+    public float initialNumberOfAliens;
     public float instantiateNewWaveDelay = 2f;
 
     public Text scoreText;
@@ -28,6 +29,7 @@ public class GameMaster : MonoBehaviour
     public Text respawnCountdownText;
     public GameObject pauseCanvas;
 
+    private Constants constants;
     private Camera mainCamera;
     private PlayerStats playerStats;
     private GameObject shipReference;
@@ -56,7 +58,8 @@ public class GameMaster : MonoBehaviour
         // setting instance refs
         playerStats = PlayerStats.instance;
         utilities = Utilities.instance;
-        wrapDst = Constants.instance.wrapDst;
+        constants = Constants.instance;
+        wrapDst = constants.wrapDst;
         mainCamera = Camera.main;
 
         // Event listeners
@@ -139,8 +142,8 @@ public class GameMaster : MonoBehaviour
         {
             bonusText.gameObject.SetActive(true);
             bonusTextAnimator.Play("Wave End");
-            waveText.text = "Wave " + waveCount + " Complete";
-            bonusText.text = "Surviving humans: " + (bonus / 500) + " x 500 = " + bonus + " bonus\nTotal Points: " + (playerStats.GetScore() + bonus);
+            waveText.text = $"Wave {waveCount} Complete";
+            bonusText.text = $"Surviving humans: {bonus / constants.humanBonus} x {constants.humanBonus} = {bonus} bonus\nTotal Points: {playerStats.GetScore() + bonus}";
         }
         else
         {
@@ -164,7 +167,7 @@ public class GameMaster : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             float xRange = Random.Range(camPosX - wrapDst, camPosX + wrapDst);
-            float yRange = -4.3f;
+            float yRange = -verticalHalfSize + constants.bottomOffset;
 
             Vector2 humanPositon = new Vector2(xRange, yRange);
 
@@ -177,7 +180,7 @@ public class GameMaster : MonoBehaviour
     private IEnumerator InstantiateAliens()
     {
         float camPosX = mainCamera.transform.position.x;
-        for (int i = 0; i < numberOfAliens; i++)
+        for (int i = 0; i < initialNumberOfAliens; i++)
         {
             float xRange = Random.Range(camPosX - wrapDst, camPosX + wrapDst);
             int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
@@ -225,16 +228,16 @@ public class GameMaster : MonoBehaviour
     private void OnAlienDestroyed()
     {
         alienDestroyedCountTracker++;
-        if (alienDestroyedCountTracker == numberOfAliens - 2)
+        if (alienDestroyedCountTracker == initialNumberOfAliens - 2)
         {
-            if (waveCount % 2 == 0 && shipReference != null)
+            if (waveCount % 3 == 0 && shipReference != null)
             {
                 Instantiate(flyingSaucer, new Vector2(shipReference.transform.position.x + 12, mainCamera.orthographicSize - 2), transform.rotation);
             }
         }
-        if (alienDestroyedCountTracker >= numberOfAliens)
+        if (alienDestroyedCountTracker >= initialNumberOfAliens)
         {
-            numberOfAliens++;
+            initialNumberOfAliens++;
             alienDestroyedCountTracker = 0;
             DealWithRemainingHumans();
             if (this != null)
@@ -252,7 +255,7 @@ public class GameMaster : MonoBehaviour
             Destroy(humans[i].gameObject);
             if (!(humans[i].curState == Human.State.DEAD))
             {
-                bonus += 500;
+                bonus += constants.humanBonus;
             }
         }
     }

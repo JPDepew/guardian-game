@@ -150,10 +150,8 @@ public class Watch : Enemy
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        base.OnTriggerEnter2D(collision);
         if (collision.tag == "Alien")
         {
-
             Effect(collision.transform);
 
             collision.GetComponent<Enemy>().DamageSelf(100, transform.position);

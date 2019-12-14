@@ -68,11 +68,11 @@ public class Alien : Enemy
     {
         while (true)
         {
-            if (transform.position.y > verticalHalfSize - 1)
+            if (transform.position.y > verticalHalfSize - constants.topOffset - 0.4f)
             {
                 newDirection = new Vector2(newDirection.x, -Mathf.Abs(newDirection.y));
             }
-            if (transform.position.y < -verticalHalfSize + 2)
+            if (transform.position.y < -verticalHalfSize + constants.bottomOffset)
             {
                 newDirection = new Vector2(newDirection.x, Mathf.Abs(newDirection.y));
             }
@@ -139,7 +139,7 @@ public class Alien : Enemy
         bool infectedHuman = false;
         while (human && human.curState != Human.State.DEAD)
         {
-            if (transform.position.y > verticalHalfSize - 1)
+            if (transform.position.y > verticalHalfSize - constants.topOffset)
             {
                 Instantiate(infectedAlien, new Vector2(transform.position.x, transform.position.y - 0.3f), Quaternion.Euler(Vector2.zero));
                 Destroy(gameObject);

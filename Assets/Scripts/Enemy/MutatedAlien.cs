@@ -110,13 +110,5 @@ public class MutatedAlien : Enemy
             yield return new WaitForSeconds(0.25f);
         }
     }
-
-    protected override void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "leftMapSide" || collision.tag == "rightMapSide")
-        {
-            transform.parent = collision.transform;
-        }
-    }
 }
 

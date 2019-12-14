@@ -26,7 +26,6 @@ public class Enemy : Hittable
     protected override void Start()
     {
         base.Start();
-
         spriteRenderer = GetComponent<SpriteRenderer>();
         circleCollider = GetComponent<CircleCollider2D>();
         audioSources = GetComponents<AudioSource>();
@@ -87,10 +86,6 @@ public class Enemy : Hittable
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        //if (collision.tag == "leftMapSide" || collision.tag == "rightMapSide")
-        //{
-        //    transform.parent = collision.transform;
-        //}
     }
 
     IEnumerator Rotate(float directionToHitY)

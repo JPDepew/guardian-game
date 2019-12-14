@@ -132,7 +132,6 @@
     <Compile Include="Assets\Scripts\Masters\MenuMaster.cs" />
     <Compile Include="Assets\Scripts\Masters\SplashMaster.cs" />
     <Compile Include="Assets\Scripts\Masters\Utilities.cs" />
-    <Compile Include="Assets\Scripts\ParentToMap.cs" />
     <Compile Include="Assets\Scripts\Player\Bullet.cs" />
     <Compile Include="Assets\Scripts\Player\BulletDestroy.cs" />
     <Compile Include="Assets\Scripts\Player\BulletDisinfect.cs" />

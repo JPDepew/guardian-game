@@ -30,7 +30,7 @@ public class PlayerStats : MonoBehaviour
     {
         score += amount;
         scoreTracker += amount;
-        if (scoreTracker > 20000)
+        if (scoreTracker > 50000)
         {
             IncrementLives();
             scoreTracker = 0;

@@ -8,7 +8,6 @@ public class FlyingSaucer : Enemy
     public float actionDstToPlayer = 7f;
     public float easeToNewDirection = 0.3f;
     public Vector2 horizontalBounds;
-    public float topOffset = 1, bottomOffset = 1;
 
     public GameObject laserPowerup;
     public GameObject shieldPowerup;
@@ -45,12 +44,12 @@ public class FlyingSaucer : Enemy
 
     private void HandleOffScreenDirection()
     {
-        if (transform.position.y > verticalHalfSize - topOffset && goToTopOfPlayer)
+        if (transform.position.y > verticalHalfSize - constants.topOffset && goToTopOfPlayer)
         {
             // Condition: saucer is above screen
             newDirection = new Vector2(newDirection.x, 0);
         }
-        else if (transform.position.y < -verticalHalfSize + bottomOffset && !goToTopOfPlayer)
+        else if (transform.position.y < -verticalHalfSize + constants.bottomOffset && !goToTopOfPlayer)
         {
             // Condition: saucer is below screen
             newDirection = new Vector2(newDirection.x, 0);

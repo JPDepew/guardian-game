@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class ScreenWrappingObject : MonoBehaviour
 {
+    protected Constants constants;
+
     Transform mainCam;
     float wrapDst = 100;
 
     protected virtual void Start()
     {
+        constants = Constants.instance;
         mainCam = Camera.main.transform;
-        wrapDst = Constants.instance.wrapDst;
+        wrapDst = constants.wrapDst;
     }
 
     protected virtual void Update()
