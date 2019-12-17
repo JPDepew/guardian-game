@@ -22,7 +22,8 @@ public class ShipController : MonoBehaviour
     public Transform particleSystemPosLeft;
     public Transform particleSystemPosRight;
 
-    public float acceleration = 0.1f;
+    public float horizontalAcceleration = 0.1f;
+    public float verticalAcceleration = 0.6f;
     public float backwardsAcceleration = 0.1f; 
     public float maxHorizontalSpeed = 2;
     public float maxVerticalSpeed = 2;
@@ -125,7 +126,7 @@ public class ShipController : MonoBehaviour
             spriteRenderer.enabled = false;
             if (direction.x > -maxHorizontalSpeed)
             {
-                direction += acceleration * Vector2.left;
+                direction += horizontalAcceleration * Vector2.left;
             }
             fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(180, -90, 0));
             fuelParticleSystem.transform.position = particleSystemPosRight.position;
@@ -145,7 +146,7 @@ public class ShipController : MonoBehaviour
             spriteRenderer.enabled = true;
             if (direction.x < maxHorizontalSpeed)
             {
-                direction += acceleration * Vector2.right;
+                direction += horizontalAcceleration * Vector2.right;
             }
             fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
             fuelParticleSystem.transform.position = particleSystemPosLeft.position;
@@ -220,12 +221,12 @@ public class ShipController : MonoBehaviour
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
             if(direction.y < maxVerticalSpeed)
-                direction += acceleration * Vector2.up;
+                direction += verticalAcceleration * Vector2.up;
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
             if(direction.y > -maxVerticalSpeed)
-                direction += acceleration * Vector2.down;
+                direction += verticalAcceleration * Vector2.down;
         }
         if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.DownArrow))
         {

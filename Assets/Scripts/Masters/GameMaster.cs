@@ -164,7 +164,7 @@ public class GameMaster : MonoBehaviour
     private IEnumerator InstantiateHumans()
     {
         float camPosX = mainCamera.transform.position.x;
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < initialNumberOfHumans; i++)
         {
             float xRange = Random.Range(camPosX - wrapDst, camPosX + wrapDst);
             float yRange = -verticalHalfSize + constants.bottomOffset;
@@ -183,7 +183,7 @@ public class GameMaster : MonoBehaviour
         for (int i = 0; i < initialNumberOfAliens; i++)
         {
             float xRange = Random.Range(camPosX - wrapDst, camPosX + wrapDst);
-            int yRange = (int)Random.Range(-verticalHalfSize, verticalHalfSize);
+            int yRange = (int)Random.Range(-verticalHalfSize + constants.bottomOffset, verticalHalfSize - constants.topOffset);
 
             Vector2 alienPositon = new Vector2(xRange, yRange);
             while (shipReference == null)
