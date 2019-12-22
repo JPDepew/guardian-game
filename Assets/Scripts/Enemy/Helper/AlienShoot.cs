@@ -33,10 +33,6 @@ public class AlienShoot : MonoBehaviour
             AlienBullet tempBullet = alienBullet.GetComponent<AlienBullet>();
             tempBullet.direction = direction;
             float waitSeconds = 1.5f;
-            if(alien.curState == Alien.State.INFECTED)
-            {
-                waitSeconds = 0.8f;
-            }
             yield return new WaitForSeconds(waitSeconds);
         }
     }

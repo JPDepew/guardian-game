@@ -71,11 +71,11 @@ public class FlyingSaucer : Enemy
     //    }
     //}
 
-    public override void DamageSelf(float damage, Vector2 hitPosition)
+    public override bool DamageSelf(float damage, Vector2 hitPosition)
     {
-        base.DamageSelf(damage, hitPosition);
         int index = Random.Range(0, 5);
         audioSources[index].Play();
+        return base.DamageSelf(damage, hitPosition);
     }
 
     IEnumerator ChasePlayer()

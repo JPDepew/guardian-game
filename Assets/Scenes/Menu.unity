@@ -3431,6 +3431,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highScore: 0
   score: 0
+  wrapDst: 40
+  topOffset: 1
+  bottomOffset: 0.8
+  humanBonus: 200
 --- !u!1 &1627298311
 GameObject:
   m_ObjectHideFlags: 0

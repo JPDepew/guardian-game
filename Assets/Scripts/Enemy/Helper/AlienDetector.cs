@@ -25,7 +25,7 @@ public class AlienDetector : MonoBehaviour
                 alien.curState = Alien.State.CHASING;
             }
         }
-        if(collision.tag == "Player" && (alien.curState == Alien.State.PATROLLING || alien.curState == Alien.State.INFECTED))
+        if(collision.tag == "Player" && alien.curState == Alien.State.PATROLLING)
         {
             alienShoot.StartAlienShooting(collision.transform);
         }

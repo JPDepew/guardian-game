@@ -37,7 +37,7 @@ public class Enemy : Hittable
         base.Update();
     }
 
-    public override void DamageSelf(float damage, Vector2 hitPosition)
+    public override bool DamageSelf(float damage, Vector2 hitPosition)
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPosition).normalized;
         health -= damage;
@@ -58,6 +58,7 @@ public class Enemy : Hittable
 
             StartCoroutine(Rotate(directionToHitY));
         }
+        return true;
     }
 
     protected virtual IEnumerator FindPlayer()
@@ -69,10 +70,12 @@ public class Enemy : Hittable
         }
     }
 
-    public virtual void DisinfectEnemy(Vector2 hitPoint)
+    public virtual bool DisinfectEnemy(Vector2 hitPoint)
     {
         Vector2 directionToEnemy = ((Vector2)transform.position - hitPoint).normalized;
         float directionToHitY = directionToEnemy.x > 0 ? Mathf.Sign(directionToEnemy.y) : -Mathf.Sign(directionToEnemy.y);
+
+        return true;
         //int index = Random.Range(0, 5);
         //audioSource[index].Play();
         //StartCoroutine(Rotate(directionToHitY));

@@ -6,8 +6,10 @@ public class ScreenWrappingObject : MonoBehaviour
 {
     protected Constants constants;
 
-    Transform mainCam;
-    float wrapDst = 100;
+    protected bool shouldWrap = true;
+
+    private Transform mainCam;
+    private float wrapDst = 100;
 
     protected virtual void Start()
     {
@@ -18,6 +20,7 @@ public class ScreenWrappingObject : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (!shouldWrap) return;
         // The camera is too far to the right
         if (mainCam.position.x - transform.position.x > wrapDst)
         {

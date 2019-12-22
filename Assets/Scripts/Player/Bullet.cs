@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour
 {
     public Transform rayPos;
     public float speed = 1f;
+    public float hitOffsetMultiplier = 2f;
     public float invisibleTime = 0.5f;
     public LayerMask layerMask;
     public float damage = 1;
@@ -42,19 +43,21 @@ public class Bullet : MonoBehaviour
 
     protected void Raycasting()
     {
-        hit = Physics2D.Raycast(rayPos.position, Vector2.right * direction, speed, layerMask);
-        Debug.DrawRay(rayPos.position, Vector2.right * direction * speed, Color.red);
+        hit = Physics2D.Raycast(rayPos.position, Vector2.right * direction, speed * hitOffsetMultiplier, layerMask);
+        Debug.DrawRay(rayPos.position, Vector2.right * direction * speed * hitOffsetMultiplier, Color.red);
         if (hit)
         {
             Transform hitObject = hit.transform;
-            HitAction(hitObject, hit.point);
-            StartCoroutine(DestroyObject());
+            if (HitAction(hitObject, hit.point))
+            {
+                StartCoroutine(DestroyObject());
+            }
         }
     }
 
-    protected virtual void HitAction(Transform enemy, Vector2 hitPoint)
+    protected virtual bool HitAction(Transform enemy, Vector2 hitPoint)
     {
-
+        return true;
     }
 
     protected IEnumerator DestroyObject()

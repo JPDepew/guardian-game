@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Human : Hittable
 {
-    public enum State { GROUNDED, ABDUCTED, FALLING, INFECTED, RESCUED, DEAD }
+    public enum State { GROUNDED, ABDUCTED, FALLING, RESCUED, DEAD }
     public State curState;
     Utilities utilities;
 
@@ -109,12 +109,29 @@ public class Human : Hittable
         curState = State.FALLING;
     }
 
-    public override void DamageSelf(float damage, Vector2 hitPosition)
+    public void SetToAbducted(Transform alienTransform, float humanOffset)
     {
-        if (curState == State.FALLING || curState == State.ABDUCTED || curState == State.INFECTED)
+        transform.position = new Vector2(alienTransform.position.x, alienTransform.position.y - humanOffset);
+        transform.SetParent(alienTransform);
+        curState = State.ABDUCTED;
+        shouldWrap = false; // (Alien takes care of the wrapping)
+    }
+
+    public void SetToRescued(Transform shipTransform)
+    {
+        transform.SetParent(shipTransform);
+        transform.position = new Vector2(shipTransform.position.x, shipTransform.position.y - 0.5f);
+        curState = State.RESCUED;
+    }
+
+    public override bool DamageSelf(float damage, Vector2 hitPosition)
+    {
+        if (curState == State.FALLING || curState == State.ABDUCTED)
         {
             DestroySelf();
+            return true;
         }
+        return false;
     }
 
     protected void DestroySelf()

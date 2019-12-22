@@ -126,10 +126,10 @@ public class Watch : Enemy
         StartCoroutine(GetDirToPlayer());
     }
 
-    public override void DamageSelf(float damage, Vector2 hitPosition)
+    public override bool DamageSelf(float damage, Vector2 hitPosition)
     {
-        base.DamageSelf(damage, hitPosition);
         audioSources[3].Play();
+        return base.DamageSelf(damage, hitPosition);
     }
 
     protected override void DestroySelf()

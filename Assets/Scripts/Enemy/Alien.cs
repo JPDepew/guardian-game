@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class Alien : Enemy
 {
-    public enum State { PATROLLING, CHASING, ABDUCTING, INFECTED, DEAD }
+    public enum State { PATROLLING, CHASING, ABDUCTING, DEAD }
 
     public State curState;
 
     public float speed;
-    public float infectedSpeed;
+    public float abductionSpeed;
     public float timeToChangeDirection = 3;
     public float easeToNewDirection = 0.3f;
     public float humanOffset = 0.8f;
@@ -37,7 +37,7 @@ public class Alien : Enemy
 
     protected override void Update()
     {
-        float speedToUse = curState == State.INFECTED ? infectedSpeed : speed;
+        float speedToUse = GetSpeed();
         verticalHalfSize = Camera.main.orthographicSize;
 
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
@@ -52,6 +52,17 @@ public class Alien : Enemy
         StopCoroutine("ChangeDirection");
         StopCoroutine("AvoidWalls");
         StartCoroutine("ChasingHuman", human);
+    }
+
+    private float GetSpeed()
+    {
+        switch(curState)
+        {
+            case State.ABDUCTING:
+                return abductionSpeed;
+            default:
+                return speed;
+        }
     }
 
     IEnumerator ChangeDirection()
@@ -99,11 +110,11 @@ public class Alien : Enemy
         }
     }
 
-    public override void DamageSelf(float damage, Vector2 hitPosition)
+    public override bool DamageSelf(float damage, Vector2 hitPosition)
     {
         int index = Random.Range(0, 6);
         audioSources[index].Play();
-        base.DamageSelf(damage, hitPosition);
+        return base.DamageSelf(damage, hitPosition);
     }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
@@ -115,9 +126,7 @@ public class Alien : Enemy
 
             if (human.curState == Human.State.FALLING || human.curState == Human.State.GROUNDED)
             {
-                collision.transform.position = new Vector2(transform.position.x, transform.position.y - humanOffset);
-                collision.transform.parent = transform;
-                human.curState = Human.State.ABDUCTED;
+                human.SetToAbducted(transform, humanOffset);
 
                 StopAllCoroutines();
                 StartCoroutine("Abducting");

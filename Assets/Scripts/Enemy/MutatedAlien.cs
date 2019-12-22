@@ -36,12 +36,12 @@ public class MutatedAlien : Enemy
         base.Update();
     }
 
-    public override void DamageSelf(float damage, Vector2 hitPosition)
+    public override bool DamageSelf(float damage, Vector2 hitPosition)
     {
         PlayHitSound();
         GameObject tempMask = Instantiate(hitMask, hitPosition, transform.rotation);
         tempMask.transform.parent = transform;
-        base.DamageSelf(damage, hitPosition);
+        return base.DamageSelf(damage, hitPosition);
     }
 
     void PlayHitSound()
@@ -50,7 +50,7 @@ public class MutatedAlien : Enemy
         audioSources[index].Play();
     }
 
-    public override void DisinfectEnemy(Vector2 hitPoint)
+    public override bool DisinfectEnemy(Vector2 hitPoint)
     {
         disinfectHealth--;
         GameObject tempMask = Instantiate(hitMask, hitPoint, transform.rotation);
@@ -66,6 +66,7 @@ public class MutatedAlien : Enemy
             temp.transform.parent = transform;
             StartCoroutine(DestroyAfterDelay());
         }
+        return true;
     }
 
     IEnumerator DestroyAfterDelay()

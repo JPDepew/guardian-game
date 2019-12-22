@@ -353,9 +353,7 @@ public class ShipController : MonoBehaviour
                 human = collision.transform.GetComponent<Human>();
                 if (human.curState == Human.State.FALLING)
                 {
-                    human.transform.SetParent(transform);
-                    human.transform.position = new Vector2(transform.position.x, transform.position.y - 0.5f);
-                    human.curState = Human.State.RESCUED;
+                    human.SetToRescued(transform);
                 }
                 else
                 {
