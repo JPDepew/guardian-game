@@ -8,7 +8,9 @@ public class MutatedAlien : Enemy
     public GameObject hitMask;
     public GameObject disinfectMask;
     public GameObject disinfectHit;
-    public float speed = 8;
+    public float speedMax = 10, speedMin = 6;
+    public float offsetMax = 2, offsetMin = -2;
+    public float changeTimeMin = 0.2f, changeTimeMax = 1f;
     public float easeToNewDirection = 0.2f;
     public float disinfectHumanOffset = 0.3f;
     public float destroyDelay = 0.4f;
@@ -18,18 +20,30 @@ public class MutatedAlien : Enemy
     public delegate void OnDestroyed();
     public static event OnDestroyed onMutatedAlienDestroyed;
 
-    float randomXOffset = 0;
+    float newSpeed = 8;
+    float speed = 8;
+    float randomYOffset = 0;
+    float verticalHalfSize;
 
     protected override void Start()
     {
         StartCoroutine(ChasePlayer());
-        randomXOffset = Random.Range(-2, 2);
+        StartCoroutine(ChangeSpeed());
+        StartCoroutine(ChangeOffset());
+        randomYOffset = Random.Range(offsetMin, offsetMax);
+        speed = Random.Range(speedMin, speedMax);
+        newSpeed = speed;
         base.Start();
     }
 
     // Update is called once per frame
     protected override void Update()
     {
+        verticalHalfSize = Camera.main.orthographicSize;
+
+        speed = Mathf.Lerp(speed, newSpeed, 0.1f);
+
+        HandleOffScreenDirection();
         direction = Vector2.Lerp(direction, newDirection, easeToNewDirection);
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
 
@@ -69,6 +83,26 @@ public class MutatedAlien : Enemy
         return true;
     }
 
+    IEnumerator ChangeSpeed()
+    {
+        while (true)
+        {
+            float waitTime = Random.Range(changeTimeMin, changeTimeMax);
+            yield return new WaitForSeconds(waitTime);
+            newSpeed = Random.Range(speedMin, speedMax);
+        }
+    }
+
+    IEnumerator ChangeOffset()
+    {
+        while (true)
+        {
+            float waitTime = Random.Range(changeTimeMin, changeTimeMax);
+            yield return new WaitForSeconds(waitTime);
+            randomYOffset = Random.Range(offsetMin, offsetMax);
+        }
+    }
+
     IEnumerator DestroyAfterDelay()
     {
         GetComponent<PolygonCollider2D>().enabled = false;
@@ -87,7 +121,7 @@ public class MutatedAlien : Enemy
 
     IEnumerator ChasePlayer()
     {
-        float actualXOffset = randomXOffset;
+        float actualXOffset = randomYOffset;
         while (true)
         {
             if (player == null)
@@ -103,12 +137,25 @@ public class MutatedAlien : Enemy
                 }
                 else
                 {
-                    actualXOffset = randomXOffset;
+                    actualXOffset = randomYOffset;
                 }
                 newDirection = new Vector2(player.transform.position.x - transform.position.x, player.transform.position.y - transform.position.y + actualXOffset).normalized;
             }
-
             yield return new WaitForSeconds(0.25f);
+        }
+    }
+
+    private void HandleOffScreenDirection()
+    {
+        if (transform.position.y > verticalHalfSize - constants.topOffset && newDirection.y > 0)
+        {
+            // Condition: alien is above screen
+            newDirection = new Vector2(newDirection.x, 0);
+        }
+        else if (transform.position.y < -verticalHalfSize + constants.bottomOffset && newDirection.y < 0)
+        {
+            // Condition: alien is below screen
+            newDirection = new Vector2(newDirection.x, 0);
         }
     }
 }
