@@ -46,9 +46,6 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Game Map
-    uniqueID: 1328254957
-    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
@@ -57,4 +54,7 @@ TagManager:
     locked: 0
   - name: Mutated Alien
     uniqueID: 2046930551
+    locked: 0
+  - name: Game Map
+    uniqueID: 1328254957
     locked: 0

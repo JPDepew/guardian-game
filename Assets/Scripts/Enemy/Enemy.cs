@@ -83,7 +83,7 @@ public class Enemy : Hittable
 
     protected virtual void DestroySelf()
     {
-        Instantiate(explosion, transform.position, transform.rotation);
+        Instantiate(explosion, new Vector3(transform.position.x,transform.position.y, constants.explosionOffset), transform.rotation);
         Destroy(gameObject);
     }
 

@@ -29,7 +29,7 @@ public class ShipController : MonoBehaviour
     public float maxVerticalSpeed = 2;
     public float maxBackwardsSpeed = 2;
 
-    public float linearInterpolationTime = 0.2f;
+    public float decelerationLinearInterpolationTime = 0.2f;
 
     public Human human { get; set; }
     private Stack<GameObject> healthIndicators;
@@ -159,11 +159,12 @@ public class ShipController : MonoBehaviour
                 audioSources[1].Play();
             }
         }
+        // Vertical Deceleration
         if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.Space))
         {
             if (Mathf.Abs(direction.x) > 0.01f)
             {
-                direction = Vector2.Lerp(direction, Vector2.zero, linearInterpolationTime);
+                direction = Vector2.Lerp(direction, new Vector2(0, direction.y), decelerationLinearInterpolationTime);
                 if (fuelParticleSystem.isPlaying)
                 {
                     fuelParticleSystem.Stop();
@@ -232,7 +233,7 @@ public class ShipController : MonoBehaviour
         {
             if (Mathf.Abs(direction.y) > 0.01f)
             {
-                direction = Vector2.Lerp(direction, Vector2.zero, linearInterpolationTime);
+                direction = Vector2.Lerp(direction, new Vector2(direction.x, 0), decelerationLinearInterpolationTime);
             }
             else
             {

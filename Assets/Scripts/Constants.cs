@@ -9,6 +9,7 @@ public class Constants : MonoBehaviour
     public float topOffset = 1;
     public float bottomOffset = 0.8f;
     public int humanBonus = 200;
+    public float explosionOffset = 15f;
 
     string playerPrefHighScoreKey = "playerHighScore";
 
