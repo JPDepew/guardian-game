@@ -4876,12 +4876,13 @@ MonoBehaviour:
   particleSystemPosLeft: {fileID: 4201931875760158}
   particleSystemPosRight: {fileID: 4698269673787468}
   horizontalAcceleration: 0.9
-  verticalAcceleration: 0.9
+  verticalAcceleration: 0.75
   backwardsAcceleration: 1.5
   maxHorizontalSpeed: 15
-  maxVerticalSpeed: 9
+  maxVerticalSpeed: 8
   maxBackwardsSpeed: 8
-  decelerationLinearInterpolationTime: 0.12
+  verticalDecelerationLinearInterpolationTime: 0.12
+  horizontalDecelerationLinearInterpolationTime: 0.05
 --- !u!82 &82989810532279758
 AudioSource:
   m_ObjectHideFlags: 0

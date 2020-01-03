@@ -24,12 +24,13 @@ public class ShipController : MonoBehaviour
 
     public float horizontalAcceleration = 0.1f;
     public float verticalAcceleration = 0.6f;
-    public float backwardsAcceleration = 0.1f; 
+    public float backwardsAcceleration = 0.1f;
     public float maxHorizontalSpeed = 2;
     public float maxVerticalSpeed = 2;
     public float maxBackwardsSpeed = 2;
 
-    public float decelerationLinearInterpolationTime = 0.2f;
+    public float verticalDecelerationLinearInterpolationTime = 0.12f;
+    public float horizontalDecelerationLinearInterpolationTime = 0.2f;
 
     public Human human { get; set; }
     private Stack<GameObject> healthIndicators;
@@ -118,128 +119,9 @@ public class ShipController : MonoBehaviour
 
     private void GetInput()
     {
-        // Side to side movement
-        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
-        {
-            healthIndicatorParent.localScale = new Vector2(-Mathf.Abs(healthIndicatorParent.localScale.x), healthIndicatorParent.localScale.y);
-            leftShip.SetActive(true);
-            spriteRenderer.enabled = false;
-            if (direction.x > -maxHorizontalSpeed)
-            {
-                direction += horizontalAcceleration * Vector2.left;
-            }
-            fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(180, -90, 0));
-            fuelParticleSystem.transform.position = particleSystemPosRight.position;
-            if (!fuelParticleSystem.isEmitting)
-            {
-                fuelParticleSystem.Play();
-            }
-            if (!audioSources[1].isPlaying)
-            {
-                audioSources[1].Play();
-            }
-        }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            healthIndicatorParent.localScale = new Vector2(Mathf.Abs(healthIndicatorParent.localScale.x), healthIndicatorParent.localScale.y);
-            leftShip.SetActive(false);
-            spriteRenderer.enabled = true;
-            if (direction.x < maxHorizontalSpeed)
-            {
-                direction += horizontalAcceleration * Vector2.right;
-            }
-            fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
-            fuelParticleSystem.transform.position = particleSystemPosLeft.position;
-            if (!fuelParticleSystem.isEmitting)
-            {
-                fuelParticleSystem.Play();
-            }
-            if (!audioSources[1].isPlaying)
-            {
-                audioSources[1].Play();
-            }
-        }
-        // Vertical Deceleration
-        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.Space))
-        {
-            if (Mathf.Abs(direction.x) > 0.01f)
-            {
-                direction = Vector2.Lerp(direction, new Vector2(0, direction.y), decelerationLinearInterpolationTime);
-                if (fuelParticleSystem.isPlaying)
-                {
-                    fuelParticleSystem.Stop();
-                }
-                if (audioSources[1].isPlaying)
-                {
-                    audioSources[1].Stop();
-                }
-            }
-            else
-            {
-                direction = new Vector2(0, direction.y);
-            }
-        }
-        // Reverse movement
-        if (Input.GetKey(KeyCode.Space))
-        {
-            if (leftShip.activeSelf)
-            {
-                if (direction.x < maxBackwardsSpeed)
-                {
-                    direction += backwardsAcceleration * Vector2.right;
-                }
-                fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
-                fuelParticleSystem.transform.position = particleSystemPosRight.position;
-                if (!fuelParticleSystem.isEmitting)
-                {
-                    fuelParticleSystem.Play();
-                }
-                if (!audioSources[1].isPlaying)
-                {
-                    audioSources[1].Play();
-                }
-            }
-            else
-            {
-                if (direction.x > -maxBackwardsSpeed)
-                {
-                    direction += backwardsAcceleration * Vector2.left;
-                }
-                fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(180, -90, 0));
-                fuelParticleSystem.transform.position = particleSystemPosLeft.position;
-                if (!fuelParticleSystem.isEmitting)
-                {
-                    fuelParticleSystem.Play();
-                }
-                if (!audioSources[1].isPlaying)
-                {
-                    audioSources[1].Play();
-                }
-            }
-        }
-
-        // Up and down movement
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-        {
-            if(direction.y < maxVerticalSpeed)
-                direction += verticalAcceleration * Vector2.up;
-        }
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-        {
-            if(direction.y > -maxVerticalSpeed)
-                direction += verticalAcceleration * Vector2.down;
-        }
-        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.DownArrow))
-        {
-            if (Mathf.Abs(direction.y) > 0.01f)
-            {
-                direction = Vector2.Lerp(direction, new Vector2(direction.x, 0), decelerationLinearInterpolationTime);
-            }
-            else
-            {
-                direction = new Vector2(direction.x, 0);
-            }
-        }
+        HandleHorizontalInput();
+        HandleReverseInput();
+        HandleVerticalInput();
 
         // Checking to make sure it is not off the screen
         if (transform.position.y <= -verticalHalfSize + 1 && direction.y < 0)
@@ -286,6 +168,139 @@ public class ShipController : MonoBehaviour
 
             canShoot = false;
             StartCoroutine(WaitBetweenShooting(true));
+        }
+    }
+
+    void HandleHorizontalInput()
+    {
+        // Side to side movement
+        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
+        {
+            healthIndicatorParent.localScale = new Vector2(-Mathf.Abs(healthIndicatorParent.localScale.x), healthIndicatorParent.localScale.y);
+            leftShip.SetActive(true);
+            spriteRenderer.enabled = false;
+            if (direction.x > -maxHorizontalSpeed)
+            {
+                direction += horizontalAcceleration * Vector2.left;
+            }
+            fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(180, -90, 0));
+            fuelParticleSystem.transform.position = particleSystemPosRight.position;
+            if (!fuelParticleSystem.isEmitting)
+            {
+                fuelParticleSystem.Play();
+            }
+            if (!audioSources[1].isPlaying)
+            {
+                audioSources[1].Play();
+            }
+        }
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            healthIndicatorParent.localScale = new Vector2(Mathf.Abs(healthIndicatorParent.localScale.x), healthIndicatorParent.localScale.y);
+            leftShip.SetActive(false);
+            spriteRenderer.enabled = true;
+            if (direction.x < maxHorizontalSpeed)
+            {
+                direction += horizontalAcceleration * Vector2.right;
+            }
+            fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
+            fuelParticleSystem.transform.position = particleSystemPosLeft.position;
+            if (!fuelParticleSystem.isEmitting)
+            {
+                fuelParticleSystem.Play();
+            }
+            if (!audioSources[1].isPlaying)
+            {
+                audioSources[1].Play();
+            }
+        }
+        // Horizontal Deceleration
+        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.Space))
+        {
+            if (Mathf.Abs(direction.x) > 0.01f)
+            {
+                direction = Vector2.Lerp(direction, new Vector2(0, direction.y), horizontalDecelerationLinearInterpolationTime);
+                if (fuelParticleSystem.isPlaying)
+                {
+                    fuelParticleSystem.Stop();
+                }
+                if (audioSources[1].isPlaying)
+                {
+                    audioSources[1].Stop();
+                }
+            }
+            else
+            {
+                direction = new Vector2(0, direction.y);
+            }
+        }
+    }
+
+    void HandleReverseInput()
+    {
+        // Reverse movement
+        if (Input.GetKey(KeyCode.Space))
+        {
+            if (leftShip.activeSelf)
+            {
+                if (direction.x < maxBackwardsSpeed)
+                {
+                    direction += backwardsAcceleration * Vector2.right;
+                }
+                fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
+                fuelParticleSystem.transform.position = particleSystemPosRight.position;
+                if (!fuelParticleSystem.isEmitting)
+                {
+                    fuelParticleSystem.Play();
+                }
+                if (!audioSources[1].isPlaying)
+                {
+                    audioSources[1].Play();
+                }
+            }
+            else
+            {
+                if (direction.x > -maxBackwardsSpeed)
+                {
+                    direction += backwardsAcceleration * Vector2.left;
+                }
+                fuelParticleSystem.transform.rotation = Quaternion.Euler(new Vector3(180, -90, 0));
+                fuelParticleSystem.transform.position = particleSystemPosLeft.position;
+                if (!fuelParticleSystem.isEmitting)
+                {
+                    fuelParticleSystem.Play();
+                }
+                if (!audioSources[1].isPlaying)
+                {
+                    audioSources[1].Play();
+                }
+            }
+        }
+    }
+
+    void HandleVerticalInput()
+    {
+        // Up and down movement
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        {
+            if (direction.y < maxVerticalSpeed)
+                direction += verticalAcceleration * Vector2.up;
+        }
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            if (direction.y > -maxVerticalSpeed)
+                direction += verticalAcceleration * Vector2.down;
+        }
+        if (!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.DownArrow))
+        {
+            if (Mathf.Abs(direction.y) > 0.01f)
+            {
+                direction = Vector2.Lerp(direction, new Vector2(direction.x, 0), verticalDecelerationLinearInterpolationTime);
+            }
+            else
+            {
+                direction = new Vector2(direction.x, 0);
+            }
         }
     }
 
