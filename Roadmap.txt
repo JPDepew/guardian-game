@@ -25,6 +25,7 @@ v2.4.0
 
 v2.5.0
 	- Support rescuing multiple humans
+	- Powerups on respawn
 	
 Powerup ideas: 
 	- Ramming thing - You can't get shot or hit from the front, and you can destroy enemies by ramming them

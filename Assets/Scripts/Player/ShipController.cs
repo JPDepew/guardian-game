@@ -32,7 +32,8 @@ public class ShipController : MonoBehaviour
     public float verticalDecelerationLinearInterpolationTime = 0.12f;
     public float horizontalDecelerationLinearInterpolationTime = 0.2f;
 
-    public Human human { get; set; }
+    public Human shipHuman { get; set; }
+    public List<Human> humans;
     private Stack<GameObject> healthIndicators;
     private AudioSource[] audioSources;
     private Vector2 direction;
@@ -56,6 +57,7 @@ public class ShipController : MonoBehaviour
         utilities = Utilities.instance;
         constants = Constants.instance;
 
+        humans = new List<Human>();
         healthIndicators = new Stack<GameObject>();
         audioSources = GetComponents<AudioSource>();
         verticalHalfSize = Camera.main.orthographicSize;
@@ -364,16 +366,16 @@ public class ShipController : MonoBehaviour
         }
         if (collision.tag == "Human")
         {
-            if (!human)
+            if (!shipHuman)
             {
-                human = collision.transform.GetComponent<Human>();
-                if (human.curState == Human.State.FALLING)
+                shipHuman = collision.transform.GetComponent<Human>();
+                if (shipHuman.curState == Human.State.FALLING)
                 {
-                    human.SetToRescued(transform);
+                    shipHuman.SetToRescued(transform);
                 }
                 else
                 {
-                    human = null;
+                    shipHuman = null;
                 }
             }
         }
