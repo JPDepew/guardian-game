@@ -149,8 +149,12 @@ public class GameMaster : MonoBehaviour
         {
             bonusText.text = "";
         }
+
         firstSpawn = false;
         yield return new WaitForSeconds(bonusTextAnimator.GetCurrentAnimatorStateInfo(0).length);
+
+        shipReference.GetComponent<ShipController>().ClearAllHumans();
+
         bonusText.text = "";
         bonusText.GetComponent<Animator>().StopPlayback();
         bonusText.gameObject.SetActive(false);

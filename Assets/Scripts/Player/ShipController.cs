@@ -32,8 +32,7 @@ public class ShipController : MonoBehaviour
     public float verticalDecelerationLinearInterpolationTime = 0.12f;
     public float horizontalDecelerationLinearInterpolationTime = 0.2f;
 
-    public Human shipHuman { get; set; }
-    public List<Human> humans;
+    private List<Human> shipHumans;
     private Stack<GameObject> healthIndicators;
     private AudioSource[] audioSources;
     private Vector2 direction;
@@ -57,7 +56,7 @@ public class ShipController : MonoBehaviour
         utilities = Utilities.instance;
         constants = Constants.instance;
 
-        humans = new List<Human>();
+        shipHumans = new List<Human>();
         healthIndicators = new Stack<GameObject>();
         audioSources = GetComponents<AudioSource>();
         verticalHalfSize = Camera.main.orthographicSize;
@@ -124,16 +123,7 @@ public class ShipController : MonoBehaviour
         HandleHorizontalInput();
         HandleReverseInput();
         HandleVerticalInput();
-
-        // Checking to make sure it is not off the screen
-        if (transform.position.y <= -verticalHalfSize + 1 && direction.y < 0)
-        {
-            direction = new Vector2(direction.x, 0);
-        }
-        if (transform.position.y >= verticalHalfSize - constants.topOffset && direction.y > 0)
-        {
-            direction = new Vector2(direction.x, 0);
-        }
+        ManageVerticalBounds();
 
         // Shooting
         if (Input.GetKeyDown(KeyCode.Z) && canShoot)
@@ -170,6 +160,19 @@ public class ShipController : MonoBehaviour
 
             canShoot = false;
             StartCoroutine(WaitBetweenShooting(true));
+        }
+    }
+
+    void ManageVerticalBounds()
+    {
+        // Checking to make sure it is not off the screen
+        if (transform.position.y <= -verticalHalfSize + 1 && direction.y < 0)
+        {
+            direction = new Vector2(direction.x, 0);
+        }
+        if (transform.position.y >= verticalHalfSize - constants.topOffset && direction.y > 0)
+        {
+            direction = new Vector2(direction.x, 0);
         }
     }
 
@@ -335,6 +338,16 @@ public class ShipController : MonoBehaviour
         }
     }
 
+    public void RemoveHuman(Human human)
+    {
+        shipHumans.Remove(human);
+    }
+
+    public void ClearAllHumans()
+    {
+        shipHumans.Clear();
+    }
+
     /// <summary>
     /// Destroys the player, instantiates the explosion particle system, which has the explosion sound on it, and decrements lives.
     /// </summary>
@@ -366,24 +379,12 @@ public class ShipController : MonoBehaviour
         }
         if (collision.tag == "Human")
         {
-            if (!shipHuman)
+            Human human = collision.transform.GetComponent<Human>();
+            if (human.curState == Human.State.FALLING)
             {
-                shipHuman = collision.transform.GetComponent<Human>();
-                if (shipHuman.curState == Human.State.FALLING)
-                {
-                    shipHuman.SetToRescued(transform);
-                }
-                else
-                {
-                    shipHuman = null;
-                }
+                human.SetToRescued(transform, shipHumans.Count);
             }
+            shipHumans.Add(human);
         }
-        //if(collision.tag == "Watch")
-        //{
-        //    collision.transform.parent.GetComponent<Enemy>().DamageSelf(12, transform.position);
-        //    DestroySelf();
-        //    FindObjectOfType<GameMaster>().RespawnPlayer();
-        //}
     }
 }
