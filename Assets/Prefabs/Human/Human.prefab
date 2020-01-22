@@ -147,6 +147,8 @@ MonoBehaviour:
   curState: 0
   acceleration: 0.0003
   dieOffset: 2
+  humanToHumanOffset: 0.05
+  initialShipOffset: 0.5
   explosion: {fileID: 1952611018994752, guid: 68bcf3124be9b1e42a0f79f6fa69f76f, type: 3}
 --- !u!82 &82063126780809228
 AudioSource:

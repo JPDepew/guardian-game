@@ -23,8 +23,8 @@ public class Human : Hittable
     private float verticalHalfSizeOffset = 0.8f;
     private bool shouldDie = true;
 
-    AudioSource audioSource;
 
+    private AudioSource audioSource;
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider2D;
 
@@ -132,6 +132,7 @@ public class Human : Hittable
         transform.SetParent(shipTransform);
         transform.position = new Vector2(shipTransform.position.x, shipTransform.position.y + offsetFromShip);
         curState = State.RESCUED;
+        spriteRenderer.sortingOrder = humanCount;
     }
 
     public override bool DamageSelf(float damage, Vector2 hitPosition)
