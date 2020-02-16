@@ -50,11 +50,14 @@ public class ShipController : MonoBehaviour
     float verticalHalfSize;
     bool destroyed = false;
 
+    GameMaster gameMaster;
+
     private void Start()
     {
         playerStats = PlayerStats.instance;
         utilities = Utilities.instance;
         constants = Constants.instance;
+        gameMaster = GameMaster.instance;
 
         shipHumans = new List<Human>();
         healthIndicators = new Stack<GameObject>();
@@ -340,11 +343,13 @@ public class ShipController : MonoBehaviour
 
     public void RemoveHuman(Human human)
     {
+        audioSources[4].pitch = 1;
         shipHumans.Remove(human);
     }
 
     public void ClearAllHumans()
     {
+        audioSources[4].pitch = 1;
         shipHumans.Clear();
     }
 
@@ -369,22 +374,27 @@ public class ShipController : MonoBehaviour
         {
             collision.GetComponent<Enemy>().DamageSelf(12, transform.position);
             DestroySelf();
-            FindObjectOfType<GameMaster>().RespawnPlayer();
+            gameMaster.RespawnPlayer();
         }
         if (collision.tag == "AlienBullet")
         {
             Destroy(collision.gameObject);
             DestroySelf();
-            FindObjectOfType<GameMaster>().RespawnPlayer();
+            gameMaster.RespawnPlayer();
         }
         if (collision.tag == "Human")
         {
             Human human = collision.transform.GetComponent<Human>();
             if (human.curState == Human.State.FALLING)
             {
+                float audioPitchIncrease = 0.05f;
+
+                audioSources[4].pitch = 1 + shipHumans.Count * audioPitchIncrease;
+                shipHumans.Add(human);
+                audioSources[4].Play();
                 human.SetToRescued(transform, shipHumans.Count);
+                gameMaster.InstantiateScorePopup(constants.catchHumanBonus, transform.position);
             }
-            shipHumans.Add(human);
         }
     }
 }

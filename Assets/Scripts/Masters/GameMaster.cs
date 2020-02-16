@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameMaster : MonoBehaviour
 {
+    public static GameMaster instance;
+
     public GameObject alien;
     public GameObject flyingSaucer;
     public GameObject ship;
@@ -27,7 +29,9 @@ public class GameMaster : MonoBehaviour
     public Text waveText;
     public Text instructionsText;
     public Text respawnCountdownText;
+    public Text popupScoreText;
     public GameObject pauseCanvas;
+    public GameObject canvas;
 
     private Constants constants;
     private Camera mainCamera;
@@ -52,6 +56,11 @@ public class GameMaster : MonoBehaviour
     private Quaternion rotation;
 
     float wrapDst = 100;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -126,6 +135,7 @@ public class GameMaster : MonoBehaviour
         utilities.gameState = Utilities.GameState.RUNNING;
         alienDestroyedCountTracker = 0;
         shipReference = Instantiate(ship);
+        Application.targetFrameRate = 60;
 
         StartCoroutine(InstantiateNewWave());
     }
@@ -283,6 +293,48 @@ public class GameMaster : MonoBehaviour
         else
         {
             StartCoroutine(NewScene());
+        }
+    }
+
+    public void InstantiateScorePopup(int scoreIncrease, Vector3 position)
+    {
+        Text popupText = Instantiate(popupScoreText, new Vector2(position.x, position.y), transform.rotation, canvas.transform);
+        StartCoroutine(AnimatePopupText(popupText));
+        playerStats.IncreaseScoreBy(scoreIncrease);
+    }
+
+    IEnumerator AnimatePopupText(Text popupText)
+    {
+        StartCoroutine(MovePopupText(popupText.transform));
+        yield return new WaitForSeconds(0.5f);
+        yield return StartCoroutine(FadeOutPopupText(popupText));
+        Destroy(popupText.gameObject);
+    }
+
+    IEnumerator MovePopupText(Transform popupTransform)
+    {
+        float moveAmount = 0.7f;
+        float moveDecreaseFraction = 0.95f;
+        float seconds = 0.75f;
+        float targetTime = Time.time + seconds;
+
+        while (Time.time < targetTime)
+        {
+            popupTransform.Translate(Vector2.up * moveAmount * Time.deltaTime);
+            moveAmount *= moveDecreaseFraction;
+            yield return null;
+        }
+    }
+
+    IEnumerator FadeOutPopupText(Text popupText)
+    {
+        Color curTextColor = popupText.color;
+        float alphaDecreaseAmt = 0.05f;
+
+        while (curTextColor.a >= 0)
+        {
+            popupText.color = new Color(curTextColor.r, curTextColor.g, curTextColor.b, popupText.color.a - alphaDecreaseAmt);
+            yield return null;
         }
     }
 
