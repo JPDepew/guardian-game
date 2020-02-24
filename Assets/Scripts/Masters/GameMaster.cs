@@ -298,7 +298,7 @@ public class GameMaster : MonoBehaviour
 
     public void InstantiateScorePopup(int scoreIncrease, Vector3 position)
     {
-        Text popupText = Instantiate(popupScoreText, new Vector2(position.x, position.y), transform.rotation, canvas.transform);
+        Text popupText = Instantiate(popupScoreText, new Vector2(position.x, position.y + 0.5f), transform.rotation, canvas.transform);
         StartCoroutine(AnimatePopupText(popupText));
         playerStats.IncreaseScoreBy(scoreIncrease);
     }

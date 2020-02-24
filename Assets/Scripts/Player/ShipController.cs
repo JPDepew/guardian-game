@@ -343,7 +343,9 @@ public class ShipController : MonoBehaviour
 
     public void RemoveHuman(Human human)
     {
+        gameMaster.InstantiateScorePopup(constants.rescueHumanBonus, transform.position);
         audioSources[4].pitch = 1;
+        audioSources[4].Play();
         shipHumans.Remove(human);
     }
 
