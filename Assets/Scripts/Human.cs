@@ -10,10 +10,7 @@ public class Human : Hittable
 
     public float acceleration = 0.01f;
     public float dieOffset = 1;
-    public float humanToHumanOffset = 0.2f;
-    public float initialShipOffset = 0.5f;
     public GameObject explosion;
-
     private Transform currentGround;
     private float actualSpeed = 0;
     private GameObject player;
@@ -23,8 +20,8 @@ public class Human : Hittable
     private float verticalHalfSizeOffset = 0.8f;
     private bool shouldDie = true;
 
+    AudioSource audioSource;
 
-    private AudioSource audioSource;
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider2D;
 
@@ -77,7 +74,7 @@ public class Human : Hittable
         {
             if (transform.position.y <= -verticalHalfSize + verticalHalfSizeOffset)
             {
-                transform.parent.GetComponent<ShipController>().RemoveHuman(GetComponent<Human>());
+                transform.parent.GetComponent<ShipController>().shipHuman = null;
                 audioSource.Play();
                 transform.parent = currentGround;
                 curState = State.GROUNDED;
@@ -120,19 +117,11 @@ public class Human : Hittable
         shouldWrap = false; // (Alien takes care of the wrapping)
     }
 
-    /// <summary>
-    /// Set the human state to rescued and set it's position and layer corresponding to the humanCount.
-    /// </summary>
-    /// <param name="shipTransform">The player ship</param>
-    /// <param name="humanCount">The number of humans currently rescued (not including this one)</param>
-    public void SetToRescued(Transform shipTransform, int humanCount)
+    public void SetToRescued(Transform shipTransform)
     {
-        float offsetFromShip = -initialShipOffset - (humanCount * humanToHumanOffset);
-
         transform.SetParent(shipTransform);
-        transform.position = new Vector2(shipTransform.position.x, shipTransform.position.y + offsetFromShip);
+        transform.position = new Vector2(shipTransform.position.x, shipTransform.position.y - 0.5f);
         curState = State.RESCUED;
-        spriteRenderer.sortingOrder = humanCount;
     }
 
     public override bool DamageSelf(float damage, Vector2 hitPosition)

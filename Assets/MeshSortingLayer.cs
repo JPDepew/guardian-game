@@ -12,5 +12,6 @@ public class MeshSortingLayer : MonoBehaviour
     {
         meshRenderer = GetComponent<MeshRenderer>();
         meshRenderer.sortingLayerID = sortingLayer;
+        Debug.Log(meshRenderer.sortingLayerName);
     }
 }

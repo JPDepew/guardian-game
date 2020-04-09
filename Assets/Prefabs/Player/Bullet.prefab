@@ -4705,7 +4705,6 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -4802,7 +4801,6 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
@@ -4851,8 +4849,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rayPos: {fileID: 4379171268990940}
-  speed: 30
-  hitOffsetMultiplier: 4
+  speed: 1
+  hitOffset: 2
   invisibleTime: 0.5
   layerMask:
     serializedVersion: 2
