@@ -56,6 +56,7 @@ public class UI : MonoBehaviour
         Instructions.Play("Instructions1");
         while (true)
         {
+            Debug.Log("1");
             if (zDownLastFrame && Input.GetKeyUp(KeyCode.Z))
             {
                 //Input.ResetInputAxes();
@@ -76,6 +77,7 @@ public class UI : MonoBehaviour
         Instructions.Play("Instructions2");
         while (true)
         {
+            Debug.Log("2");
             if (zDownLastFrame && Input.GetKeyUp(KeyCode.Z))
             {
                 //Input.ResetInputAxes();
@@ -96,6 +98,7 @@ public class UI : MonoBehaviour
         Instructions.Play("Instructions3");
         while (true)
         {
+            Debug.Log("3");
             if (zDownLastFrame && Input.GetKeyUp(KeyCode.Z))
             {
                 //Input.ResetInputAxes();
@@ -113,6 +116,7 @@ public class UI : MonoBehaviour
 
     IEnumerator CycleInstructions4()
     {
+        Debug.Log("4");
         Instructions.Play("FadeOut");
         yield return new WaitForSeconds(Instructions.GetCurrentAnimatorStateInfo(0).length);
         Instructions.gameObject.SetActive(false);

@@ -29,7 +29,7 @@ public class Bullet : MonoBehaviour
     {
         if (utilities.gameState == Utilities.GameState.STOPPED) return;
 
-        transform.Translate(Vector3.right * speed * direction * Time.deltaTime);
+        transform.Translate(Vector3.right * speed * direction);
 
         if (shouldRaycast)
         {
@@ -43,8 +43,8 @@ public class Bullet : MonoBehaviour
 
     protected void Raycasting()
     {
-        hit = Physics2D.Raycast(rayPos.position, Vector2.right * direction, speed * hitOffsetMultiplier * Time.deltaTime, layerMask);
-        Debug.DrawRay(rayPos.position, Vector2.right * direction * speed * hitOffsetMultiplier * Time.deltaTime, Color.red);
+        hit = Physics2D.Raycast(rayPos.position, Vector2.right * direction, speed * hitOffsetMultiplier, layerMask);
+        Debug.DrawRay(rayPos.position, Vector2.right * direction * speed * hitOffsetMultiplier, Color.red);
         if (hit)
         {
             Transform hitObject = hit.transform;
